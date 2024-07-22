@@ -29,8 +29,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/signup1' element={<Signup1 />} />
-        <Route path='/signup2' element={<Signup2 />} />
+        <Route path='/signup' element={<Signup1 />} />
+        <Route path='/proceed-signup' element={<Signup2 />} />
         <Route path='/signin' element={<Signin />} />
         <Route path="/" element={
           <DashboardLayout>

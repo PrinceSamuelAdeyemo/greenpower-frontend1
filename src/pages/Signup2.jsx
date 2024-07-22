@@ -1,34 +1,100 @@
 import React from 'react'
-import { useState } from 'react'
-import { Link } from "react-router-dom"
+import { useRef, useState } from 'react'
+import { Link, useLocation } from "react-router-dom"
 import { TextInput, Button, Label, } from 'flowbite-react'
 import SignupRightImage from "../assets/Rectangle 8.png"
 
-import EmailConfirmatioModal from '../components/EmailConfirmationModal'
+import EmailConfirmationModal from '../components/EmailConfirmationModal'
 
 import emailconfirmpic from "../assets/3001931-removebg-preview 1.png"
+import axios from 'axios'
 
-const Signup1 = () => {
+const Signup2 = () => {
     const [showModal, setShowModal] = useState(false);
+    const [show_helpertext, setShow_helpertext] = useState(false)
+    const [helpertext, setHelpertext] = useState("")
+
+    const location = useLocation();
+    const {"data": receivedData} = location.state || {}
+    
+    const [data, setData] = useState({
+        "bvn": receivedData["bvn"], 
+        "password": receivedData["password"],
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "phoneNumber": "",
+    })
+
+    var firstNameRef = useRef(null)
+    var lastNameRef = useRef(null)
+    var emailRef = useRef(null)
+    var phoneNumberRef = useRef(null)
+
+    var saveTempData = (event, input_data) => {
+        switch(input_data){
+            case "lastName":
+                setData(prevData => ({...prevData, "lastName": lastNameRef.current.value}))
+                break;
+            case "firstName":
+                setData(prevData => ({...prevData, "firstName": firstNameRef.current.value}))
+                break;
+            case "email":
+                setData(prevData => ({...prevData, "email": emailRef.current.value}))
+                break;
+            case "phoneNumber":
+                setData(prevData => ({...prevData, "phoneNumber": phoneNumberRef.current.value}))
+                break;
+        }
+    }
+
+    var submitData = (event) => {
+        event.preventDefault()
+        
+        Object.keys(data).map((key) => {
+            if (Number(data[key]) === 0){
+                setHelpertext("Incomplete details")
+                setShow_helpertext(true)
+            }
+            else{
+                setHelpertext("")
+                setShow_helpertext(false)
+                setShowModal(true)
+                axios({
+                    method: "post",
+                    url: "https://greenpower.reni.com.ng/v1/api/users/register.php",
+                    data: {...data}
+                })
+            }
+        })
+    }
+
 
   return (
     <div className='flex flex-row w-full h-screen'>
         <div className='flex justify-center items-center w-1/2'>
-            <form action="" className='flex flex-col justify-center items-center w-[80%] h-full'>
+            
+            <form onSubmit={submitData} className='flex flex-col justify-center items-center w-[80%] h-full'>
                 <div className='flex flex-col gap-4 lg:w-[100%] xl:w-[80%] h-[70%]'>
+
+                    {show_helpertext && 
+                        <div>
+                            <p className='font-bold text-center'>{helpertext}</p>
+                        </div>
+                    }
 
                     <div className='w-full'>
                         <div className='mb-2 block'>
                             <Label htmlFor='surname' value='Surname' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='surname' type='text' placeholder='Afolabi' required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='surname' type='text' placeholder='Afolabi' ref={lastNameRef} onChange={() => saveTempData(event, "lastName")} required />
                     </div>
 
                     <div className='w-full'>
                         <div className='mb-2 block'>
                             <Label htmlFor='other_names' value='Other Names' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='other_names' type='text' placeholder='Seunfunmi Ayomide' required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='other_names' type='text' placeholder='Seunfunmi Ayomide' ref={firstNameRef} onChange={() => saveTempData(event, "firstName")} required />
                     </div>
 
                     <div className='w-full'>
@@ -42,20 +108,20 @@ const Signup1 = () => {
                         <div className='mb-2 block'>
                             <Label htmlFor='email' value='Email' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='email' type='email' placeholder='Enter your mail address' required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='email' type='email' placeholder='Enter your mail address' ref={emailRef} onChange={() => saveTempData(event, "email")} required />
                     </div>
 
                     <div className='w-full'>
                         <div className='mb-2 block'>
                             <Label htmlFor='phone_number' value='Phone Number' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='phone_number' type='text' placeholder='09066099325' required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='phone_number' type='number' placeholder='09066099325' ref={phoneNumberRef} onChange={() => saveTempData(event, "phoneNumber")} required />
                     </div>
 
                     <div>
-                        <Button className='bg-c-lightgreen text-white w-full' onClick={() => setShowModal(true)}>Proceed</Button>
+                        <Button type='submit' className='bg-c-lightgreen text-white w-full'>Proceed</Button>
                     </div>
-                    {showModal && <EmailConfirmatioModal showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} pic={emailconfirmpic} />}
+                    {showModal && <EmailConfirmationModal showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} pic={emailconfirmpic} phoneNumber={data["phoneNumber"]} />}
 
                     <div className='mb-2 flex gap-2'>
                         <p>Already have an account?</p>
@@ -74,4 +140,4 @@ const Signup1 = () => {
   )
 }
 
-export default Signup1
+export default Signup2
