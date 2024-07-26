@@ -21,7 +21,6 @@ const Dashboard = (props) => {
                 <div className="md:w-2/3 space-y-5">
                     <div className='p-0'>
                         <div className="m-0 flex flex-col shadow-xl md:flex-row bg-c-lightgreen rounded-2xl lg:pt-4 lg:px-3 xl:pt-4 xl:px-5 text-white">
-                            
                             <div className='md:flex-1 mr-auto'>
                                 <div className='absolute'>
                                     <p className='font-bold lg:text-xl xl:text-2xl w-full'>Welcome, Afolabi Seunfunmi Ayomide</p>

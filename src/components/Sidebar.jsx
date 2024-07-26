@@ -47,6 +47,8 @@ const Sidebar = ({closeSidebar}) => {
                     <img src={logoutIcon} />
                     Log Out
                 </li></Link>
+                <Link to="/login">login</Link>
+
             </ul>
             <SalesRecordModal showModal={openModal} setShowModal={setOpenModal}/>
         </div>
