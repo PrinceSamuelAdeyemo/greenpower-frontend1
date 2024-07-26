@@ -14,7 +14,7 @@ const DashboardLayout = ({children}) => {
         <Sidebar closeSidebar={toggleSidebar}/>
       </div>
 
-      <div className='flex-grow lg:px-1 pb-1 xl:px-3 xl:pb-3 lg:w-[80%]'>
+      <div className='flex-grow lg:px-1 pb-1 xl:px-3 xl:pb-3 lg:w-[80%] xl:w-[85%]'>
         <Navigation toggleSidebar={toggleSidebar}/>
         <div className='pt-3'>
           {children}

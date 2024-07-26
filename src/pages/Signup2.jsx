@@ -7,7 +7,8 @@ import SignupRightImage from "../assets/Rectangle 8.png"
 import EmailConfirmationModal from '../components/EmailConfirmationModal'
 
 import emailconfirmpic from "../assets/3001931-removebg-preview 1.png"
-import axios from 'axios'
+//import axios from 'axios'
+import users_api from "../utils/users_api"
 
 const Signup2 = () => {
     const [showModal, setShowModal] = useState(false);
@@ -48,6 +49,8 @@ const Signup2 = () => {
         }
     }
 
+    
+
     var submitData = (event) => {
         event.preventDefault()
         
@@ -60,11 +63,21 @@ const Signup2 = () => {
                 setHelpertext("")
                 setShow_helpertext(false)
                 setShowModal(true)
-                axios({
+                /* axios({
                     method: "post",
                     url: "https://greenpower.reni.com.ng/v1/api/users/register.php",
                     data: {...data}
+                }) */
+               try {
+                const response = users_api.post("/register.php", {
+                    ...data
                 })
+                console.log("Data has been sent.", response.data)
+               } 
+               catch (error) {
+                console.log("Error in submitting data", error)
+               }
+               
             }
         })
     }

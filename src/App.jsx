@@ -23,6 +23,7 @@ import Signin from './pages/Signin'
 import AdminDashboard from './pages/AdminDashboard'
 import Products from "./pages/Products"
 import AddProduct from './pages/AddProduct'
+import AdminSalesRecord from './pages/AdminSalesRecord'
 
 function App() {
 
@@ -31,7 +32,7 @@ function App() {
       <Routes>
         <Route path='/signup' element={<Signup1 />} />
         <Route path='/proceed-signup' element={<Signup2 />} />
-        <Route path='/signin' element={<Signin />} />
+        <Route path='/login' element={<Signin />} />
         <Route path="/" element={
           <DashboardLayout>
             <Dashboard />
@@ -88,12 +89,17 @@ function App() {
         }/>
         <Route path="/admin_products" element={
           <DashboardLayout>
+            <Products/>
+          </DashboardLayout>
+        }/>
+        <Route path="/admin_addproducts" element={
+          <DashboardLayout>
             <AddProduct/>
           </DashboardLayout>
         }/>
-        <Route path="/sales" element={
+        <Route path="/salesrecord/:hubName" element={
           <DashboardLayout>
-            <SalesRecord/>
+            <AdminSalesRecord/>
           </DashboardLayout>
         }/>
         

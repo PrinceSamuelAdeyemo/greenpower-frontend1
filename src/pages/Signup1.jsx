@@ -5,6 +5,8 @@ import SignupRightImage from "../assets/Rectangle 8.png"
 
 import Signup2 from './Signup2'
 
+import users_api from '../utils/users_api'
+
 const Signup1 = () => {
     const navigate = useNavigate()
 
@@ -28,6 +30,7 @@ const Signup1 = () => {
         }
     }
 
+
     var openSignup2 = (event) => {
         event.preventDefault();
 
@@ -35,7 +38,18 @@ const Signup1 = () => {
             if (password1Ref.current.value === password2Ref.current.value){
                 setHelpertext("")
                 setShow_helpertext(false)
-                navigate("/proceed-signup", {state: {"data": data}})
+                users_api.post("/verifyBVN.php", {
+                    "bvn": data["bvn"]
+                }).then((response) => {
+                    if (response == true){
+                        navigate("/proceed-signup", {state: {"data": data}})
+                    }
+                    else{
+                        console.log("Incorrect BVN")
+                    }
+                    
+                })
+                
             }
             else{
                 setHelpertext("Passwords don't match")

@@ -3,6 +3,7 @@ import CustomModal2 from './CustomModal2'
 import SuccessfulHubModal from './SuccessfulHubModal'
 import { TextInput } from 'flowbite-react'
 
+import hubs_api from '../utils/hubs_api';
 
 const AddHubModal = ({showModal, openModal, closeModal }) => {
     const [hubname, setHubname] = useState("")
@@ -14,6 +15,14 @@ const AddHubModal = ({showModal, openModal, closeModal }) => {
         setHubname(inputRef.current.value)
         Number(hubname) !==0 ? setButton_state(false) : setButton_state(true)
         console.log(Number(hubname))
+    }
+
+    var createHub = () => {
+        setShowModal2(true)
+        hubs_api.post("/createHub.php", {
+            "userToken": "",
+            "hubName": hubname.trim()
+        })
     }
 
     useEffect(() => {
@@ -31,7 +40,7 @@ const AddHubModal = ({showModal, openModal, closeModal }) => {
                 <TextInput className='font-semibold' onChange={handleHubInput} ref={inputRef} />
                 <p className='text-c-lightgreen'>Click to add more +</p>
             </div>
-            <button className={`h-10 rounded ${(Number(hubname) !==0 ) ?  'text-white bg-c-lightgreen font-semibold': 'text-c-lightgreen bg-gray-300' }`} disabled={button_state} onClick={() => setShowModal2(true)}>Save</button>
+            <button className={`h-10 rounded ${(Number(hubname) !==0 ) ?  'text-white bg-c-lightgreen font-semibold': 'text-c-lightgreen bg-gray-300' }`} disabled={button_state} onClick={createHub}>Save</button>
             <p className='text-center text-c-lightgreen font-semibold'>Close</p>
         </div>
         {show_modal2 && <SuccessfulHubModal showModal={show_modal2} openModal={() => setShowModal2(true)} closeModal={() => setShowModal2(false)} />}

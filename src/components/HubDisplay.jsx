@@ -1,7 +1,13 @@
 import React from 'react'
 import hubvectorpic from "../assets/hubVector.png"
 
-const HubDisplay = ({hubname}) => {
+import hubs_api from '../utils/hubs_api'
+
+const HubDisplay = ({hubname, hubtoken}) => {
+  const openHub = (hubtoken) => {
+    hubs_api.get("/getHubById.php")
+  }
+
   return (
     <div className='bg-c-lightgreen text-white w-[14rem] h-[8rem] rounded-xl relative'>
         <img className='w-[50%]' src={hubvectorpic} alt="" />
