@@ -41,12 +41,7 @@ const Signup1 = () => {
                 users_api.post("/verifyBVN.php", {
                     "bvn": data["bvn"]
                 }).then((response) => {
-                    if (response == true){
-                        navigate("/proceed-signup", {state: {"data": data}})
-                    }
-                    else{
-                        console.log("Incorrect BVN")
-                    }
+                    console.log(response)
                     
                 })
                 

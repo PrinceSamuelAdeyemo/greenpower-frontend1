@@ -69,10 +69,14 @@ const Signup2 = () => {
                     data: {...data}
                 }) */
                try {
-                const response = users_api.post("/register.php", {
+                users_api.post("/register.php", {
                     ...data
                 })
-                console.log("Data has been sent.", response.data)
+                .then((response) => {
+                    console.log(response)
+                })
+                //console.log("data sent", response)
+                //console.log("Data has been sent.", response.data)
                } 
                catch (error) {
                 console.log("Error in submitting data", error)

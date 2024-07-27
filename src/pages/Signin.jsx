@@ -53,7 +53,7 @@ const Signin = () => {
 
                     <div className='mb-2 flex justify-center gap-2'>
                         <p>Don't have an account?</p>
-                        <Link to="/signin" className='text-c-lightgreen font-bold'>Sign Up</Link>
+                        <Link to="/signup" className='text-c-lightgreen font-bold'>Sign Up</Link>
                     </div>
                 </div>
 
