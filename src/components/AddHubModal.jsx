@@ -5,29 +5,19 @@ import { TextInput } from 'flowbite-react'
 
 import hubs_api from '../utils/hubs_api';
 
-const AddHubModal = ({showModal, openModal, closeModal }) => {
-    const [hubname, setHubname] = useState("")
+const AddHubModal = ({showModal, openModal, closeModal, createHub, hubName, setHubname }) => {
     var inputRef = useRef()
     const [button_state, setButton_state] = useState(true)
     const [show_modal2, setShowModal2] = useState(false)
     
     var handleHubInput = () => {
         setHubname(inputRef.current.value)
-        Number(hubname) !==0 ? setButton_state(false) : setButton_state(true)
-        console.log(Number(hubname))
-    }
-
-    var createHub = () => {
-        setShowModal2(true)
-        hubs_api.post("/createHub.php", {
-            "userToken": "",
-            "hubName": hubname.trim()
-        })
+        Number(hubName) !==0 ? setButton_state(false) : setButton_state(true)
     }
 
     useEffect(() => {
-        Number(hubname) !==0 ? setButton_state(false) : setButton_state(true)
-    }, [hubname])
+        Number(hubName) !==0 ? setButton_state(false) : setButton_state(true)
+    }, [hubName])
 
   return (
     <CustomModal2 
@@ -40,8 +30,8 @@ const AddHubModal = ({showModal, openModal, closeModal }) => {
                 <TextInput className='font-semibold' onChange={handleHubInput} ref={inputRef} />
                 <p className='text-c-lightgreen'>Click to add more +</p>
             </div>
-            <button className={`h-10 rounded ${(Number(hubname) !==0 ) ?  'text-white bg-c-lightgreen font-semibold': 'text-c-lightgreen bg-gray-300' }`} disabled={button_state} onClick={createHub}>Save</button>
-            <p className='text-center text-c-lightgreen font-semibold'>Close</p>
+            <button className={`h-10 rounded ${(Number(hubName) !==0 ) ?  'text-white bg-c-lightgreen font-semibold': 'text-c-lightgreen bg-gray-300' }`} disabled={button_state} onClick={createHub}>Save</button>
+            <button className='bg-black text-center text-c-lightgreen font-semibold' onClick={openModal}>Close</button>
         </div>
         {show_modal2 && <SuccessfulHubModal showModal={show_modal2} openModal={() => setShowModal2(true)} closeModal={() => setShowModal2(false)} />}
     </CustomModal2>

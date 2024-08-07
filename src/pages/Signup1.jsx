@@ -38,12 +38,12 @@ const Signup1 = () => {
             if (password1Ref.current.value === password2Ref.current.value){
                 setHelpertext("")
                 setShow_helpertext(false)
-                users_api.post("/verifyBVN.php", {
+               /*  users_api.post("/verifyBVN.php", {
                     "bvn": data["bvn"]
                 }).then((response) => {
                     console.log(response)
-                    
-                })
+                }) */
+                navigate("/proceed-signup", {state: {"data": data}})
                 
             }
             else{

@@ -1,22 +1,59 @@
 import React from 'react'
 import { useRef, useState } from 'react'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { TextInput, Button, Label, } from 'flowbite-react'
 import SignupRightImage from "../assets/Rectangle 8.png"
 
 import users_api from '../utils/users_api'
 
 const Signin = () => {
+    /////////////    COOKIE DETAILS  ///////////////////
+    var COOKIE_NAME = "GREENPOWER_USERDETAILS"
+    var COOKIE_PATH = "/cookie/auth_greenpower"
+    // Cookie expiry date/time is set to 3 days (36 hours)
+    var COOKIE_EXPIRES = (new Date(Date.now() + 259200000)).toUTCString()
+    var COOKIE_VALUE;
+
     var emailRef = useRef(null)
     var passwordRef = useRef(null)
+    var [error_details, setError_details] = useState("")
+    var response_data;
+
+    const navigate = useNavigate()
 
     var submitData = (event) => {
         event.preventDefault();
         users_api.post("/login.php", {
             "identifier": emailRef.current.value,
             "password": passwordRef.current.value
+        }).then((response) => {
+            response_data = response.data["data"]
+            console.log(response_data)
+            
+            if (response.data["data"]){
+                response_data = response.data["data"]
+
+                if ((response_data !== "") && ("userToken" in response_data)){
+                    var COOKIE_VALUE = {
+                        "email": response_data['email'],
+                        "firstName": response_data['firstName'],
+                        "lastName": response_data['lastName'],
+                        "userToken": response_data['userToken'],
+                        "phoneNumber": response_data['phoneNumber'],
+                        "ADMIN": 1//response_data["ADMIN"]
+                    }
+                    document.cookie = COOKIE_NAME + "=" + (JSON.stringify(COOKIE_VALUE)) + "; expires=" + COOKIE_EXPIRES //+ "; path=" + COOKIE_PATH;
+                    navigate("/")
+                }
+            }
+            else if (response.data["message"]){
+                setError_details(response.data["message"])
+            }
+
         })
     }
+
+
   return (
     <div className='flex flex-row w-full h-screen'>
         <div className='flex justify-center items-center w-1/2'>
@@ -25,6 +62,7 @@ const Signin = () => {
                     <div className='flex flex-col items-center'>
                         <p className='font-bold text-2xl text-c-lightgreen'>SIGN IN</p>
                         <p>Please, enter your details to continue</p>
+                        <p className='font-bold mt-3'>{ error_details }</p>
                     </div>
 
                     <div className='w-full'>

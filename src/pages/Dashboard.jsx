@@ -10,7 +10,6 @@ import dashImage from '../assets/dash-image.png';
 
 const Dashboard = (props) => {
     var user_type = props.user_type
-
     return (
         
         <div>

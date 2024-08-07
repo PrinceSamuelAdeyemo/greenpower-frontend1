@@ -15,7 +15,7 @@ const SuccessfulHubModal = ({showModal, openModal, closeModal }) => {
                 <img src={SuccessImage} className="w-40" alt="" />
                 <p className='font-bold text-c-lightgreen'>Hub Created succesfully</p>
             </div>
-            <button className='h-10 rounded-xl text-c-lightgreen bg-white font-semibold  border-2 shadow-lg'>Close</button>
+            <button className='h-10 rounded-xl text-c-lightgreen bg-white font-semibold  border-2 shadow-lg' onClick={closeModal} >Close</button>
         </div>
         
     </CustomModal2>

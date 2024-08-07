@@ -87,7 +87,7 @@ function App() {
             <AdminDashboard />
           </DashboardLayout>
         }/>
-        <Route path="/admin_products" element={
+        <Route path="/products" element={
           <DashboardLayout>
             <Products/>
           </DashboardLayout>

@@ -4,9 +4,13 @@ import image from '../assets/dashImage2.png';
 import { BiRefresh } from 'react-icons/bi';
 import { FaEyeSlash, FaPaperPlane, FaWallet } from 'react-icons/fa';
 
-const Wallet = () => {
+const Wallet = (props) => {
+    
     return (
         <div className="p-4 bg-gray-100 min-h-screen">
+            <div>
+                <p>HELLO</p>
+            </div>
             <div className='flex flex-col md:flex-row mb-4'>
                 <div className='flex flex-col md:flex-row bg-c-lightgreen md:w-2/3 rounded-2xl md:mb-0 md:mr-4 shadow-xl pt-4 lg:px-2 xl:px-5 text-white'>
                     <div className='text-white lg:p-2 xl:p-4 flex-grow'>

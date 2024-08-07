@@ -62,21 +62,22 @@ const Signup2 = () => {
             else{
                 setHelpertext("")
                 setShow_helpertext(false)
-                setShowModal(true)
-                /* axios({
-                    method: "post",
-                    url: "https://greenpower.reni.com.ng/v1/api/users/register.php",
-                    data: {...data}
-                }) */
+                
                try {
                 users_api.post("/register.php", {
                     ...data
                 })
                 .then((response) => {
-                    console.log(response)
+                    if (response.data["data"]){
+                        setHelpertext("")
+                        console.log("HHHH", response)
+                        setShowModal(true)
+                    }
+                    else if (response.data["message"]){
+                        setHelpertext(response.data["message"])
+                    }
                 })
-                //console.log("data sent", response)
-                //console.log("Data has been sent.", response.data)
+                
                } 
                catch (error) {
                 console.log("Error in submitting data", error)

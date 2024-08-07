@@ -8,10 +8,26 @@ import settingsIcon from '../assets/settings.png'
 import salesIcon from '../assets/sales-icon.png'
 import walletIcon from '../assets/wallet-icon.png'
 import logoutIcon from "../assets/logout.png"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import SalesRecordModal from "./SalesRecordModal"
-const Sidebar = ({closeSidebar}) => {
+
+
+const Sidebar = ({closeSidebar, myCookie}) => {
+    console.log(document.cookie)
     const [openModal, setOpenModal] = useState(false)
+    const [admin, setAdmin] = useState(0)
+
+    var getAdminStatus = () => {
+        if (myCookie !== ""){
+            var admin_status = myCookie["admin_status"]
+            setAdmin(admin_status)
+        }
+      }
+
+    useEffect(() => {
+        getAdminStatus();
+    })
+
     return (
         <div className="min-h-screen border-r w-full bg-white">
             <div className="lg:px-2 py-4 xl:p-4 flex justify-between items-center text-lg font-semibold">
@@ -27,16 +43,31 @@ const Sidebar = ({closeSidebar}) => {
                     Dashboard
                 </li>
                 </Link>
-                <Link to="/wallet"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
+                {(admin == 0) ? 
+                    <Link to="/products"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
                     {/* <FaCreditCard className="inline-block mr-2" /> */}
-                    <img src={walletIcon}/>
-                    Wallet
-                </li>
-                </Link>
+                        <img src={walletIcon}/>
+                        Product
+                        </li>
+                    </Link>
+                 : 
+                <Link to="/wallet"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
+                {/* <FaCreditCard className="inline-block mr-2" /> */}
+                <img src={walletIcon}/>
+                Wallet
+            </li>
+            </Link>
+                    
+                }
+                
                 <Link to="/sales"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
                     {/* <FaKey className="inline-block mr-2" /> */}
                     <img src={salesIcon}/>
-                    Sales
+                    {(admin == 0) ?
+                        <p>Sales Record</p>
+                        :
+                        <p>Sales</p>
+                    }
                 </li>
                 </Link>
                 <Link to="/settings"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
