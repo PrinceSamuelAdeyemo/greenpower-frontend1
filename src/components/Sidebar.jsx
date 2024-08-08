@@ -42,7 +42,7 @@ const Sidebar = ({closeSidebar, myCookie}) => {
                     Dashboard
                 </li>
                 </Link>
-                {(admin == 0) ? 
+                {(admin == 1) ? 
                     <Link to="/products"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
                     {/* <FaCreditCard className="inline-block mr-2" /> */}
                         <img src={walletIcon}/>
@@ -59,25 +59,34 @@ const Sidebar = ({closeSidebar, myCookie}) => {
                     
                 }
                 
-                <Link to="/sales"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
+                {(admin == 0) ? 
+                    <Link to="/sales"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
+                        {/* <FaKey className="inline-block mr-2" /> */}
+                        <img src={salesIcon}/>
+                        <p>Sales</p>
+                    </li>
+                    </Link>
+                    :
+                    <Link to=""><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
                     {/* <FaKey className="inline-block mr-2" /> */}
                     <img src={salesIcon}/>
-                    {(admin == 0) ?
+                    
                         <p>Sales Record</p>
-                        :
-                        <p>Sales</p>
-                    }
+                        
                 </li>
                 </Link>
+                }
+
+                
                 <Link to="/settings"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
                     <img src={settingsIcon} />
                     Settings
                 </li></Link>
-                <Link to="/logout"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
+                <Link to="/login"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
                     <img src={logoutIcon} />
                     Log Out
                 </li></Link>
-                <Link to="/login">login</Link>
+                {/* <Link to="/login">login</Link> */}
 
             </ul>
             <SalesRecordModal showModal={openModal} setShowModal={setOpenModal}/>

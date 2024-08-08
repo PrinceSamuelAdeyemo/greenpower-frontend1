@@ -7,21 +7,38 @@ const UserWeightedPoints = (props) => {
     var cookieDetails = props.myCookie
     const [w_points, setW_points] = useState()
     const [admin_status, setAdmin_status] = useState(false)
-
+    
     const getUserWeightedPoints = () => {
-        weighted_points_api.post("/getPointsByUser.php", {
-            "userToken": cookieDetails["userToken"]
-        })
-        .then((response) =>{
-            var received_data = response.data["status_code"]
-            if (received_data == 400){
-                setW_points(0)
-            }
-            else(
-                setW_points(1)
-            )
-        })
-    }
+        if (cookieDetails["admin_status"] == 1){
+            setAdmin_status(true)
+            weighted_points_api.get("/getPointsByUsers.php")
+            .then((response) =>{
+                console.log(response)
+                var received_data = response.data["status_code"]
+                if (received_data == 400){
+                    setW_points(0)
+                }
+                else(
+                    setW_points(1)
+                )
+            })
+        }
+        else{
+            weighted_points_api.post("/getPointsByUser.php", {
+                "userToken": cookieDetails["userToken"]
+            })
+            .then((response) =>{
+                var received_data = response.data["status_code"]
+                if (received_data == 400){
+                    setW_points(0)
+                }
+                else(
+                    setW_points(1)
+                )
+            })
+        }
+        }
+        
 
     useEffect(() => {
         getUserWeightedPoints()
@@ -61,7 +78,12 @@ const UserWeightedPoints = (props) => {
                     <Table.Row className='text-center'>
                         <Table.Cell></Table.Cell>
                         <Table.Cell></Table.Cell>
-                        <Table.Cell><p className='font-bold text-md'>Total Weighted points = <span className='text-c-lightgreen'>{w_points}</span> </p></Table.Cell>
+                        {admin_status ?
+                            <Table.Cell><p className='font-bold text-md'>Total points = <span className='text-c-lightgreen'>{w_points}</span> </p></Table.Cell>
+                            :
+                            <Table.Cell><p className='font-bold text-md'>Total Weighted points = <span className='text-c-lightgreen'>{w_points}</span> </p></Table.Cell>
+                        }
+                        
                     </Table.Row>
                 </Table.Body>
             </Table>

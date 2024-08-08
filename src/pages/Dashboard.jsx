@@ -10,6 +10,8 @@ import dashImage from '../assets/dash-image.png';
 
 const Dashboard = (props) => {
     var user_type = props.user_type
+    var cookieDetails = props.myCookie
+
     return (
         
         <div>
@@ -22,7 +24,7 @@ const Dashboard = (props) => {
                         <div className="m-0 flex flex-col shadow-xl md:flex-row bg-c-lightgreen rounded-2xl lg:pt-4 lg:px-3 xl:pt-4 xl:px-5 text-white">
                             <div className='md:flex-1 mr-auto'>
                                 <div className='absolute'>
-                                    <p className='font-bold lg:text-xl xl:text-2xl w-full'>Welcome, Afolabi Seunfunmi Ayomide</p>
+                                    <p className='font-bold lg:text-xl xl:text-2xl w-full'>Welcome, {cookieDetails["firstName"]} {cookieDetails["lastName"]}</p>
                                 </div>
                                 <div className="mt-12 mb-1">
                                     <p className="text-sm">Bank Name</p>

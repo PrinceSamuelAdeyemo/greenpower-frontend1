@@ -8,11 +8,14 @@ import sales_api from '../utils/sales_api';
 const SalesRecord = (props) => {
     var cookieDetails = props.myCookie
     var userToken = cookieDetails["userToken"]
+    var admin_status = cookieDetails["admin_status"]
 
     const navigate = useNavigate()
     const [salesRecordExist, setSalesRecordExist] = useState(false)
     const [showModal, setShowModal] = useState(false)
 
+
+    // For Users
     var getUserSalesHistory = () => {
         sales_api.post("/getSalesByUser.php", {
             "userToken": userToken
@@ -30,7 +33,12 @@ const SalesRecord = (props) => {
 
     useEffect(() => {
         console.log("EEE")
-        getUserSalesHistory()
+        if (admin_status == 1){
+        }
+        else{
+            getUserSalesHistory()
+        }
+        
     })
 
     return (
@@ -73,14 +81,17 @@ const SalesRecord = (props) => {
                             </Table.Cell>
                         </Table.Row>
                     </Table.Body>
-                        :
-                        
-                            <p className='text-center font-bold w-full text-red-700'>Sales history not available</p>
-                        
-                        }
-                        
+                    :
+                    <></>
+                    }
                     </Table>
                 </div>
+                {
+                    !salesRecordExist ?
+                    <p className='text-center font-bold w-full text-red-700'>Sales history not available</p>
+                    :
+                    <></>
+                }
             </Card>
         </div>
     );

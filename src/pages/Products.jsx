@@ -16,21 +16,20 @@ const Products = (props) => {
     const [showModal2, setShowModal2] = useState(false);
     const [hubname, setHubname] = useState("")
     const [hubs_available, setHubs_available] = useState(false)
+    
     const [hubs_list, setHubs_list] = useState([])
 
     const getSalesHistory = () => {
-        console.log(userToken)
         try{
             sales_api.post(("getSalesByUser.php"), {
-                "userToken": userToken
+            "userToken": userToken
             })
             .then((response) => {
-                console.log(response)
                 if (response.data['status_code'] == 200){
                     console.log(response)
                 }
             })
-        }catch{
+        }catch {
              console.log(error)
         }
         
@@ -65,9 +64,7 @@ const Products = (props) => {
     
 
     useEffect(() => {
-        console.log("About to send")
         getSalesHistory()
-        console.log("Sent")
         hubs_data()
     }, [])
 
@@ -77,14 +74,14 @@ const Products = (props) => {
             <p className='font-bold text-2xl text-gray-500 ps-8'>Select Hub</p>
         </div>
         <div className='flex-grow h-full absolute left-0 right-0 bottom-10 bg-inherit flex justify-center items-center' >
-        {!data_available && 
+        {!hubs_available && 
             <div className='w-40 h-40 border-3 border-c-lightgreen rounded-full flex justify-center items-center' onClick={addToHub} >
                 <FaPlus size="40" title='A plus sign' color='#388F36' />
             </div>}
             {showModal && <AddHubModal hubName={hubname} setHubname={setHubname} createHub={createHub} userToken={userToken} showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} />}
         </div>
 
-        {data_available && <div className='flex gap-4 flex-wrap mt-10 px-2'>
+        {hubs_available && <div className='flex gap-4 flex-wrap mt-10 px-2'>
             {hubs_list.map((hub, key) => (
                 <HubDisplay key={hub["id"]} hub={hub} hubtoken="" />
             ))

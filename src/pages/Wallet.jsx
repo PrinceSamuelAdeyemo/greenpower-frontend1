@@ -5,7 +5,8 @@ import { BiRefresh } from 'react-icons/bi';
 import { FaEyeSlash, FaPaperPlane, FaWallet } from 'react-icons/fa';
 
 const Wallet = (props) => {
-    
+    var cookieDetails = props.myCookie;
+
     return (
         <div className="p-4 bg-gray-100 min-h-screen">
             <div>
@@ -15,7 +16,7 @@ const Wallet = (props) => {
                 <div className='flex flex-col md:flex-row bg-c-lightgreen md:w-2/3 rounded-2xl md:mb-0 md:mr-4 shadow-xl pt-4 lg:px-2 xl:px-5 text-white'>
                     <div className='text-white lg:p-2 xl:p-4 flex-grow'>
                         <div className='absolute'>
-                            <p className='font-bold text-xl w-full'>Welcome, Afolabi Seunfunmi Ayomide</p>
+                            <p className='font-bold text-xl w-full'>Welcome, {cookieDetails["firstName"]} {cookieDetails["lastName"]}</p>
                         </div>
                         <div className="mt-16 mb-4">
                             <p className="text-sm">Bank Name</p>

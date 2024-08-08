@@ -5,6 +5,7 @@ import AddSalesModal from '../components/AddSalesModal';
 import { FaDownload } from "react-icons/fa"
 
 import hubs_api from '../utils/hubs_api';
+import products_api from '../utils/products_api';
 
 "use client"
 
@@ -15,6 +16,8 @@ const AdminSalesRecord = () => {
 
     const [showModal, setShowModal] = useState(false)
     const [hub_details, setHub_details] = useState()
+    const [hubProductAvailable, setHubProductAvailable] = useState(false)
+    const [hubProduct, setHubProduct] = useState()
 
     var { "data": hub_data} = location.state || {}
     var { "hub_token": hub_token, "hub_name": hub_name} = hub_data
@@ -27,14 +30,36 @@ const AdminSalesRecord = () => {
             })
             .then((response) => {
                 if (response.data["data"]){
-                    console.log(response.data["data"])
                     setHub_details(response.data["data"])
+                    productsByHub(response.data["data"]["hubToken"])
                 }
             })
         }
         catch(error){
             console.log(error)
         }
+    }
+
+    var productsByHub = (hub_token) => {
+        products_api.post("/getProductsByHub.php", {
+            "hubToken": hub_token
+        })
+        .then((response) => {
+            console.log(response)
+            if (response.data["status_code"] == 400){
+                setHubProductAvailable(false)
+            }
+            else{
+                setHub_details(response.data["data"])
+                setHubProductAvailable(true)
+            }
+        })
+    }
+
+    const navigateToAddProduct = () => {
+        navigate('/admin_addproducts', {"state": {
+            "hubToken": hub_token
+        }})
     }
 
     useEffect(() => {
@@ -59,7 +84,7 @@ const AdminSalesRecord = () => {
                 <div className='flex ml-auto gap-3'>
                     <Button className='text-c-lightgreen' outline color="green" onClick={()=>setShowModal(true)}>Filter</Button>
                     {showModal && <AddSalesModal showModal={showModal} openModal={()=>setShowModal(true)} closeModal={()=>setShowModal(false)}/>}
-                    <Button className='bg-c-lightgreen text-white' onClick={()=>navigate('/admin_addproducts')}><FaDownload className='mr-2' />Add Product</Button>
+                    <Button className='bg-c-lightgreen text-white' onClick={navigateToAddProduct}><FaDownload className='mr-2' />Add Product</Button>
                 </div>
             </div>
             
@@ -77,101 +102,35 @@ const AdminSalesRecord = () => {
                             <Table.HeadCell className='bg-white'>Product Price</Table.HeadCell>
                             <Table.HeadCell className='bg-white'>Action</Table.HeadCell>
                         </Table.Head>
-                        <Table.Body className='font-semibold'>
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell>Yellow Box</Table.Cell>
-                                <Table.Cell>Recurrent</Table.Cell>
-                                <Table.Cell className=''>
-                                    <div className='border flex items-center justify-center bg-blue-100 rounded'>Pending
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                                <Table.Cell className='text-center'>N32,800</Table.Cell>
-                                <Table.Cell className='flex justify-center'>
-                                    <Button outline className='text-c-lightgreen'>Update</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell>APOLLO</Table.Cell>
-                                <Table.Cell>Outright</Table.Cell>
-                                <Table.Cell>
-                                    <div className='border flex items-center justify-center bg-c-lightgreen rounded text-white'>Paid
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                                <Table.Cell className='text-center'>N32,800</Table.Cell>
-                                <Table.Cell className='flex justify-center'>
-                                    <Button outline className='border border-c-lightgreen text-c-lightgreen'>View</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell>MBOX</Table.Cell>
-                                <Table.Cell>Outright</Table.Cell>
-                                <Table.Cell>
-                                    <div className='border flex items-center justify-center bg-c-lightgreen rounded text-white'>Paid
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                                <Table.Cell className='text-center'>N32,800</Table.Cell>
-                                <Table.Cell className='flex justify-center'>
-                                    <Button outline className='text-c-lightgreen'>Update</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell>Yellow Box+</Table.Cell>
-                                <Table.Cell>Outright</Table.Cell>
-                                <Table.Cell>
-                                    <div className='border flex items-center justify-center bg-c-lightgreen rounded text-white'>Paid
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                                <Table.Cell className='text-center'>N32,800</Table.Cell>
-                                <Table.Cell className='flex justify-center'>
-                                    <Button outline className='text-c-lightgreen'>Update</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell>APOLLO</Table.Cell>
-                                <Table.Cell>Outright</Table.Cell>
-                                <Table.Cell>
-                                    <div className='border flex items-center justify-center bg-c-lightgreen rounded text-white'>Paid
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                                <Table.Cell className='text-center'>N32,800</Table.Cell>
-                                <Table.Cell className='flex justify-center'>
-                                    <Button outline className='text-c-lightgreen'>Update</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell>Yellow Box</Table.Cell>
-                                <Table.Cell>Recurrent</Table.Cell>
-                                <Table.Cell>
-                                    <div className='border flex items-center justify-center bg-c-lightgreen rounded text-white'>Paid
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                                <Table.Cell className='text-center'>N32,800</Table.Cell>
-                                <Table.Cell className='flex justify-center'>
-                                    <Button outline className='text-c-lightgreen'>Update</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell>Yellow Box</Table.Cell>
-                                <Table.Cell>Recurrent</Table.Cell>
-                                <Table.Cell>
-                                    <div className='border flex items-center justify-center bg-blue-100 rounded'>Pending
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                                <Table.Cell className='text-center'>N32,800</Table.Cell>
-                                <Table.Cell className='flex justify-center'>
-                                    <Button outline className='text-c-lightgreen'>Update</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                        </Table.Body>
+                        {
+                        !hubProductAvailable? 
+                        <></>
+                        :
+                        hub_details?.map((hub_detail, key) => (
+                            <Table.Body className='font-semibold'>
+                                {hubProductAvailable &&
+                                    <Table.Row className='border-b-2 border-c-lightgreen'>
+                                    <Table.Cell>{hub_detail["id"]}</Table.Cell>
+                                    <Table.Cell>None</Table.Cell>
+                                    <Table.Cell className=''>{hub_detail["pdtName"]}</Table.Cell>
+                                    <Table.Cell className='text-center'>{hub_detail["pdtSerialNumber"]}</Table.Cell>
+                                    <Table.Cell className='text-center'>{hub_detail["outrightPrice"]}</Table.Cell>
+                                    <Table.Cell className='flex justify-center'>
+                                        <Button outline className='text-c-lightgreen'>Update</Button>
+                                    </Table.Cell>
+                                </Table.Row>}
+                                
+                            </Table.Body>
+                        ))
+                        }
                     </Table>
                 </div>
+                {!hubProductAvailable? (
+                    <p className='text-red-700 font-bold text-center'>Product is not available for this hub, kindly add a product for this hub.</p>
+                )
+                :
+                <></>
+                }
             </Card>
             </div>
         </div>
