@@ -6,6 +6,7 @@ import HubDisplay from '../components/HubDisplay';
 
 import hubs_api from '../utils/hubs_api';
 import products_api from '../utils/products_api';
+import sales_api from '../utils/sales_api';
 
 const Products = (props) => {
     var cookieDetails = props.myCookie
@@ -16,6 +17,24 @@ const Products = (props) => {
     const [hubname, setHubname] = useState("")
     const [hubs_available, setHubs_available] = useState(false)
     const [hubs_list, setHubs_list] = useState([])
+
+    const getSalesHistory = () => {
+        console.log(userToken)
+        try{
+            sales_api.post(("getSalesByUser.php"), {
+                "userToken": userToken
+            })
+            .then((response) => {
+                console.log(response)
+                if (response.data['status_code'] == 200){
+                    console.log(response)
+                }
+            })
+        }catch{
+             console.log(error)
+        }
+        
+    }
     
     var addToHub = () => {
         setShowModal(true)
@@ -46,9 +65,11 @@ const Products = (props) => {
     
 
     useEffect(() => {
+        console.log("About to send")
+        getSalesHistory()
+        console.log("Sent")
         hubs_data()
-    }, [hubs_api])
-
+    }, [])
 
   return (
     <div className=''>
@@ -66,9 +87,7 @@ const Products = (props) => {
         {data_available && <div className='flex gap-4 flex-wrap mt-10 px-2'>
             {hubs_list.map((hub, key) => (
                 <HubDisplay key={hub["id"]} hub={hub} hubtoken="" />
-                    
             ))
-
             }
             
             <div className='flex justify-center items-center text-white w-[14rem] h-[8rem] rounded-xl relative'>

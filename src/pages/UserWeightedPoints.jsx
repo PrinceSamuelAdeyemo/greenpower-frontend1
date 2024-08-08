@@ -1,7 +1,32 @@
 import { Button, Table } from 'flowbite-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-const UserWeightedPoints = () => {
+import weighted_points_api from '../utils/weighted_points_api'
+
+const UserWeightedPoints = (props) => {
+    var cookieDetails = props.myCookie
+    const [w_points, setW_points] = useState()
+    const [admin_status, setAdmin_status] = useState(false)
+
+    const getUserWeightedPoints = () => {
+        weighted_points_api.post("/getPointsByUser.php", {
+            "userToken": cookieDetails["userToken"]
+        })
+        .then((response) =>{
+            var received_data = response.data["status_code"]
+            if (received_data == 400){
+                setW_points(0)
+            }
+            else(
+                setW_points(1)
+            )
+        })
+    }
+
+    useEffect(() => {
+        getUserWeightedPoints()
+    })
+
   return (
     <div>
         <div className='flex px-4'>
@@ -36,7 +61,7 @@ const UserWeightedPoints = () => {
                     <Table.Row className='text-center'>
                         <Table.Cell></Table.Cell>
                         <Table.Cell></Table.Cell>
-                        <Table.Cell><p className='font-bold text-md'>Total Weighted points =<span className='text-c-lightgreen'>23</span> </p></Table.Cell>
+                        <Table.Cell><p className='font-bold text-md'>Total Weighted points = <span className='text-c-lightgreen'>{w_points}</span> </p></Table.Cell>
                     </Table.Row>
                 </Table.Body>
             </Table>

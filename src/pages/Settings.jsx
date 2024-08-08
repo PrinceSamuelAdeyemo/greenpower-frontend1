@@ -1,15 +1,30 @@
 import { Avatar, Button, Card, FileInput, Label, Select, TextInput, ToggleSwitch } from 'flowbite-react'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FaBell, FaCamera, FaEdit, FaImage, FaLock, FaSignOutAlt, FaUserCheck } from 'react-icons/fa'
 import profilePic from "../assets/Rectangle 37.png"
 
-const Settings = () => {
+const Settings = (props) => {
+    var cookieDetails = props.myCookie
     const [email, setEmail] = useState('')
     const fileInputRef = useRef(null);
+    
+    var firstName = props.firstName;
+    var lastName = props.lastName;
+    var email_address = props.email;
+    var phoneNumber = props.phoneNumber
+
+    const [basic_details, setBasic_details] = useState({
+        
+    })
 
     const handleButtonClick = () => {
         fileInputRef.current.click();
     };
+
+    useEffect(() => {
+        setBasic_details(cookieDetails)
+    })
+
     return (
         <div>
             <Card>
@@ -18,7 +33,7 @@ const Settings = () => {
                     <div className='flex items-center gap-12 mb-3'>
                         <Label value='Email' htmlFor='email' />
                         <div className='flex gap-4'>
-                            <TextInput type="email" value={email} id='email' sizing="xl" className='rounded-r-none border-r-0 outline-none rounded-none w-1/2' />
+                            <TextInput type="email" value={basic_details["email"]} id='email' sizing="xl" className='rounded-r-none border-r-0 outline-none rounded-none w-1/2' />
                             <Button outline>Edit</Button>
                         </div>
                         
@@ -35,17 +50,17 @@ const Settings = () => {
                     <div className='flex flex-col gap-4 w-full md:w-4/6'>
                         <div className='flex items-center gap-2 mb-3'>
                             <Label value='First Name' htmlFor='firstName' className='w-2/4' />
-                            <TextInput value={email} id='firstName' className='flex-grow w-[60rem]' />
+                            <TextInput value={basic_details["firstName"]} id='firstName' className='flex-grow w-[60rem]' />
                             <div className='w-20' /> {/* Placeholder for alignment */}
                         </div>
                         <div className='flex items-center gap-2 mb-3'>
                             <Label value='Last Name' htmlFor='lastName' className='w-2/4' />
-                            <TextInput value={email} id='lastName' className='flex-grow w-[60rem] border-c-lightgreen' />
+                            <TextInput value={basic_details["lastName"]} id='lastName' className='flex-grow w-[60rem] border-c-lightgreen' />
                             <div className='w-20' /> {/* Placeholder for alignment */}
                         </div>
                         <div className='flex items-center gap-2 mb-3'>
                             <Label value='Phone Number' htmlFor='phoneNumber' className='w-1/4' />
-                            <TextInput value={email} id='phoneNumber' className='flex-grow' />
+                            <TextInput value={basic_details["phoneNumber"]} id='phoneNumber' className='flex-grow' />
                             <Button outline className='flex-none w-20'>Edit</Button>
                         </div>
                     </div>

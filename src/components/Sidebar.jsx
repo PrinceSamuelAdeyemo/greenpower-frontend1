@@ -13,7 +13,6 @@ import SalesRecordModal from "./SalesRecordModal"
 
 
 const Sidebar = ({closeSidebar, myCookie}) => {
-    console.log(document.cookie)
     const [openModal, setOpenModal] = useState(false)
     const [admin, setAdmin] = useState(0)
 
