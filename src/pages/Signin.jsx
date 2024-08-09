@@ -34,13 +34,14 @@ const Signin = () => {
                 response_data = response.data["data"]
 
                 if ((response_data !== "") && ("userToken" in response_data)){
+                    console.log(response_data["ADMIN"])
                     var COOKIE_VALUE = {
                         "email": response_data['email'],
                         "firstName": response_data['firstName'],
                         "lastName": response_data['lastName'],
                         "userToken": response_data['userToken'],
                         "phoneNumber": response_data['phoneNumber'],
-                        "ADMIN": 1//response_data["ADMIN"]
+                        "ADMIN": response_data["ADMIN"]
                     }
                     document.cookie = COOKIE_NAME + "=" + (JSON.stringify(COOKIE_VALUE)) + "; expires=" + COOKIE_EXPIRES //+ "; path=" + COOKIE_PATH;
                     navigate("/")
@@ -49,7 +50,6 @@ const Signin = () => {
             else if (response.data["message"]){
                 setError_details(response.data["message"])
             }
-
         })
     }
 

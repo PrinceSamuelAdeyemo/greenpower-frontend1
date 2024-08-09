@@ -23,7 +23,7 @@ import Signin from './pages/Signin'
 import AdminDashboard from './pages/AdminDashboard'
 import Products from "./pages/Products"
 import AddProduct from './pages/AddProduct'
-import AdminSalesRecord from './pages/AdminSalesRecord'
+import ProductHubListing from './pages/ProductHubListing'
 
 function App() {
 
@@ -82,11 +82,6 @@ function App() {
         }/>
 
 
-        <Route path="/admin" element={
-          <DashboardLayout>
-            <AdminDashboard />
-          </DashboardLayout>
-        }/>
         <Route path="/products" element={
           <DashboardLayout>
             <Products/>
@@ -99,41 +94,10 @@ function App() {
         }/>
         <Route path="/salesrecord/:hubName" element={
           <DashboardLayout>
-            <AdminSalesRecord/>
+            <ProductHubListing/>
           </DashboardLayout>
         }/>
         
-        <Route path="/sales/user/wp" element={
-          <DashboardLayout>
-            <UserWeightedPoints/>
-          </DashboardLayout>
-        }/>
-        <Route path="/settings" element={
-          <DashboardLayout>
-            <Settings/>
-          </DashboardLayout>
-        }/>
-        <Route path="/settings/kyc" element={
-          <DashboardLayout>
-            <SettingsLayout>
-              <Kyc/>
-            </SettingsLayout>
-          </DashboardLayout>
-        }/>
-        <Route path="/settings/kyc/address" element={
-          <DashboardLayout>
-            <SettingsLayout>
-              <KycAddress/>
-            </SettingsLayout>
-          </DashboardLayout>
-        }/>
-        <Route path="/settings/password" element={
-          <DashboardLayout>
-            <SettingsLayout>
-              <Password/>
-            </SettingsLayout>
-          </DashboardLayout>
-        }/>
       </Routes>
     </BrowserRouter>
   )

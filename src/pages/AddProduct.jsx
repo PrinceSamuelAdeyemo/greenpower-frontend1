@@ -37,10 +37,10 @@ const AddProduct = (props) => {
                 "pdtSerialNumber": product_serialNumRef.current.value,
                 "pdtName": product_nameRef.current.value,
                 "pdtImage": product_imageRef.current.value,
-                "outrightPrice": product_outrightpriceRef.current.value,
-                "outrightCommission": commissionRef.current.value,
-                "logisticsFees": "",
-                "weightedPoints": weightedPointRef.current.value
+                "outrightPrice": parseFloat(product_outrightpriceRef.current.value),
+                "outrightCommission": parseFloat(commissionRef.current.value),
+                "logisticsFees": 8,
+                "weightedPoints": parseFloat(weightedPointRef.current.value)
                 }
                 console.log(data)
             products_api.post("addProduct.php", data)
@@ -73,8 +73,9 @@ const AddProduct = (props) => {
                         </div>
 
                         <div className='flex items-center gap-2 mb-3'>
-                            <Label value='Product Image' htmlFor='product_image' ref={product_nameRef} className='w-3/4' />
-                            <img ref={product_imageRef} src="" alt="" />
+                            <Label value='Product Image' htmlFor='product_image' className='w-3/4' />
+                            <input type="file" ref={product_imageRef} alt="" accept='image/*' className='' />
+                            
                         </div>
                     </div>
 

@@ -1,5 +1,6 @@
 import { Card, Progress, Table } from 'flowbite-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BiRefresh } from 'react-icons/bi';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import cart from '../assets/cart.png';
@@ -8,17 +9,70 @@ import product2 from '../assets/product2.png';
 import product3 from '../assets/product3.png';
 import dashImage from '../assets/dash-image.png';
 
+import weighted_points_api from '../utils/weighted_points_api';
+import sales_api from '../utils/sales_api';
+
 const Dashboard = (props) => {
     var user_type = props.user_type
     var cookieDetails = props.myCookie
+    var admin_status = cookieDetails["ADMIN"]
+
+    var [weighted_available, setWeighted_available] = useState(false)
+    const [showUsers, setShowUsers] = useState(true)
+    const [showIncome, setShowIncome] = useState(false)
+    const navigate = useNavigate()
+
+    // ADMIN FUNCTIONS
+    var getUsersWeightedPoints = () => {
+        try{
+             weighted_points_api.get("/getPointsByUsers.php")
+             .then((response) => {
+                if (response.data["status_code"] == 400){
+                    setWeighted_available(false)
+                }
+                else{
+                    setWeighted_available(true)
+                }
+             })
+        }
+       catch (error) {
+        console.log(error)
+       }
+    }
+
+    var getUsersSalesHistory = () => {
+        try{
+            //sales_api.
+        }
+        catch (error){
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        
+        if (admin_status === 0){
+            console.log("USER")
+        }
+        else if (admin_status == 1){
+            console.log("ADMIN")
+            getUsersWeightedPoints()
+            getUsersSalesHistory()
+        }
+        else{
+            navigate("/login")
+        }
+    })
 
     return (
-        
+
         <div>
             <div className='px-4 pb-2'>
                 <p className='font-bold text-gray-400 text-3xl'>Dashboard</p>
             </div>
-            <div className="flex flex-col md:flex-row md:gap-1 lg:gap-4 xl:gap-5 lg:px-4">
+            {
+                (admin_status == 0) ?
+                <div className="flex flex-col md:flex-row md:gap-1 lg:gap-4 xl:gap-5 lg:px-4">
                 <div className="md:w-2/3 space-y-5">
                     <div className='p-0'>
                         <div className="m-0 flex flex-col shadow-xl md:flex-row bg-c-lightgreen rounded-2xl lg:pt-4 lg:px-3 xl:pt-4 xl:px-5 text-white">
@@ -138,6 +192,11 @@ const Dashboard = (props) => {
                                     </Table.Row>
                                 </Table.Body>
                             </Table>
+                            {
+                                !weighted_available && (
+                                    <p className='text-center text-red-600 font-semibold'>You don't have weighted points yet, kindly place an order to get started.</p>
+                                )
+                            }
                         </div>
                         <div className='flex justify-center w-full '>
                             <button className='border-2 border-c-lightgreen rounded-lg px-2 font-semibold text-center text-c-lightgreen'>All products</button>
@@ -145,6 +204,157 @@ const Dashboard = (props) => {
                     </Card>
                 </div>
             </div>
+                :
+            <>
+                <div className="flex flex-col md:flex-row md:gap-1 lg:gap-4 xl:gap-5 lg:px-4 mb-3">
+                    <div className="md:w-2/3 space-y-5 bg-white py-6 border-1 shadow-xl">
+                        <div className=' space-y-5 '>
+                            <div className='flex justify-center w-full'>
+                                <div className="flex flex-col gap-4 shadow-xl bg-c-muchlightgreen w-[95%] rounded-2xl lg:pt-4 lg:p-4 xl:pt-4 xl:px-5 text-white">
+                                    <div className="flex gap-3 items-center">
+                                        <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
+                                        <p className='font-bold text-c-gray opacity-95 text-xl'>Overview</p>
+                                    </div>
+                                        
+                                    <div className='flex gap-4'>
+                                        <div className='w-full bg-white rounded gap-1 px-2 py-2'>
+                                            <div className='flex justify-between' onClick={() => {setShowUsers(!showUsers)}}>
+                                                {showUsers ? <FaEye color='green' /> : <FaEyeSlash color='green' />}
+                                                <p className='text-black'>Users</p>
+                                                <p className='text-red-500'>35.8</p>
+                                            </div>
+                                            <div>
+                                                <p className='font-bold text-4xl text-c-gray text-center'>{showUsers ? 1024: '****'}</p>
+                                            </div>
+                                        </div>
+                                        <div className='w-full bg-white rounded gap-1 px-2 py-2'>
+                                            <div className='flex justify-between' onClick={() => {setShowIncome(!showIncome)}}>
+                                                {showIncome ? <FaEye color='green' /> : <FaEyeSlash color='green' />}
+                                                <p className='text-black'>Income</p>
+                                                <p className='text-red-500'>35.8</p>
+                                            </div>
+                                            <div>
+                                                <p className='font-bold text-4xl text-c-gray text-center'>{showIncome ? 3500750: '****'}</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div className='w-full p-3'>
+                                    <p className="font-bold">User Weighted Points</p>
+                                </div>
+                                
+                                <div className="overflow-x-auto">
+                                    <Table>
+                                        <Table.Head className='border-red-500'>
+                                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Users</Table.HeadCell>
+                                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>No. of Sales</Table.HeadCell>
+                                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Accumulated WP</Table.HeadCell>
+                                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Commission Due</Table.HeadCell>
+                                        </Table.Head>
+                                        <Table.Body>
+                                            {weighted_available &&
+                                                <Table.Row>
+                                                <Table.Cell className='font-semibold'>Ayoola Tolu</Table.Cell>
+                                                <Table.Cell className='font-semibold'>Excellent 3D chair</Table.Cell>
+                                                <Table.Cell className='font-semibold'>18</Table.Cell>
+                                                <Table.Cell className='font-semibold'>#32,000</Table.Cell>
+                                            </Table.Row>}
+                                        </Table.Body>
+                                    </Table>
+                                    {
+                                        !weighted_available && (
+                                            <p className='text-center mt-3 text-red-600 font-semibold'>Users cummulated weighted points are not available</p>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="md:w-1/3 space-y-5">
+                        <Card>
+                            <div className="flex gap-3 items-center">
+                                <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
+                                <p className='font-bold text-c-gray opacity-95 text-xl'>Popular Product</p>
+                            </div>
+                            <div className="px-0">
+                                <Table className='table-fixed w-full'>
+                                    <Table.Head className=''>
+                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-[40%] text-[80%] xl:text-[100%] px-0'>Product</Table.HeadCell>
+                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-[30%] text-[80%] xl:text-[100%] px-0'>Quantity</Table.HeadCell>
+                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-[25%] text-[80%] xl:text-[100%] px-0'>Prices</Table.HeadCell>
+                                    </Table.Head>
+                                    <Table.Body className='p-10'>
+                                        <Table.Row className=''>
+                                            <Table.Cell className='px-0 py-2'>
+                                                <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
+                                                    <img src={product1} alt="product1" className="w-8 h-8" />
+                                                    <p className='font-semibold text-c-gray text-xs'>Boston 3D Illustration</p>
+                                                </div>
+                                            </Table.Cell>
+                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-xs w-full'>25 pieces</Table.Cell>
+                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-[100%]'>#14600</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row className=''>
+                                            <Table.Cell className='px-0 py-2 '>
+                                                <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
+                                                    <img src={product2} alt="product2" className="w-8 h-8" />
+                                                    <p className='font-semibold text-c-gray text-xs'>Cyper-Nft Ui Kit</p>
+                                                </div>
+                                            </Table.Cell>
+                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-xs w-full'>10 pieces</Table.Cell>
+                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-[100%]'>#12500</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row className=''>
+                                            <Table.Cell className='px-0 py-2 '>
+                                                <div className="flex gap-2 items-center w-[90%] text-[80%] xl:text-[100%]">
+                                                    <img src={product3} alt="product3" className="w-8 h-8" />
+                                                    <p className='font-semibold text-c-gray overflow-hidden w-[40%] whitespace-nowrap text-ellipsis'>Travelling UI Kit</p>
+                                                </div>
+                                            </Table.Cell>
+                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-[100%]'>15 pieces</Table.Cell>
+                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-[100%]'>#25300</Table.Cell>
+                                        </Table.Row>
+                                    </Table.Body>
+                                </Table>
+                            </div>
+                            <div className='flex justify-center w-full '>
+                                <button className='border-2 border-c-lightgreen rounded-lg px-2 font-semibold text-center text-c-lightgreen'>All products</button>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+
+                <div className=' shadow-xl border-2'>
+                    <div className='w-full p-3'>
+                        <p className="font-bold">Sales Record History</p>
+                    </div>
+                    
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <Table.Head className='border-red-500'>
+                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Sender</Table.HeadCell>
+                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product</Table.HeadCell>
+                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Quantity</Table.HeadCell>
+                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Price</Table.HeadCell>
+                            </Table.Head>
+                            <Table.Body>
+                                <Table.Row>
+                                    <Table.Cell className='font-semibold'>Ayoola Tolu</Table.Cell>
+                                    <Table.Cell className='font-semibold'>Excellent 3D chair</Table.Cell>
+                                    <Table.Cell className='font-semibold'>18</Table.Cell>
+                                    <Table.Cell className='font-semibold'>#32,000</Table.Cell>
+                                </Table.Row>
+                            </Table.Body>
+                        </Table>
+                    </div>
+                </div>
+            </>
+            }
+            
         </div>
         
     );

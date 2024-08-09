@@ -10,7 +10,7 @@ import products_api from '../utils/products_api';
 "use client"
 
 
-const AdminSalesRecord = () => {
+const ProductHubListing = () => {
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -20,6 +20,7 @@ const AdminSalesRecord = () => {
     const [hubProduct, setHubProduct] = useState()
 
     var { "data": hub_data} = location.state || {}
+    console.log(hub_data)
     var { "hub_token": hub_token, "hub_name": hub_name} = hub_data
     //var { hubName } = useParams()
 
@@ -111,7 +112,7 @@ const AdminSalesRecord = () => {
                                 {hubProductAvailable &&
                                     <Table.Row className='border-b-2 border-c-lightgreen'>
                                     <Table.Cell>{hub_detail["id"]}</Table.Cell>
-                                    <Table.Cell>None</Table.Cell>
+                                    <Table.Cell><img src={hub_detail["pdtImage"]} alt='Product Image' /></Table.Cell>
                                     <Table.Cell className=''>{hub_detail["pdtName"]}</Table.Cell>
                                     <Table.Cell className='text-center'>{hub_detail["pdtSerialNumber"]}</Table.Cell>
                                     <Table.Cell className='text-center'>{hub_detail["outrightPrice"]}</Table.Cell>
@@ -137,4 +138,4 @@ const AdminSalesRecord = () => {
     );
 }
 
-export default AdminSalesRecord;
+export default ProductHubListing;

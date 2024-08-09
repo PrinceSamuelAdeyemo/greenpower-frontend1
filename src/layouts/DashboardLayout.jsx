@@ -29,11 +29,11 @@ const DashboardLayout = ({children}) => {
         if (cookie_object[i].includes("GREENPOWER_USERDETAILS=")){
           console.log(cookie_object[i].includes("GREENPOWER_USERDETAILS="))
           var cookie_values = JSON.parse(cookie_object[i].split("=")[1])
-          console.log(cookie_values)
           setTest(cookie_values["userToken"])
-          setCookieDetails((prevValues) => ({
+          setCookieDetails(cookie_values)
+          /* setCookieDetails((prevValues) => ({
             ...prevValues, "firstName": cookie_values["firstName"], "lastName": cookie_values["lastName"], "phoneNumber": cookie_values["phoneNumber"], "userToken": cookie_values["userToken"], "email": cookie_values["email"], "admin_status": cookie_values["ADMIN"]
-          }))
+          })) */
           logged_in = true
           break;
         }
@@ -53,14 +53,15 @@ const DashboardLayout = ({children}) => {
     getUserDetails()
   }, [cookieDetails])
 
+
   // Clone each child and pass the cookie as a prop
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
+        getUserDetails()
         return React.cloneElement(child, { myCookie: cookieDetails });
     }
     return child;
   });
-
 
   return (
     <div className='flex flex-col md:flex-row mb-10 overflow-x-hidden w-full bg-whitesmoke relative'>
