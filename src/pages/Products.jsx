@@ -56,6 +56,7 @@ const Products = (props) => {
         hubs_api.get("/getHubs.php")
         .then((response) => {
             var hubs = response.data["data"]
+            console.log(hubs)
             setHubs_available(true)
             setHubs_list(hubs)
         })
@@ -83,7 +84,7 @@ const Products = (props) => {
 
         {hubs_available && <div className='flex gap-4 flex-wrap mt-10 px-2'>
             {hubs_list.map((hub, key) => (
-                <HubDisplay key={hub["id"]} hub={hub} hubtoken="" />
+                <HubDisplay key={hub["id"]} hub={hub} hubtoken="" hubsData={hubs_data} />
             ))
             }
             

@@ -38,11 +38,18 @@ function App() {
             <Dashboard />
           </DashboardLayout>
         }/>
+
+        <Route path="/products" element={
+          <DashboardLayout>
+            <Products/>
+          </DashboardLayout>
+        }/>
         <Route path="/wallet" element={
           <DashboardLayout>
             <Wallet/>
           </DashboardLayout>
         }/>
+        
         <Route path="/sales" element={
           <DashboardLayout>
             <SalesRecord/>
@@ -80,13 +87,7 @@ function App() {
             </SettingsLayout>
           </DashboardLayout>
         }/>
-
-
-        <Route path="/products" element={
-          <DashboardLayout>
-            <Products/>
-          </DashboardLayout>
-        }/>
+        
         <Route path="/admin_addproducts" element={
           <DashboardLayout>
             <AddProduct/>

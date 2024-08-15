@@ -95,7 +95,7 @@ const Sidebar = ({closeSidebar, myCookie}) => {
 
                 <div className="flex flex-col relative items-center mt-24 bg-c-muchlightgreen w-full h-[20rem] rounded-2xl">
                     <img src={renitrusttextimg} alt="Reni" className="w-20 h-10 mt-6 z-10" />
-                    <p className="font-bold text-white z-10">Payment powered by escrow</p>
+                    <p className="font-bold text-white z-10 text-center">Payment powered by escrow</p>
                     <img src={divholdingimg} alt="" className="z-10" />
                     <img src={three_rings} alt="" className="absolute top-8 -z-8" />
                 </div>

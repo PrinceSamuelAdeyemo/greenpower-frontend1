@@ -11,15 +11,17 @@ import dashImage from '../assets/dash-image.png';
 
 import weighted_points_api from '../utils/weighted_points_api';
 import sales_api from '../utils/sales_api';
+import products_api from '../utils/products_api';
 
 const Dashboard = (props) => {
-    var user_type = props.user_type
     var cookieDetails = props.myCookie
     var admin_status = cookieDetails["ADMIN"]
 
     var [weighted_available, setWeighted_available] = useState(false)
     const [showUsers, setShowUsers] = useState(true)
     const [showIncome, setShowIncome] = useState(false)
+
+    const [productList, setProductList] = useState([])
     const navigate = useNavigate()
 
     // ADMIN FUNCTIONS
@@ -49,13 +51,39 @@ const Dashboard = (props) => {
         }
     }
 
+    // USER FUNCTION
+
+    var getFewProducts = () => {
+        try{
+            products_api.post("/getProductsByPage.php", {
+                "page": "1"
+            })
+            .then((response) => {
+               if (response.data["status_code"] == 400){
+                   //setWeighted_available(false)
+               }
+               else{
+                   console.log(response.data)
+                   setProductList(response.data["data"])
+                   console.log("Done")
+               }
+            })
+       }
+      catch (error) {
+       console.log(error)
+      }
+    }
+
+    useEffect(() => {
+        getFewProducts()
+    }, [products_api])
+
     useEffect(() => {
         
         if (admin_status === 0){
-            console.log("USER")
+
         }
         else if (admin_status == 1){
-            console.log("ADMIN")
             getUsersWeightedPoints()
             getUsersSalesHistory()
         }
@@ -147,7 +175,7 @@ const Dashboard = (props) => {
                     </Card>
                 </div>
                 <div className="md:w-1/3 space-y-5">
-                    <Card>
+                    <Card className='h-[98vh]'>
                         <div className="flex gap-3 items-center">
                             <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
                             <p className='font-bold text-c-gray opacity-95 text-xl'>Popular Product</p>
@@ -159,38 +187,25 @@ const Dashboard = (props) => {
                                     <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Quantity</Table.HeadCell>
                                     <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Prices</Table.HeadCell>
                                 </Table.Head>
-                                <Table.Body className=''>
-                                    <Table.Row className=''>
-                                        <Table.Cell>
-                                            <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
-                                                <img src={product1} alt="product1" className="w-10 h-10" />
-                                                <p className='font-semibold text-c-gray'>Boston 3D Illustration</p>
-                                            </div>
-                                        </Table.Cell>
-                                        <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>25 pieces</Table.Cell>
-                                        <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>#14600</Table.Cell>
-                                    </Table.Row>
-                                    <Table.Row className=''>
-                                        <Table.Cell>
-                                            <div className="flex gap-2 items-center w-[90%] text-[80%] xl:text-[100%]">
-                                                <img src={product2} alt="product2" className="w-10 h-10" />
-                                                <p className='font-semibold text-c-gray'>Cyper-Nft Ui Kit</p>
-                                            </div>
-                                        </Table.Cell>
-                                        <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>10 pieces</Table.Cell>
-                                        <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>#12500</Table.Cell>
-                                    </Table.Row>
-                                    <Table.Row className=''>
-                                        <Table.Cell>
-                                            <div className="flex gap-2 items-center w-[90%] text-[80%] xl:text-[100%]">
-                                                <img src={product3} alt="product3" className="w-10 h-10" />
-                                                <p className='font-semibold text-c-gray'>Travelling UI Kit</p>
-                                            </div>
-                                        </Table.Cell>
-                                        <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>15 pieces</Table.Cell>
-                                        <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>#25300</Table.Cell>
-                                    </Table.Row>
-                                </Table.Body>
+                                {
+                                    productList?.map((product, key) => (
+                                        <Table.Body className=''>
+                                            <Table.Row className=''>
+                                                <Table.Cell>
+                                                    <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
+                                                        <img src={product1} alt="product1" className="w-10 h-10" />
+                                                        <p className='font-semibold text-c-gray'>Boston 3D Illustration</p>
+                                                    </div>
+                                                </Table.Cell>
+                                                <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>25 pieces</Table.Cell>
+                                                <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>#14600</Table.Cell>
+                                            </Table.Row>
+                                            
+                                        </Table.Body>
+                                    )
+                                )
+                                }
+                                
                             </Table>
                             {
                                 !weighted_available && (
@@ -206,6 +221,7 @@ const Dashboard = (props) => {
             </div>
                 :
             <>
+            {/* Admin Panel */}
                 <div className="flex flex-col md:flex-row md:gap-1 lg:gap-4 xl:gap-5 lg:px-4 mb-3">
                     <div className="md:w-2/3 space-y-5 bg-white py-6 border-1 shadow-xl">
                         <div className=' space-y-5 '>
@@ -275,51 +291,41 @@ const Dashboard = (props) => {
                         </div>
                     </div>
                     <div className="md:w-1/3 space-y-5">
-                        <Card>
+
+
+                    
+                        <Card className='h-[98vh] overflow-y-auto'>
                             <div className="flex gap-3 items-center">
                                 <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
                                 <p className='font-bold text-c-gray opacity-95 text-xl'>Popular Product</p>
                             </div>
                             <div className="px-0">
-                                <Table className='table-fixed w-full'>
-                                    <Table.Head className=''>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-[40%] text-[80%] xl:text-[100%] px-0'>Product</Table.HeadCell>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-[30%] text-[80%] xl:text-[100%] px-0'>Quantity</Table.HeadCell>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-[25%] text-[80%] xl:text-[100%] px-0'>Prices</Table.HeadCell>
-                                    </Table.Head>
-                                    <Table.Body className='p-10'>
-                                        <Table.Row className=''>
-                                            <Table.Cell className='px-0 py-2'>
-                                                <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
-                                                    <img src={product1} alt="product1" className="w-8 h-8" />
-                                                    <p className='font-semibold text-c-gray text-xs'>Boston 3D Illustration</p>
-                                                </div>
-                                            </Table.Cell>
-                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-xs w-full'>25 pieces</Table.Cell>
-                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-[100%]'>#14600</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row className=''>
-                                            <Table.Cell className='px-0 py-2 '>
-                                                <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
-                                                    <img src={product2} alt="product2" className="w-8 h-8" />
-                                                    <p className='font-semibold text-c-gray text-xs'>Cyper-Nft Ui Kit</p>
-                                                </div>
-                                            </Table.Cell>
-                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-xs w-full'>10 pieces</Table.Cell>
-                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-[100%]'>#12500</Table.Cell>
-                                        </Table.Row>
-                                        <Table.Row className=''>
-                                            <Table.Cell className='px-0 py-2 '>
-                                                <div className="flex gap-2 items-center w-[90%] text-[80%] xl:text-[100%]">
-                                                    <img src={product3} alt="product3" className="w-8 h-8" />
-                                                    <p className='font-semibold text-c-gray overflow-hidden w-[40%] whitespace-nowrap text-ellipsis'>Travelling UI Kit</p>
-                                                </div>
-                                            </Table.Cell>
-                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-[100%]'>15 pieces</Table.Cell>
-                                            <Table.Cell className='px-0 py-2 font-semibold text-c-gray text-[80%] xl:text-[100%]'>#25300</Table.Cell>
-                                        </Table.Row>
-                                    </Table.Body>
-                                </Table>
+                            <Table className='overflow-x-hidden '>
+                                <Table.Head className='w-full'>
+                                    <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Product</Table.HeadCell>
+                                    <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Quantity</Table.HeadCell>
+                                    <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Prices</Table.HeadCell>
+                                </Table.Head>
+                                {
+                                    productList?.slice(0, 6).map((product, key) => (
+                                        <Table.Body className=''>
+                                            <Table.Row className=''>
+                                                <Table.Cell>
+                                                    <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
+                                                        <img src={product1} alt="product1" className="w-10 h-10" />
+                                                        <p className='font-semibold text-c-gray'>{product["pdtName"]}</p>
+                                                    </div>
+                                                </Table.Cell>
+                                                <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>25 pieces</Table.Cell>
+                                                <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>{product["outrightPrice"]}</Table.Cell>
+                                            </Table.Row>
+                                            
+                                        </Table.Body>
+                                    )
+                                )
+                                }
+                                
+                            </Table>
                             </div>
                             <div className='flex justify-center w-full '>
                                 <button className='border-2 border-c-lightgreen rounded-lg px-2 font-semibold text-center text-c-lightgreen'>All products</button>

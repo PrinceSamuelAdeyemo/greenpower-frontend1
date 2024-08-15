@@ -62,10 +62,25 @@ const ProductHubListing = () => {
             "hubToken": hub_token
         }})
     }
-
+    /* 
+    const byPage = () => {
+        products_api.post("/getProductsByPage.php", {
+            "page": "1"
+        })
+        .then((response) => {
+            console.log(response)
+            if (response.data["status_code"] == 400){
+                console.log(response)
+            }
+            else{
+                console.log(response.data["data"])
+            }
+        })
+    }
+     */
     useEffect(() => {
-        console.log("EEEEEEEEE")
         getHubByToken(hub_token);
+        //byPage();
     }, [hubs_api])
 
     return (

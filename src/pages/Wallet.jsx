@@ -1,17 +1,16 @@
 import { Button, Card, Table } from 'flowbite-react';
-import React from 'react';
+import React, { useState } from 'react';
 import image from '../assets/dashImage2.png';
 import { BiRefresh } from 'react-icons/bi';
-import { FaEyeSlash, FaPaperPlane, FaWallet } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaPaperPlane, FaWallet } from 'react-icons/fa';
 
 const Wallet = (props) => {
     var cookieDetails = props.myCookie;
+    var [show_balance, setShow_balance] = useState(false);
 
     return (
         <div className="p-4 bg-gray-100 min-h-screen">
-            <div>
-                <p>HELLO</p>
-            </div>
+            
             <div className='flex flex-col md:flex-row mb-4'>
                 <div className='flex flex-col md:flex-row bg-c-lightgreen md:w-2/3 rounded-2xl md:mb-0 md:mr-4 shadow-xl pt-4 lg:px-2 xl:px-5 text-white'>
                     <div className='text-white lg:p-2 xl:p-4 flex-grow'>
@@ -38,8 +37,11 @@ const Wallet = (props) => {
                         <p className='mb-4 text-2xl font-bold text-c-gray opacity-90'>Account Balance</p>
                         <div className='flex text-3xl items-center lg:gap-2 xl:gap-4 mb-4'>
                             <BiRefresh/> 
-                            <p className='lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>#150946.55</p> 
-                            <FaEyeSlash/>
+                            <p className='lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? '#150946.55' : '******'}</p> 
+                            <div onClick={() => setShow_balance(!show_balance)}>
+                                {show_balance ? <FaEye /> : <FaEyeSlash />}
+                            </div>
+                            {/*  */}
                         </div>
                         <p className='mb-3 text-md text-c-gray opacity-90 font-bold'>January 24, 2024   12.45pm</p>
                         <div className='lg:px-60 flex justify-center'>
