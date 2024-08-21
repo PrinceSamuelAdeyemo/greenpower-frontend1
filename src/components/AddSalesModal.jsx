@@ -19,8 +19,9 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     const [hubs_list, setHubs_list] = useState([])
     const [products_list, setProducts_list] = useState([])
     const [outright_payment, setOutright_payment] = useState(true)
-    // has the current hub token
+    // current hub token and current product
     const [currentHub, setCurrentHub] = useState()
+    const [currentProduct, setCurrentProduct] = useState()
 
     const paymentOptionRef = useRef(null)
     const currentHubRef = useRef(null)
@@ -51,6 +52,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     }
 
     var getProductsByHub = async () => {
+        console.log("Clicked from the ")
         var current_hub_token;
         currentHubRef.current.value ? current_hub_token = currentHubRef.current.value :  current_hub_token = hubs_list[0]["hubToken"]
         setCurrentHub(current_hub_token)
@@ -64,12 +66,20 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             }
             var products = response.data["data"]
             setProducts_list(products)
+            setCurrentProduct(products[0]["pdtSerialNumber"])
             setProducts_available(true)
         })
         }
         catch{
             setProducts_available(false)
         }
+    }
+
+    var changeCurrentProduct = () => {
+        alert("CLICKED")
+        console.log("Clicked")
+        let each = products_list.find(product => product.pdtSerialNumber === currentProductRef.current.value);
+        console.log(each)
     }
 
     var updatePaymentPlan = () => {
@@ -84,6 +94,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     useEffect(() => {
         getHubsList()
     })
+
 
     return (
         <CustomModal 
@@ -108,7 +119,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 
                 <div className=' my-3'>
                     <Label value='Select Product' htmlFor='product' />
-                    <Select id='product' className='flex-grow' ref={currentProductRef}>
+                    <Select id='product' className='flex-grow' ref={currentProductRef} onSelect={changeCurrentProduct}>
                     {!products_available &&
                             <option  className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'></option>
                     }
@@ -121,7 +132,11 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 </div>
                 <div className='my-3'>
                     <Label value='Serial Number' htmlFor='serialNumber' />
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='serialNumber' type='text' />
+                    {currentProduct? <TextInput className='flex-grow border-c-lightgreen font-bold text-black' color="text-red-500" id='serialNumber' type='text' value={currentProduct} disabled readOnly />
+                    :
+                    <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen font-bold' id='serialNumber' type='text' value="" disabled readOnly />
+                    }
+                    
                 </div>
                 <div className='my-3'>
                     <Label value='Select Payment Option' htmlFor='paymentOption' />

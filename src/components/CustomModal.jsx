@@ -9,7 +9,7 @@ const CustomModal = ({ showModal, openModal, closeModal, title, children }) => {
     return (
         <Modal dismissible show={showModal} onClick={openModal} onClose={closeModal}>
              {/* <Modal.Header className='border-none flex justify-center items-center h-20 py-0 ps-0'> */}
-             <div onClick={clo}>
+             <div onClick={closeModal}>
                 <FaTimes />
              </div>
              

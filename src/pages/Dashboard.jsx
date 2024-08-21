@@ -94,7 +94,7 @@ const Dashboard = (props) => {
 
     return (
 
-        <div>
+        <div className=''>
             <div className='px-4 pb-2'>
                 <p className='font-bold text-gray-400 text-3xl'>Dashboard</p>
             </div>
@@ -103,8 +103,8 @@ const Dashboard = (props) => {
                 <div className="flex flex-col md:flex-row md:gap-1 lg:gap-4 xl:gap-5 lg:px-4">
                 <div className="md:w-2/3 space-y-5">
                     <div className='p-0'>
-                        <div className="m-0 flex flex-col shadow-xl md:flex-row bg-c-lightgreen rounded-2xl lg:pt-4 lg:px-3 xl:pt-4 xl:px-5 text-white">
-                            <div className='md:flex-1 mr-auto'>
+                        <div className="m-0 flex flex-col shadow-xl md:flex-row bg-c-lightgreen rounded-2xl pt-4 px-3 xl:pt-4 xl:px-5 text-white">
+                            <div className='flex flex-col gap-2 md:flex-1 mr-auto'>
                                 <div className='absolute'>
                                     <p className='font-bold lg:text-xl xl:text-2xl w-full'>Welcome, {cookieDetails["firstName"]} {cookieDetails["lastName"]}</p>
                                 </div>
@@ -134,7 +134,7 @@ const Dashboard = (props) => {
                             <img src={dashImage} alt="Dashboard" className="mt-4 md:mt-0 md:w-1/2 object-containk" />
                         </div>
                     </div>
-                    <Card>
+                    <Card className='max-h-[34vh] overflow-y-auto'>
                         <p className="font-bold text-2xl text-c-gray opacity-90">Sales Record</p>
                         <div className="space-y-4">
                             <div className="flex items-center gap-4 text-c-gray opacity-90 font-semibold">
@@ -144,12 +144,7 @@ const Dashboard = (props) => {
                                 
                                 <p>250</p>
                             </div>
-                            <div className="flex items-center gap-4 text-c-gray opacity-90 font-semibold">
-                                <img src={cart} alt="cart" className="w-10 h-10" />
-                                <p>Sold on installment</p>
-                                <Progress className="flex-1" progress={50} color="green" labelProgress size="lg" />
-                                <p>112</p>
-                            </div>
+                            
                         </div>
                     </Card>
                     <Card>
@@ -175,13 +170,13 @@ const Dashboard = (props) => {
                     </Card>
                 </div>
                 <div className="md:w-1/3 space-y-5">
-                    <Card className='h-[98vh]'>
+                    <Card className='max-h-[50vh] lg:max-h-[80vh] overflow-y-auto'>
                         <div className="flex gap-3 items-center">
                             <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
                             <p className='font-bold text-c-gray opacity-95 text-xl'>Popular Product</p>
                         </div>
-                        <div className="overflow-x-auto">
-                            <Table className='overflow-x-hidden '>
+                        <div className="overflow-x-auto w-full">
+                            <Table className='overflow-x-hidden'>
                                 <Table.Head className='w-full'>
                                     <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Product</Table.HeadCell>
                                     <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Quantity</Table.HeadCell>
@@ -194,11 +189,11 @@ const Dashboard = (props) => {
                                                 <Table.Cell>
                                                     <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
                                                         <img src={product1} alt="product1" className="w-10 h-10" />
-                                                        <p className='font-semibold text-c-gray'>Boston 3D Illustration</p>
+                                                        <p className='font-semibold text-c-gray'>{product["pdtName"]}</p>
                                                     </div>
                                                 </Table.Cell>
                                                 <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>25 pieces</Table.Cell>
-                                                <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>#14600</Table.Cell>
+                                                <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>{product["outrightPrice"]}</Table.Cell>
                                             </Table.Row>
                                             
                                         </Table.Body>
@@ -218,21 +213,21 @@ const Dashboard = (props) => {
                         </div>
                     </Card>
                 </div>
-            </div>
+                </div>
                 :
             <>
             {/* Admin Panel */}
                 <div className="flex flex-col md:flex-row md:gap-1 lg:gap-4 xl:gap-5 lg:px-4 mb-3">
-                    <div className="md:w-2/3 space-y-5 bg-white py-6 border-1 shadow-xl">
-                        <div className=' space-y-5 '>
+                    <div className="md:w-2/3 space-y-5 bg-white py-6 border-1 shadow-xl lg:h-[65vh] overflow-auto">
+                        <div className='space-y-5 overflow-auto'>
                             <div className='flex justify-center w-full'>
-                                <div className="flex flex-col gap-4 shadow-xl bg-c-muchlightgreen w-[95%] rounded-2xl lg:pt-4 lg:p-4 xl:pt-4 xl:px-5 text-white">
+                                <div className="flex flex-col gap-4 shadow-xl bg-c-muchlightgreen w-[90%] lg:w-[95%] rounded-2xl py-4 lg:pt-4 px-2 lg:p-4 xl:pt-4 xl:px-5 text-white">
                                     <div className="flex gap-3 items-center">
                                         <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
                                         <p className='font-bold text-c-gray opacity-95 text-xl'>Overview</p>
                                     </div>
                                         
-                                    <div className='flex gap-4'>
+                                    <div className='flex flex-col lg:flex-row gap-2 lg:gap-4'>
                                         <div className='w-full bg-white rounded gap-1 px-2 py-2'>
                                             <div className='flex justify-between' onClick={() => {setShowUsers(!showUsers)}}>
                                                 {showUsers ? <FaEye color='green' /> : <FaEyeSlash color='green' />}
@@ -258,7 +253,7 @@ const Dashboard = (props) => {
                                 </div>
                             </div>
                             
-                            <div>
+                            <div className=''>
                                 <div className='w-full p-3'>
                                     <p className="font-bold">User Weighted Points</p>
                                 </div>
@@ -272,6 +267,7 @@ const Dashboard = (props) => {
                                             <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Commission Due</Table.HeadCell>
                                         </Table.Head>
                                         <Table.Body>
+                                        
                                             {weighted_available &&
                                                 <Table.Row>
                                                 <Table.Cell className='font-semibold'>Ayoola Tolu</Table.Cell>
@@ -290,11 +286,8 @@ const Dashboard = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="md:w-1/3 space-y-5">
-
-
-                    
-                        <Card className='h-[98vh] overflow-y-auto'>
+                    <div className="md:w-1/3 space-y-10 lg:space-y-5">
+                        <Card className='max-h-[50vh] lg:max-h-[65vh] overflow-y-auto'>
                             <div className="flex gap-3 items-center">
                                 <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
                                 <p className='font-bold text-c-gray opacity-95 text-xl'>Popular Product</p>
@@ -306,8 +299,9 @@ const Dashboard = (props) => {
                                     <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Quantity</Table.HeadCell>
                                     <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Prices</Table.HeadCell>
                                 </Table.Head>
+                                
                                 {
-                                    productList?.slice(0, 6).map((product, key) => (
+                                    productList?.slice(0,6).map((product, key) => (
                                         <Table.Body className=''>
                                             <Table.Row className=''>
                                                 <Table.Cell>

@@ -55,11 +55,11 @@ const Signin = () => {
 
 
   return (
-    <div className='flex flex-row w-full h-screen'>
-        <div className='flex justify-center items-center w-1/2'>
-            <form onSubmit={submitData} className='flex flex-col justify-center items-center w-[80%] h-full'>
-                <div className='flex flex-col gap-8 lg:w-[100%] xl:w-[80%] h-[70%]'>
-                    <div className='flex flex-col items-center'>
+    <div className='flex flex-col md:flex-row w-full h-screen'>
+        <div className='flex justify-center items-center md:w-1/2'>
+            <form onSubmit={submitData} className='flex flex-col justify-center items-center w-[90%] lg:w-[70%] h-full'>
+                <div className='flex flex-col gap-8 w-[100%] xl:w-[80%] h-[70%]'>
+                    <div className='flex flex-col items-center text-center'>
                         <p className='font-bold text-2xl text-c-lightgreen'>SIGN IN</p>
                         <p>Please, enter your details to continue</p>
                         <p className='font-bold mt-3'>{ error_details }</p>
@@ -82,8 +82,6 @@ const Signin = () => {
                         </div>
                     </div>
                     
-                    
-
                     <div>
                         <Button type='submit' className='bg-c-lightgreen text-white w-full'>Sign In</Button>
                     </div>
@@ -94,9 +92,6 @@ const Signin = () => {
                         <Link to="/signup" className='text-c-lightgreen font-bold'>Sign Up</Link>
                     </div>
                 </div>
-
-                
-                
             </form>
         </div>
         <div className='w-1/2 bg-signuprightImage bg-cover bg-no-repeat'>
