@@ -18,7 +18,22 @@ const SalesRecord = (props) => {
     const [showModal, setShowModal] = useState(false)
     const [hubs_available, setHubs_available] = useState(false)
     const [hubs_list, setHubs_list] = useState([])
+    const [sales_list, setSales_list] = useState([])
 
+    var month_map = {
+        "01": "Jan",
+        "02": "Feb",
+        "03": "Mar",
+        "04": "Apr",
+        "05": "May",
+        "06": "June",
+        "07": "July",
+        "08": "Aug",
+        "09": "Sept",
+        "10": "Oct",
+        "11": "Nov",
+        "12": "Dec"
+    }
 
     // For Users
     var getUserSalesHistory = () => {
@@ -28,6 +43,10 @@ const SalesRecord = (props) => {
         })
         .then((response) => {
             if (response.data["status_code"] == 200){
+                console.log("ASSBB", response)
+                var sales = response.data["data"]
+                console.log(sales)
+                setSales_list(sales)
                 setSalesRecordExist(true)
             }
             else{
@@ -60,31 +79,39 @@ const SalesRecord = (props) => {
     }
 
     useEffect(() => {
-        if (admin_status == 1){
-            getHubs()
-        }
-        else{
+        if (admin_status == 0){
             console.log("SHOULD NOT RUN THIS")
             getUserSalesHistory()
         }
+    }, [sales_api])
+
+
+    useEffect(() => {
+        if (admin_status == 1){
+            getHubs()
+        }
+        
     })
 
     return (
         <div className='p-4'>
-            <div className='flex items-center'>
-                <p className='text-xl font-bold'>Sales</p>
-                <div className='flex ml-auto gap-3'>
-                    <Button className='text-c-lightgreen' outline color="green" onClick={()=>setShowModal(true)}>All Sales</Button>
-                    {showModal && <AddSalesModal showModal={showModal} openModal={()=>setShowModal(true)} closeModal={()=>setShowModal(false)} cookieDetails={cookieDetails} />}
-                    <Button className='bg-c-lightgreen text-white' onClick={()=>navigate('/sales/user/wp')}>View overall WP</Button>
-                </div>
-            </div>
+            
             {
                 (admin_status == 0) ?
+                <>
+                <div className='flex items-center'>
+                    <p className='text-xl font-bold'>Sales</p>
+                    <div className='flex ml-auto gap-3'>
+                        
+                        <Button className='text-c-lightgreen' outline color="green" onClick={()=>setShowModal(true)}>Add Sales</Button>
+                        {showModal && <AddSalesModal showModal={showModal} openModal={()=>setShowModal(true)} closeModal={()=>setShowModal(false)} cookieDetails={cookieDetails} />}
+                        <Button className='bg-c-lightgreen text-white' onClick={()=>navigate('/sales/user/wp')}>View overall WP</Button>
+                    </div>
+                </div>
                 <Card className='mt-4'>
                     <p className=''>Sales History</p>
                     <div className='overflow-x-auto'>
-                        <Table className='w-full'>
+                        <Table className='w-full table-fixed'>
                             <Table.Head className='normal-case border-y-2 border-c-lightgreen font-bold text-lg text-c-gray opacity-70'>
                                 <Table.HeadCell className='bg-white'>Product</Table.HeadCell>
                                 <Table.HeadCell className='bg-white'>Payment Types</Table.HeadCell>
@@ -96,21 +123,26 @@ const SalesRecord = (props) => {
                             </Table.Head>
                             {salesRecordExist ?
                             <Table.Body className='font-semibold'>
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell>Yellow Box</Table.Cell>
-                                <Table.Cell>Recurrent</Table.Cell>
-                                <Table.Cell className=''>
-                                    <div className='border flex items-center justify-center bg-blue-100 rounded'>Pending
-                                    </div>
-                                </Table.Cell>
-                                <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                                <Table.Cell className='text-center'>N32,800</Table.Cell>
-                                <Table.Cell className='text-center'>Jan 2, 2024</Table.Cell>
-                                <Table.Cell className='flex justify-center'>
-                                    <Button outline className='text-c-lightgreen'>Update</Button>
-                                </Table.Cell>
-                            </Table.Row>
-                        </Table.Body>
+                                {
+                                    sales_list?.map((sale, key) => (
+                                        <Table.Row className='border-b-2 border-c-lightgreen'>
+                                            <Table.Cell>Yellow Box</Table.Cell>
+                                            <Table.Cell>{sale["payment_option"]}</Table.Cell>
+                                            <Table.Cell className=''>
+                                                <div className='border flex items-center justify-center bg-blue-100 rounded'>{sale["approval_status"]}
+                                                </div>
+                                            </Table.Cell>
+                                            <Table.Cell className='text-center'>{sale["pdtSerialNumber"]}</Table.Cell>
+                                            <Table.Cell className='text-center'>N{sale["amountPaid"]}</Table.Cell>
+                                            <Table.Cell className='text-center'>{`${month_map[sale["created_at"].split(" ")[0].split("-")[1]]} ${sale["created_at"].split(" ")[0].split("-")[2]}, ${sale["created_at"].split(" ")[0].split("-")[0]}`}</Table.Cell>
+                                            <Table.Cell className='flex justify-center'>
+                                                <Button outline className='text-c-lightgreen'>View</Button>
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    ))
+                                }
+                                
+                            </Table.Body>
                         :
                         <></>
                         }
@@ -123,16 +155,28 @@ const SalesRecord = (props) => {
                         <></>
                     }
                 </Card>
+                </>
                 :
+                <>
+                <div className='flex items-center'>
+                <p className='text-xl font-bold'>Sales</p>
+                <div className='flex ml-auto gap-3'>
+                    
+                    <Button className='text-c-lightgreen' outline color="green" onClick={()=>setShowModal(true)}>All Sales</Button>
+                    {showModal && <AddSalesModal showModal={showModal} openModal={()=>setShowModal(true)} closeModal={()=>setShowModal(false)} cookieDetails={cookieDetails} />}
+                    <Button className='bg-c-lightgreen text-white' onClick={()=>navigate('/sales/user/wp')}>View overall WP</Button>
+                </div>
+            </div>
                 <div>
                     {hubs_available && JSON.parse(hubs_list).map((hub, key) => (
-                        <div>
+                        <div className=''>
                             <AdminHubSalesRecord hub={hub} />
                         </div>
                     ))
                     
                     }
                 </div>
+                </>
             }
             
         </div>

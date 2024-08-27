@@ -9,6 +9,23 @@ const AdminHubSalesRecord = ({ hub }) => {
     const [salesRecordExist, setSalesRecordExist] = useState(false)
     const [showSalesRecord, setShowSalesRecord] = useState(false)
     const [toggleSalesCard, setToggleSalesCard] = useState(false)
+    const [eachHubSales, setEachHubSales] = useState([])
+
+    var month_map = {
+        "01": "Jan",
+        "02": "Feb",
+        "03": "Mar",
+        "04": "Apr",
+        "05": "May",
+        "06": "June",
+        "07": "July",
+        "08": "Aug",
+        "09": "Sept",
+        "10": "Oct",
+        "11": "Nov",
+        "12": "Dec"
+    }
+
 
     var toggleHubDropdown = () => {
         setToggleSalesCard(!toggleSalesCard)
@@ -24,6 +41,9 @@ const AdminHubSalesRecord = ({ hub }) => {
         .then((response) => {
             console.log(response.data["status_code"])
             if (response.data["status_code"] == 200){
+                console.log(response.data["data"])
+                var response_data = response.data["data"]
+                setEachHubSales(response_data)
                 setSalesRecordExist(true)
             }
             else{
@@ -36,7 +56,7 @@ const AdminHubSalesRecord = ({ hub }) => {
     }
     useEffect(() => {
         getSpecificHub()
-    })
+    }, [sales_api])
     
 
   return (
@@ -48,7 +68,7 @@ const AdminHubSalesRecord = ({ hub }) => {
         <Card className='mt-4'>
         <p className=''>Sales Record</p>
         <div className='overflow-x-auto'>
-            <Table className='w-full table-fixed'>
+            <Table className='w-full lg:table-fixed'>
                 <Table.Head className='normal-case border-y-2 border-c-lightgreen font-bold text-lg text-c-gray opacity-70'>
                     <Table.HeadCell className='bg-white'>Product</Table.HeadCell>
                     <Table.HeadCell className='bg-white'>Payment Types</Table.HeadCell>
@@ -59,22 +79,28 @@ const AdminHubSalesRecord = ({ hub }) => {
                     <Table.HeadCell className='bg-white text-center'>Action</Table.HeadCell>
                 </Table.Head>
                 {salesRecordExist ?
-                <Table.Body className={`font-semibold ${showSalesRecord ? 'block' : 'hidden'} `}>
-                <Table.Row className='border-b-2 border-c-lightgreen'>
-                    <Table.Cell></Table.Cell>
-                    <Table.Cell>Recurrent</Table.Cell>
-                    <Table.Cell className=''>
-                        <div className='border flex items-center justify-center bg-blue-100 rounded'>Pending
-                        </div>
-                    </Table.Cell>
-                    <Table.Cell className='text-center'>AZXHE636672GE82</Table.Cell>
-                    <Table.Cell className='text-center'>N32,800</Table.Cell>
-                    <Table.Cell className='text-center'>Jan 2, 2024</Table.Cell>
-                    <Table.Cell className='flex justify-center'>
-                        <Button outline className='text-c-lightgreen'>View</Button>
-                    </Table.Cell>
-                </Table.Row>
-            </Table.Body>
+                <Table.Body className={`font-semibold ${showSalesRecord ? '' : 'hidden'} `}>
+                    {
+                        eachHubSales?.map((eachHubSale, index) => (
+                            <Table.Row className='border-b-2 border-c-lightgreen'>
+                                <Table.Cell className=''>Product Img</Table.Cell>
+                                <Table.Cell>Recurrent</Table.Cell>
+                                <Table.Cell className=''>
+                                    <div className='border flex items-center justify-center bg-blue-100 rounded'>Pending
+                                    </div>
+                                </Table.Cell>
+                                <Table.Cell className='w-full text-center'>{eachHubSale["pdtSerialNumber"]}</Table.Cell>
+                                <Table.Cell className='w-full text-center'>N32,800</Table.Cell>
+                                <Table.Cell className='w-full text-center'>{`${month_map[eachHubSale["created_at"].split(" ")[0].split("-")[1]]} ${eachHubSale["created_at"].split(" ")[0].split("-")[2]}, ${eachHubSale["created_at"].split(" ")[0].split("-")[0]}`}</Table.Cell>
+                                <Table.Cell className='w-full flex justify-center'>
+                                    <Button outline className='text-c-lightgreen'>View</Button>
+                                </Table.Cell>
+                            </Table.Row>
+                            
+                        ))
+                    }
+                
+                </Table.Body>
             :
             <></>
             }

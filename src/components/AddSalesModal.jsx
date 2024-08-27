@@ -21,18 +21,34 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     const [outright_payment, setOutright_payment] = useState(true)
     // current hub token and current product
     const [currentHub, setCurrentHub] = useState()
-    const [currentProduct, setCurrentProduct] = useState()
+    const [currentProduct, setCurrentProduct] = useState({})
+    const [hubChanged, setHubChanged] = useState(0)
 
     const paymentOptionRef = useRef(null)
     const currentHubRef = useRef(null)
     const currentProductRef = useRef(null)
 
-    const submitToAddSales =() =>{
-        sales_api.post("/addSale.php", {
-            "hubToken": currentHub,
-            "userToken": cookieDetails["userToken"],
-            //"pdtToken": 
-        })
+    const submitToAddSales = () =>{
+        try{
+            console.log("CURRENT HUB", currentHub)
+            console.log("CURRENT PRODUCT", currentProduct)
+            sales_api.post("/addSale.php", {
+                "hubToken": currentHub,
+                "userToken": cookieDetails["userToken"],
+                "pdtToken": currentProduct["pdtToken"],
+                "pdtSerialNumber": currentProduct["pdtSerialNumber"],
+                "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
+                "payment_option": "outright",
+                "amountPaid": parseFloat(currentProduct["outrightPrice"]),
+                "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
+            })
+            .then((response) => {
+                console.log(response.data)
+            })
+        }
+        catch{
+
+        }
         closeModal()
         setShowModal2(true)
     }
@@ -41,18 +57,22 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     }
 
     const getHubsList = () => {
+        console.log(hubChanged, "from hublist")
         hubs_api.get("/getHubs.php")
         .then((response) => {
+            console.log(111111111111111111)
             var hubs = response.data["data"]
+            console.log(hubs)
             setHubs_list(hubs)
             setHub_available(true)
             setCurrentHub(hubs[0]["hubToken"])
             getProductsByHub(hubs[0]["hubToken"])
+            console.log("AA")
         })
     }
 
     var getProductsByHub = async () => {
-        console.log("Clicked from the ")
+        console.log(hubChanged, "from productbyhub")
         var current_hub_token;
         currentHubRef.current.value ? current_hub_token = currentHubRef.current.value :  current_hub_token = hubs_list[0]["hubToken"]
         setCurrentHub(current_hub_token)
@@ -65,21 +85,26 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 setProducts_available(false)
             }
             var products = response.data["data"]
+            console.log(products)
             setProducts_list(products)
-            setCurrentProduct(products[0]["pdtSerialNumber"])
+            setCurrentProduct(products[0])
             setProducts_available(true)
+            console.log("BB")
         })
         }
         catch{
+            console.log("Stopped, may reload or not.")
             setProducts_available(false)
+            getProductsByHub()
         }
     }
 
     var changeCurrentProduct = () => {
-        alert("CLICKED")
         console.log("Clicked")
-        let each = products_list.find(product => product.pdtSerialNumber === currentProductRef.current.value);
+        console.log(currentProductRef.current.value)
+        let each = products_list.find(product => product.pdtToken === currentProductRef.current.value);
         console.log(each)
+        setCurrentProduct(each)
     }
 
     var updatePaymentPlan = () => {
@@ -90,12 +115,17 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             setOutright_payment(true)
         }
     }
+
+    useEffect(() => {
+        getProductsByHub()
+    }, [hubChanged])
     
     useEffect(() => {
+        console.log(hubChanged, "lola")
         getHubsList()
-    })
+    }, [])
 
-
+    
     return (
         <CustomModal 
             showModal={showModal} 
@@ -108,7 +138,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             <div className='w-full my-3 px-4'>
                 <div className='my-3'>
                     <Label value='Select Hub' htmlFor='hub' />
-                    <Select id='hub' className='flex-grow' ref={currentHubRef} onSelect={getProductsByHub}>
+                    <Select id='hub' className='flex-grow' ref={currentHubRef} onChange={(event) => setHubChanged(hubChanged+1) }>
                         {hub_available &&
                             hubs_list.map((hub, key) => (
                                 <option value={hub["hubToken"]} key={hub["hubToken"]} className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'>{hub["hubName"]}</option>
@@ -119,7 +149,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 
                 <div className=' my-3'>
                     <Label value='Select Product' htmlFor='product' />
-                    <Select id='product' className='flex-grow' ref={currentProductRef} onSelect={changeCurrentProduct}>
+                    <Select id='product' className='flex-grow' ref={currentProductRef} onChange={changeCurrentProduct}>
                     {!products_available &&
                             <option  className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'></option>
                     }
@@ -132,7 +162,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 </div>
                 <div className='my-3'>
                     <Label value='Serial Number' htmlFor='serialNumber' />
-                    {currentProduct? <TextInput className='flex-grow border-c-lightgreen font-bold text-black' color="text-red-500" id='serialNumber' type='text' value={currentProduct} disabled readOnly />
+                    {currentProduct? <TextInput className='flex-grow border-c-lightgreen font-bold text-black' color="text-red-500" id='serialNumber' type='text' value={currentProduct.pdtSerialNumber} disabled readOnly />
                     :
                     <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen font-bold' id='serialNumber' type='text' value="" disabled readOnly />
                     }

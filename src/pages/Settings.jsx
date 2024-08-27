@@ -34,7 +34,7 @@ const Settings = (props) => {
                         <Label value='Email' htmlFor='email' />
                         <div className='flex gap-4'>
                             <TextInput type="email" value={basic_details["email"]} id='email' sizing="xl" className='rounded-r-none border-r-0 outline-none rounded-none w-1/2' />
-                            <Button outline>Edit</Button>
+                            <Button outline disabled>Edit</Button>
                         </div>
                         
                     </div>
