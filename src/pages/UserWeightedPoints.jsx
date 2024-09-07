@@ -9,18 +9,25 @@ const UserWeightedPoints = (props) => {
     const [admin_status, setAdmin_status] = useState(false)
     
     const getUserWeightedPoints = () => {
-        if (cookieDetails["admin_status"] == 1){
+        if (cookieDetails["ADMIN"] == 1){
             setAdmin_status(true)
             weighted_points_api.get("/getPointsByUsers.php")
             .then((response) =>{
-                console.log(response)
-                var received_data = response.data["status_code"]
-                if (received_data == 400){
+                console.log("response for admin",response)
+                var received_data_status_code = response.data["status_code"]
+                if (received_data_status_code == 400){
                     setW_points(0)
                 }
-                else(
-                    setW_points(1)
-                )
+                else{
+                    var received_data = response.data["data"]
+                    var total_weighted_points = 0
+                    for (let i = 0; i < received_data.length; i++){
+
+                        total_weighted_points += received_data[i]["total_weighted_points"]
+                    }
+                    setW_points(total_weighted_points)
+                }
+                
             })
         }
         else{
@@ -28,8 +35,9 @@ const UserWeightedPoints = (props) => {
                 "userToken": cookieDetails["userToken"]
             })
             .then((response) =>{
-                var received_data = response.data["status_code"]
-                if (received_data == 400){
+                console.log("response for user", response)
+                var received_data_status_code = response.data["status_code"]
+                if (received_data_status_code == 400){
                     setW_points(0)
                 }
                 else(
@@ -41,6 +49,7 @@ const UserWeightedPoints = (props) => {
         
 
     useEffect(() => {
+        console.log("About to run.")
         getUserWeightedPoints()
     })
 

@@ -16,11 +16,14 @@ const AddHubModal = ({showModal, openModal, closeModal, createHub, hubName, setH
     }
 
     useEffect(() => {
+        console.log("Show modal again here", showModal)
         Number(hubName) !==0 ? setButton_state(false) : setButton_state(true)
-    }, [hubName])
+    }, [hubName, closeModal])
 
   return (
+    
     <CustomModal2 
+    dismissible
     showModal={showModal}
     openModal={openModal}
     closeModal={closeModal}>
@@ -28,12 +31,12 @@ const AddHubModal = ({showModal, openModal, closeModal, createHub, hubName, setH
             <p className='font-semibold text-c-lightgreen text-center'>Add Hub</p>
             <div className='flex flex-col gap-2 w-full'>
                 <TextInput className='font-semibold' onChange={handleHubInput} ref={inputRef} />
-                <p className='text-c-lightgreen'>Click to add more +</p>
+                <button className='text-c-lightgreen text-start'>Click to add more +</button>
             </div>
             <button className={`h-10 rounded ${(Number(hubName) !==0 ) ?  'text-white bg-c-lightgreen font-semibold': 'text-c-lightgreen bg-gray-300' }`} disabled={button_state} onClick={createHub}>Save</button>
-            <button className='bg-black text-center text-c-lightgreen font-semibold' onClick={openModal}>Close</button>
+            <button className='text-center text-c-lightgreen font-semibold' onClick={closeModal}>Close</button>
         </div>
-        {show_modal2 && <SuccessfulHubModal showModal={show_modal2} openModal={() => setShowModal2(true)} closeModal={() => setShowModal2(false)} />}
+        {show_modal2 && <SuccessfulHubModal showModal={show_modal2} openModal={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} />}
     </CustomModal2>
   )
 }

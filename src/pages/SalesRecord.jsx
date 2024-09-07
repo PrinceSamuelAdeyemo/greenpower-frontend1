@@ -1,4 +1,4 @@
-import { Button, Card, Table } from 'flowbite-react';
+import { Button, Card, Table, Spinner } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddSalesModal from '../components/AddSalesModal';
@@ -42,6 +42,7 @@ const SalesRecord = (props) => {
             "userToken": userToken
         })
         .then((response) => {
+            console.log(response)
             if (response.data["status_code"] == 200){
                 console.log("ASSBB", response)
                 var sales = response.data["data"]
@@ -97,13 +98,13 @@ const SalesRecord = (props) => {
         <div className='p-4'>
             
             {
-                (admin_status == 0) ?
+                (admin_status === 0) ?
                 <>
                 <div className='flex items-center'>
                     <p className='text-xl font-bold'>Sales</p>
                     <div className='flex ml-auto gap-3'>
                         
-                        <Button className='text-c-lightgreen' outline color="green" onClick={()=>setShowModal(true)}>Add Sales</Button>
+                        <Button className='text-c-lightgreen' outline color="green" onClick={(event)=>setShowModal(true)}>Add Sales</Button>
                         {showModal && <AddSalesModal showModal={showModal} openModal={()=>setShowModal(true)} closeModal={()=>setShowModal(false)} cookieDetails={cookieDetails} />}
                         <Button className='bg-c-lightgreen text-white' onClick={()=>navigate('/sales/user/wp')}>View overall WP</Button>
                     </div>
@@ -126,7 +127,7 @@ const SalesRecord = (props) => {
                                 {
                                     sales_list?.map((sale, key) => (
                                         <Table.Row className='border-b-2 border-c-lightgreen'>
-                                            <Table.Cell>Yellow Box</Table.Cell>
+                                            <Table.Cell>Product Name</Table.Cell>
                                             <Table.Cell>{sale["payment_option"]}</Table.Cell>
                                             <Table.Cell className=''>
                                                 <div className='border flex items-center justify-center bg-blue-100 rounded'>{sale["approval_status"]}
@@ -143,8 +144,8 @@ const SalesRecord = (props) => {
                                 }
                                 
                             </Table.Body>
-                        :
-                        <></>
+                            :
+                            <></>
                         }
                         </Table>
                     </div>
@@ -159,21 +160,26 @@ const SalesRecord = (props) => {
                 :
                 <>
                 <div className='flex items-center'>
-                <p className='text-xl font-bold'>Sales</p>
-                <div className='flex ml-auto gap-3'>
-                    
-                    <Button className='text-c-lightgreen' outline color="green" onClick={()=>setShowModal(true)}>All Sales</Button>
-                    {showModal && <AddSalesModal showModal={showModal} openModal={()=>setShowModal(true)} closeModal={()=>setShowModal(false)} cookieDetails={cookieDetails} />}
-                    <Button className='bg-c-lightgreen text-white' onClick={()=>navigate('/sales/user/wp')}>View overall WP</Button>
+                    <p className='text-xl font-bold'>Sales</p>
+                    <div className='flex ml-auto gap-3'>
+                        
+                        <Button className='text-c-lightgreen' outline color="green" onClick={()=>setShowModal(true)}>All Sales</Button>
+                        {showModal && <AddSalesModal showModal={showModal} openModal={()=>setShowModal(true)} closeModal={()=>setShowModal(false)} cookieDetails={cookieDetails} />}
+                        <Button className='bg-c-lightgreen text-white' onClick={()=>navigate('/sales/user/wp')}>View overall WP</Button>
+                    </div>
                 </div>
-            </div>
+                
                 <div>
-                    {hubs_available && JSON.parse(hubs_list).map((hub, key) => (
+                    {hubs_available ? JSON.parse(hubs_list).map((hub, key) => (
                         <div className=''>
                             <AdminHubSalesRecord hub={hub} />
                         </div>
                     ))
-                    
+                    :
+                    <div className='h-[70vh] flex flex-col md:flex-row gap-4 justify-center items-center'>
+                        <Spinner color='success' size='xl' />
+                        <p>Kindly wait, if this persist. Reload</p>
+                    </div>
                     }
                 </div>
                 </>

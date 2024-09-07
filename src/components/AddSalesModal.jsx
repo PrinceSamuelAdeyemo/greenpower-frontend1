@@ -32,14 +32,16 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
         try{
             console.log("CURRENT HUB", currentHub)
             console.log("CURRENT PRODUCT", currentProduct)
+            console.log(typeof(parseInt(currentProduct["logisticsFees"])))
             sales_api.post("/addSale.php", {
+                "pdtName": currentProduct["pdtName"],
                 "hubToken": currentHub,
                 "userToken": cookieDetails["userToken"],
                 "pdtToken": currentProduct["pdtToken"],
                 "pdtSerialNumber": currentProduct["pdtSerialNumber"],
                 "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
                 "payment_option": "outright",
-                "amountPaid": parseFloat(currentProduct["outrightPrice"]),
+                "amountPaid": Number(currentProduct["outrightPrice"]),
                 "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
             })
             .then((response) => {

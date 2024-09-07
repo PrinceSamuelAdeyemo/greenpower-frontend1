@@ -4,12 +4,15 @@ import { Button, Card, Table } from "flowbite-react"
 import { FaAngleDown, FaAngleUp } from "react-icons/fa"
 
 import sales_api from '../utils/sales_api'
+import SalesRecordModal from './SalesRecordModal'
 
 const AdminHubSalesRecord = ({ hub }) => {
     const [salesRecordExist, setSalesRecordExist] = useState(false)
     const [showSalesRecord, setShowSalesRecord] = useState(false)
     const [toggleSalesCard, setToggleSalesCard] = useState(false)
+    const [showSalesView, setShowSalesView] = useState(false)
     const [eachHubSales, setEachHubSales] = useState([])
+    const [currentSalesToken, setCurrentSalesToken] = useState("")
 
     var month_map = {
         "01": "Jan",
@@ -54,6 +57,12 @@ const AdminHubSalesRecord = ({ hub }) => {
             console.log(error)
         }
     }
+
+    var openSalesView = (sales_token) => {
+        setCurrentSalesToken(sales_token);
+        setShowSalesView(true);
+    }
+
     useEffect(() => {
         getSpecificHub()
     }, [sales_api])
@@ -84,16 +93,16 @@ const AdminHubSalesRecord = ({ hub }) => {
                         eachHubSales?.map((eachHubSale, index) => (
                             <Table.Row className='border-b-2 border-c-lightgreen'>
                                 <Table.Cell className=''>Product Img</Table.Cell>
-                                <Table.Cell>Recurrent</Table.Cell>
+                                <Table.Cell>{eachHubSale["payment_option"]}</Table.Cell>
                                 <Table.Cell className=''>
-                                    <div className='border flex items-center justify-center bg-blue-100 rounded'>Pending
+                                    <div className={`border flex items-center justify-center rounded ${eachHubSale["approval_status"]}=='pending'? 'bg-blue-100' : 'bg-red-600' `}>{eachHubSale["approval_status"]}
                                     </div>
                                 </Table.Cell>
                                 <Table.Cell className='w-full text-center'>{eachHubSale["pdtSerialNumber"]}</Table.Cell>
-                                <Table.Cell className='w-full text-center'>N32,800</Table.Cell>
+                                <Table.Cell className='w-full text-center'>{eachHubSale["pdtPrice"]}</Table.Cell>
                                 <Table.Cell className='w-full text-center'>{`${month_map[eachHubSale["created_at"].split(" ")[0].split("-")[1]]} ${eachHubSale["created_at"].split(" ")[0].split("-")[2]}, ${eachHubSale["created_at"].split(" ")[0].split("-")[0]}`}</Table.Cell>
                                 <Table.Cell className='w-full flex justify-center'>
-                                    <Button outline className='text-c-lightgreen'>View</Button>
+                                    <Button outline className='text-c-lightgreen'  onClick={() => openSalesView(eachHubSale["salesToken"])}>View</Button>
                                 </Table.Cell>
                             </Table.Row>
                             
@@ -105,6 +114,9 @@ const AdminHubSalesRecord = ({ hub }) => {
             <></>
             }
             </Table>
+            { showSalesView && 
+                <SalesRecordModal currentSalesToken={currentSalesToken} showModal={showSalesView} setShowModal={setShowSalesView} />
+            }
         </div>
         {
             !salesRecordExist ?

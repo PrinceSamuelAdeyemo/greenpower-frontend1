@@ -38,7 +38,12 @@ const Products = (props) => {
     var addToHub = () => {
         setShowModal(true)
     }
-    var createHub = () => {
+
+    var createHub = (add_more) => {
+        if (add_more){
+
+        }
+        
         setShowModal2(true)
         setShowModal(false)
         hubs_api.post("/createHub.php", {
@@ -46,6 +51,7 @@ const Products = (props) => {
             "hubName": hubname.trim()
         })
         .then((response) => {
+            console.log(response)
             if (response.data['status_code'] == 200){
                 hubs_data()
             }
@@ -65,6 +71,7 @@ const Products = (props) => {
     
 
     useEffect(() => {
+        console.log("Show Modal is currently",showModal)
         getSalesHistory()
         hubs_data()
     }, [])
@@ -79,11 +86,11 @@ const Products = (props) => {
             <div className='w-40 h-40 border-3 border-c-lightgreen rounded-full flex justify-center items-center' onClick={addToHub} >
                 <FaPlus size="40" title='A plus sign' color='#388F36' />
             </div>}
-            {showModal && <AddHubModal hubName={hubname} setHubname={setHubname} createHub={createHub} userToken={userToken} showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} />}
+            {(showModal === true) ? <AddHubModal hubName={hubname} setHubname={setHubname} createHub={createHub} userToken={userToken} showModal={showModal} openModal={() => setShowModal(true)} closeModal={(event) => setShowModal(false)} /> : <></>}
         </div>
 
         {hubs_available && <div className='flex gap-4 flex-wrap mt-10 px-2'>
-            {hubs_list.map((hub, key) => (
+            {hubs_list?.map((hub, key) => (
                 <HubDisplay key={hub["id"]} hub={hub} hubtoken="" hubsData={hubs_data} />
             ))
             }

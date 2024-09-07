@@ -7,7 +7,7 @@ const CustomModal = ({ showModal, openModal, closeModal, title, children }) => {
     //const [ showModal, setShowModal ] = useState(false)
 
     return (
-        <Modal dismissible show={showModal} onClick={openModal} onClose={closeModal}>
+        <Modal dismissible show={showModal} onClose={closeModal}>
              {/* <Modal.Header className='border-none flex justify-center items-center h-20 py-0 ps-0'> */}
              <div onClick={closeModal}>
                 <FaTimes />

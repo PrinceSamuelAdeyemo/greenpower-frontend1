@@ -37,10 +37,10 @@ const AddProduct = (props) => {
                 "pdtSerialNumber": product_serialNumRef.current.value,
                 "pdtName": product_nameRef.current.value,
                 "pdtImage": product_imageRef.current.value,
-                "outrightPrice": parseFloat(product_outrightpriceRef.current.value),
-                "outrightCommission": parseFloat(commissionRef.current.value),
-                "logisticsFees": 8,
-                "weightedPoints": parseFloat(weightedPointRef.current.value)
+                "outrightPrice": Number(product_outrightpriceRef.current.value),
+                "outrightCommission": Number(commissionRef.current.value),
+                "logisticsFees": 12,
+                "weightedPoints": Number(weightedPointRef.current.value)
                 }
                 console.log(data)
             products_api.post("addProduct.php", data)
