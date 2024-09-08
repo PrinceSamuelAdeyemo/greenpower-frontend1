@@ -126,7 +126,7 @@ const ProductHubListing = () => {
                             <Table.Body className='font-semibold'>
                                 {hubProductAvailable &&
                                     <Table.Row className='border-b-2 border-c-lightgreen'>
-                                    <Table.Cell>{hub_detail["id"]}</Table.Cell>
+                                    <Table.Cell>{key+1}</Table.Cell>
                                     <Table.Cell><img src={hub_detail["pdtImage"]} alt='Product Image' /></Table.Cell>
                                     <Table.Cell className=''>{hub_detail["pdtName"]}</Table.Cell>
                                     <Table.Cell className='text-center'>{hub_detail["pdtSerialNumber"]}</Table.Cell>

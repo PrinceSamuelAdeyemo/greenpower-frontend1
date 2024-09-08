@@ -92,7 +92,7 @@ const AdminHubSalesRecord = ({ hub }) => {
                     {
                         eachHubSales?.map((eachHubSale, index) => (
                             <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell className=''>Product Img</Table.Cell>
+                                <Table.Cell className=''>{eachHubSale["pdtName"]}</Table.Cell>
                                 <Table.Cell>{eachHubSale["payment_option"]}</Table.Cell>
                                 <Table.Cell className=''>
                                     <div className={`border flex items-center justify-center rounded ${eachHubSale["approval_status"]}=='pending'? 'bg-blue-100' : 'bg-red-600' `}>{eachHubSale["approval_status"]}

@@ -6,9 +6,10 @@ import weighted_points_api from '../utils/weighted_points_api'
 const UserWeightedPoints = (props) => {
     var cookieDetails = props.myCookie
     const [w_points, setW_points] = useState()
+    const [userWeightedPoints, setUsersWeightedPoints] = useState([])
     const [admin_status, setAdmin_status] = useState(false)
     
-    const getUserWeightedPoints = () => {
+    const getUsersWeightedPoints = () => {
         if (cookieDetails["ADMIN"] == 1){
             setAdmin_status(true)
             weighted_points_api.get("/getPointsByUsers.php")
@@ -22,10 +23,10 @@ const UserWeightedPoints = (props) => {
                     var received_data = response.data["data"]
                     var total_weighted_points = 0
                     for (let i = 0; i < received_data.length; i++){
-
-                        total_weighted_points += received_data[i]["total_weighted_points"]
+                        total_weighted_points += Number(received_data[i]["total_weighted_points"])
                     }
                     setW_points(total_weighted_points)
+                    setUsersWeightedPoints(received_data)
                 }
                 
             })
@@ -50,8 +51,8 @@ const UserWeightedPoints = (props) => {
 
     useEffect(() => {
         console.log("About to run.")
-        getUserWeightedPoints()
-    })
+        getUsersWeightedPoints()
+    }, [weighted_points_api])
 
   return (
     <div>
@@ -67,32 +68,26 @@ const UserWeightedPoints = (props) => {
             </div>
         </div>
         <div className='mt-8'>
-            <Table className='w-full'>
+            <Table className='w-full table-fixed'>
                 <Table.Head className='text-center normal-case border-b-2 border-c-lightgreen'>
-                    <Table.HeadCell className='bg-white text-lg'>Product</Table.HeadCell>
-                    <Table.HeadCell className='bg-white text-lg'>Serial Number</Table.HeadCell>
+                    <Table.HeadCell className='bg-white text-lg'>User</Table.HeadCell>
+                    <Table.HeadCell className='bg-white text-lg'>No of orders</Table.HeadCell>
                     <Table.HeadCell className='bg-white text-lg'>Accumulated WP</Table.HeadCell>
                 </Table.Head>
                 <Table.Body>
+                {userWeightedPoints?.map((each_weighted_point, index) => (
                     <Table.Row className='text-center border-b-2 border-c-lightgreen'>
-                        <Table.Cell>Yellow Box</Table.Cell>
-                        <Table.Cell>AZXHE636672GE82</Table.Cell>
-                        <Table.Cell>5points</Table.Cell>
+                        <Table.Cell>{each_weighted_point["user"]}</Table.Cell>
+                        <Table.Cell>{each_weighted_point["user"]}</Table.Cell>
+                        <Table.Cell>{each_weighted_point["user"]}</Table.Cell>
                     </Table.Row>
-                    <Table.Row className='text-center border-b-2 border-c-lightgreen'>
-                        <Table.Cell>AP+</Table.Cell>
-                        <Table.Cell>AZXHE636672GE82</Table.Cell>
-                        <Table.Cell>18points</Table.Cell>
-                    </Table.Row>
+                    ))
+                }
+                    
                     <Table.Row className='text-center'>
                         <Table.Cell></Table.Cell>
                         <Table.Cell></Table.Cell>
-                        {admin_status ?
-                            <Table.Cell><p className='font-bold text-md'>Total points = <span className='text-c-lightgreen'>{w_points}</span> </p></Table.Cell>
-                            :
-                            <Table.Cell><p className='font-bold text-md'>Total Weighted points = <span className='text-c-lightgreen'>{w_points}</span> </p></Table.Cell>
-                        }
-                        
+                        <Table.Cell><p className='font-bold text-md'>{admin_status ? 'Total Weighted points = ': 'Total points = '}<span className='text-c-lightgreen'>{w_points}</span> </p></Table.Cell>
                     </Table.Row>
                 </Table.Body>
             </Table>

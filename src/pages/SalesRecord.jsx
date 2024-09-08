@@ -98,7 +98,7 @@ const SalesRecord = (props) => {
         <div className='p-4'>
             
             {
-                (admin_status === 0) ?
+                (admin_status !== 1) ?
                 <>
                 <div className='flex items-center'>
                     <p className='text-xl font-bold'>Sales</p>

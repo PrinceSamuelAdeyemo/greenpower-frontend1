@@ -64,12 +64,12 @@ const DashboardLayout = ({children}) => {
   });
 
   return (
-    <div className='flex flex-col md:flex-row mb-10 overflow-x-hidden w-full bg-whitesmoke relative'>
-      <div className={`fixed md:w-[25%] lg:w-[20%] inset-0 z-20 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex`}>
+    <div className='flex flex-col md:flex-row mb-10 overflow-x-hidden w-full bg-whitesmoke relative md:justify-end'>
+      <div className={`fixed h-[100vh] md:w-[25%] lg:w-[20%] inset-0 z-20 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:translate-x-0 md:flex`}>
         <Sidebar myCookie={cookieDetails} closeSidebar={toggleSidebar}/>
       </div>
 
-      <div className='flex-grow lg:px-1 pb-1 xl:px-3 xl:pb-3 md:w-[75%] lg:w-[80%]'>
+      <div className='lg:px-1 pb-1 xl:px-3 xl:pb-3 md:w-[75%] lg:w-[80%] min-h-[100vh]'>
         <Navigation toggleSidebar={toggleSidebar}/>
         <div className='pt-3'>
           {childrenWithProps}

@@ -33,7 +33,7 @@ const Sidebar = ({closeSidebar, myCookie}) => {
 
     return (
         
-        <div className="min-h-screen border-r w-full bg-white">
+        <div className="fixed min-h-screen border-r w-full bg-white">
             <div className="lg:px-2 py-4 xl:p-4 flex justify-between items-center text-lg font-semibold">
                 <img src={logo}/>
                 <button onClick={closeSidebar} className="text-white md:hidden">

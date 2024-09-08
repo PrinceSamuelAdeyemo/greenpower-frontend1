@@ -1,12 +1,19 @@
 import { Avatar, Button, Card, FileInput, Label, Select, TextInput, ToggleSwitch } from 'flowbite-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { FaBell, FaCamera, FaEdit, FaImage, FaLock, FaSignOutAlt, FaUserCheck } from 'react-icons/fa'
+
+
+import ChangePassword from '../components/ChangePassword'
 import profilePic from "../assets/Rectangle 37.png"
+
 
 const Settings = (props) => {
     var cookieDetails = props.myCookie
     const [email, setEmail] = useState('')
-    const fileInputRef = useRef(null);
+    const [resetPassword, setResetPassword] = useState(false)
+
+    const fileInputRef1 = useRef(null);
+    const fileInputRef2 = useRef(null)
     
     var firstName = props.firstName;
     var lastName = props.lastName;
@@ -17,9 +24,15 @@ const Settings = (props) => {
         
     })
 
-    const handleButtonClick = () => {
-        fileInputRef.current.click();
+    const handleButtonChangeImage = () => {
     };
+    const handleButtonDeleteImage = () => {
+
+    }
+    const handleButtonUploadDocs = () => {
+        
+    }
+
 
     useEffect(() => {
         setBasic_details(cookieDetails)
@@ -33,14 +46,17 @@ const Settings = (props) => {
                     <div className='flex items-center gap-12 mb-3'>
                         <Label value='Email' htmlFor='email' />
                         <div className='flex gap-4'>
-                            <TextInput type="email" value={basic_details["email"]} id='email' sizing="xl" className='rounded-r-none border-r-0 outline-none rounded-none w-1/2' />
+                            <TextInput type="email" value={basic_details["email"]} id='email' sizing="xl" className='rounded-r-none border-r-0 outline-none rounded-none w-[20rem]' />
                             <Button outline disabled>Edit</Button>
                         </div>
                         
                     </div>
                     <div className='flex items-center gap-6'>
                         <Label value='Password' htmlFor='id' />
-                        <Button className='bg-c-lightgreen'>Reset Password</Button>
+                        <Button className='bg-c-lightgreen' onClick={() => setResetPassword(true)}>Reset Password</Button>
+                        {
+                            resetPassword && <ChangePassword showModal={resetPassword} openModal={() => setResetPassword(true)} closeModal={() => setResetPassword(false) } userToken={cookieDetails.userToken} />
+                        }
                     </div>
                 </div>
             </Card>
@@ -69,12 +85,13 @@ const Settings = (props) => {
                         <div className='relative mt-1'>
                             <input
                                 type='file'
-                                ref={fileInputRef}
+                                ref={fileInputRef1}
                                 className='hidden'
                                 onChange={(e) => console.log(e.target.files)}
+                                accept='image/*'
                             />
-                            <input type="file" ref={fileInputRef} className='hidden' />
-                            <Button outline className='flex items-center' onClick={handleButtonClick}>
+                            {/* <input type="file" ref={fileInputRef} className='hidden' /> */}
+                            <Button outline className='flex items-center' onClick={() => fileInputRef2.current.click()}>
                                 <div className='flex items-center gap-2'>
                                     <FaCamera />
                                     Change image
@@ -87,46 +104,49 @@ const Settings = (props) => {
             </Card>
             <Card className='mt-4 rounded-none'>
                 <p className='font-bold mb-2'>KYC</p>
-                <div className='flex gap-4 '>
-                    <div className='w-3/5'>
-                        <div className='flex items-center gap-2 mb-3'>
-                            <Label value='Full Address' htmlFor='address' className='w-1/4' />
-                            <TextInput value={email} id='address' className='flex-grow' />
-                        </div>
-                        <div className='flex items-center gap-2 mb-3'>
-                            <Label value='State' htmlFor='state' className='w-1/4' />
-                            <TextInput value={email} id='state' className='flex-grow' />
-                        </div>
-                        <div className='flex items-center gap-2 mb-3'>
-                            <Label value='DocumentType' htmlFor='docType' className='w-1/4' />
-                            {/* <TextInput value={email} id='phoneNumber' className='flex-grow' /> */}
-                            <Select value={email} id='docType' className='flex-grow'>
-                                <option></option>
-                            </Select>
-                        </div>
-                    </div>
-                    <div className=' w-2/5'>
-                        <div className='flex gap-3 justify-center '>
-                            <p className='mt-2 font-light'>Upload </p>
-                            <div className=' mt-1'>
-                                <input
-                                    type='file'
-                                    ref={fileInputRef}
-                                    className='hidden'
-                                    onChange={(e) => console.log(e.target.files)}
-                                />
-                                <Button outline className='flex items-center' onClick={handleButtonClick}>
-                                    <div className='flex items-center gap-2'>
-                                        Change image
-                                        <FaImage />
-                                    </div>
-                                </Button>
+                <form action="">
+                    <div className='flex gap-4 '>
+                        <div className='w-3/5'>
+                            <div className='flex items-center gap-2 mb-3'>
+                                <Label value='Full Address' htmlFor='address' className='w-1/4' />
+                                <TextInput value={email} id='address' className='flex-grow' />
+                            </div>
+                            <div className='flex items-center gap-2 mb-3'>
+                                <Label value='State' htmlFor='state' className='w-1/4' />
+                                <TextInput value={email} id='state' className='flex-grow' />
+                            </div>
+                            <div className='flex items-center gap-2 mb-3'>
+                                <Label value='DocumentType' htmlFor='docType' className='w-1/4' />
+                                {/* <TextInput value={email} id='phoneNumber' className='flex-grow' /> */}
+                                <Select value={email} id='docType' className='flex-grow'>
+                                    <option></option>
+                                </Select>
                             </div>
                         </div>
-
-
+                        <div className=' w-2/5'>
+                            <div className='flex flex-col gap-3 items-center'>
+                                <p className='mt-2 font-light'>Upload </p>
+                                <div className=' mt-1'>
+                                    <input
+                                        type='file'
+                                        ref={fileInputRef2}
+                                        className='hidden'
+                                        onChange={(e) => console.log(e.target.files)}
+                                        accept='.csv, .xlsx'
+                                    />
+                                    <Button outline className='flex items-center' onClick={() => fileInputRef2.current.click()}>
+                                        <div className='flex items-center gap-2'>
+                                            Upload Document
+                                            <FaImage />
+                                        </div>
+                                    </Button>
+                                </div>
+                                <Button>Save</Button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </form>
+                
             </Card>
 
 

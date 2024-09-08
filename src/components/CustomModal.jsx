@@ -9,8 +9,8 @@ const CustomModal = ({ showModal, openModal, closeModal, title, children }) => {
     return (
         <Modal dismissible show={showModal} onClose={closeModal}>
              {/* <Modal.Header className='border-none flex justify-center items-center h-20 py-0 ps-0'> */}
-             <div onClick={closeModal}>
-                <FaTimes />
+             <div onClick={closeModal} className='flex justify-end'>
+                <FaTimes className='mt-2 me-2 h-7 w-7' />
              </div>
              
                 {/* <div className='w-[34rem] text-center'><p className='font-bold text-4xl my-3 text-c-gray '>{title}</p></div> */}

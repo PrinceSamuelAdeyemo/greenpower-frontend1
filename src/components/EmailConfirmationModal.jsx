@@ -38,6 +38,9 @@ const EmailConfirmationModal = ({showModal, openModal, closeModal, pic, phoneNum
     })
     .then((response) => {
       console.log(response)
+      if (response.data['status_code'] === 400){
+        closeModal = false
+      }
     })
   }
 

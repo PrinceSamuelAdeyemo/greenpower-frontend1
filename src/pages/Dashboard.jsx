@@ -21,6 +21,7 @@ const Dashboard = (props) => {
     // Weighted points
     var [weighted_available, setWeighted_available] = useState(false)
     var [no_weighted_point, setNo_weighted_point] = useState(true)
+    var [weighted_point, setWeighted_point] = useState()
     var [weightedList, setWeightedlist] = useState([])
     // Sales record
     var [salesrecord_available, setSalesrecord_available] = useState(false)
@@ -31,9 +32,33 @@ const Dashboard = (props) => {
 
     const [showUsers, setShowUsers] = useState(true)
     const [showIncome, setShowIncome] = useState(false)
+    const [showBalance, setShowBalance] = useState(false)
 
     
     const navigate = useNavigate()
+
+    // GENERAL FUNCTIONS
+    var getFewProducts = () => {
+        try{
+            products_api.post("/getProductsByPage.php", {
+                "page": "1"
+            })
+            .then((response) => {
+               if (response.data["status_code"] == 400){
+                   //setWeighted_available(false)
+               }
+               else{
+                   console.log(response.data)
+                   setProductList(response.data["data"])
+                   setProducts_available(true)
+                   console.log("Done")
+               }
+            })
+       }
+      catch (error) {
+       console.log(error)
+      }
+    }
 
     // ADMIN FUNCTIONS
     var getUsersWeightedPoints = () => {
@@ -57,7 +82,13 @@ const Dashboard = (props) => {
 
     var getUsersSalesHistory = () => {
         try{
-            //sales_api.
+            sales_api.get("getLatestSales.php")
+            .then((response) => {
+                var truncated_sales_history = response.data["data"].slice(0,5)
+                console.log(truncated_sales_history)
+                setSales_record(truncated_sales_history)
+                setSalesrecord_available(true)
+            })
         }
         catch (error){
             console.log(error)
@@ -65,28 +96,25 @@ const Dashboard = (props) => {
     }
 
     // USER FUNCTION
-
-    var getFewProducts = () => {
+    var getUserWeightedPoints = () => {
         try{
-            products_api.post("/getProductsByPage.php", {
-                "page": "1"
-            })
-            .then((response) => {
-               if (response.data["status_code"] == 400){
-                   //setWeighted_available(false)
-               }
-               else{
-                   console.log(response.data)
-                   setProductList(response.data["data"])
-                   setProducts_available(true)
-                   console.log("Done")
-               }
-            })
+             weighted_points_api.get("/getPointsByUser.php")
+             .then((response) => {
+                console.log(response)
+                if (response.data["status_code"] == 400){
+                    setWeighted_available(false)
+                }
+                else{
+                    setWeighted_point(response.data["data"])
+                    setWeighted_available(true)
+                }
+             })
+        }
+       catch (error) {
+        console.log(error)
        }
-      catch (error) {
-       console.log(error)
-      }
     }
+    
 
     useEffect(() => {
         getFewProducts()
@@ -104,7 +132,7 @@ const Dashboard = (props) => {
         else{
             navigate("/login")
         }
-    })
+    }, [weighted_points_api, sales_api])
 
     return (
 
@@ -134,15 +162,21 @@ const Dashboard = (props) => {
                                         <p className="text-sm">Account Number</p>
                                         <p className="text-lg font-bold">0234567899</p>
                                     </div>
-                                    <div className="mb-1">
+                                    <div className="mb-1" >
                                         <p className="text-sm">Account Balance</p>
-                                        <div className="flex items-center gap-2 text-lg font-bold">
-                                            <BiRefresh /> #150000 <FaEyeSlash />
+                                        <div  className="flex items-center gap-2 text-lg font-bold">
+                                            <BiRefresh /> 
+                                            {
+                                                showBalance ? <><p>#15,000</p> <FaEye onClick={() => setShowBalance(!showBalance)} /></> : <><p>******</p> <FaEyeSlash onClick={() => setShowBalance(!showBalance)} /></>
+                                            } 
                                         </div>
                                     </div>
                                     <div>
                                         <p className="text-sm">Weighted points</p>
-                                        <p className="text-xl font-bold">50</p>
+                                        {
+                                            weighted_available? <p className="text-xl font-bold">{weighted_point}</p> : <Spinner />
+                                        }
+                                        
                                     </div>
                                 </div>
                                 <img src={dashImage} alt="Dashboard" className="mt-4 md:mt-0 md:w-1/2 object-containk" />
@@ -151,12 +185,14 @@ const Dashboard = (props) => {
                         <Card className='max-h-[34vh] overflow-y-auto'>
                             <p className="font-bold text-2xl text-c-gray opacity-90">Sales Record</p>
                             <div className="space-y-4">
-                                <div className="flex items-center gap-4 text-c-gray opacity-90 font-semibold">
+                                <div className="flex flex-col lg:flex-row items-center gap-4 text-c-gray opacity-90 font-semibold w-full">
                                     <img src={cart} alt="cart" className="w-10 h-10" />
                                     <p>Sold outrightly</p>
-                                    <Progress className="flex-1" progress={50} color="green" labelProgress size="lg" />
-                                    
-                                    <p>250</p>
+                                    <div className='flex items-center gap-4'>
+                                         <Progress className='w-[70vw] md:w-[30vw] lg:w-[15vw]' progress={75} color="green" labelProgress size="lg" />
+                                        <p>250</p>
+                                    </div>
+                                   
                                 </div>
                                 
                             </div>
@@ -164,7 +200,7 @@ const Dashboard = (props) => {
                         <Card>
                             <p className="font-bold">Sales History</p>
                             <div className="overflow-x-auto">
-                                <Table>
+                                <Table className='table-fixed'>
                                     <Table.Head className='border-red-500'>
                                         <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Sender</Table.HeadCell>
                                         <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product</Table.HeadCell>
@@ -184,44 +220,47 @@ const Dashboard = (props) => {
                         </Card>
                     </div>
                     <div className="md:w-1/3 space-y-5">
-                        <Card className='max-h-[50vh] lg:max-h-[80vh] overflow-y-auto'>
+                        <Card className='max-h-[50vh] lg:max-h-[65vh] overflow-y-auto'>
                             <div className="flex gap-3 items-center">
                                 <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
-                                <p className='font-bold text-c-gray opacity-95 text-xl'>Popular Product</p>
+                                <p className='font-bold text-c-gray opacity-95 text-xl'>Products</p>
                             </div>
-                            <div className="overflow-x-auto w-full">
-                                <Table className='overflow-x-hidden'>
-                                    <Table.Head className='w-full'>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Product</Table.HeadCell>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Quantity</Table.HeadCell>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Prices</Table.HeadCell>
-                                    </Table.Head>
-                                    {
-                                        productList?.map((product, key) => (
-                                            <Table.Body className=''>
-                                                <Table.Row className=''>
-                                                    <Table.Cell>
-                                                        <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
-                                                            <img src={product1} alt="product1" className="w-10 h-10" />
-                                                            <p className='font-semibold text-c-gray'>{product["pdtName"]}</p>
-                                                        </div>
-                                                    </Table.Cell>
-                                                    <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>25 pieces</Table.Cell>
-                                                    <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>{product["outrightPrice"]}</Table.Cell>
-                                                </Table.Row>
-                                                
-                                            </Table.Body>
-                                        )
-                                    )
-                                    }
-                                    
-                                </Table>
+                            <div className="px-0">
+                            <Table className='overflow-x-hidden table-fixed'>
+                                <Table.Head className='w-full'>
+                                    <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Product</Table.HeadCell>
+                                    <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Quantity</Table.HeadCell>
+                                    <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Prices</Table.HeadCell>
+                                </Table.Head>
+                                
                                 {
-                                    !weighted_available && (
-                                        <p className='text-center text-red-600 font-semibold'>You don't have weighted points yet, kindly place an order to get started.</p>
+                                    productList?.slice(0,6).map((product, key) => (
+                                        <Table.Body className=''>
+                                            <Table.Row className=''>
+                                                <Table.Cell>
+                                                    <div className="flex gap-2 items-center text-[80%] xl:text-[100%]">
+                                                        <img src={product1} alt="product1" className="w-10 h-10" />
+                                                        <p className='font-semibold text-c-gray'>{product["pdtName"]}</p>
+                                                    </div>
+                                                </Table.Cell>
+                                                <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>25 pieces</Table.Cell>
+                                                <Table.Cell className='font-semibold text-c-gray text-[80%] xl:text-[100%]'>{product["outrightPrice"]}</Table.Cell>
+                                            </Table.Row>
+                                            
+                                        </Table.Body>
                                     )
+                                )
                                 }
+                                
+                            </Table>
                             </div>
+                            {
+                                !products_available &&
+                            <div className='h-[30vh] flex flex-col md:flex-row gap-4 justify-center items-center'>
+                                <Spinner color='success' size='xl' />
+                            </div>
+                            }
+                            
                             <div className='flex justify-center w-full '>
                                 <button className='border-2 border-c-lightgreen rounded-lg px-2 font-semibold text-center text-c-lightgreen'>All products</button>
                             </div>
@@ -259,7 +298,7 @@ const Dashboard = (props) => {
                                                 <p className='text-red-500'>35.8</p>
                                             </div>
                                             <div>
-                                                <p className='font-bold text-4xl text-c-gray text-center'>{showIncome ? 3500750: '****'}</p>
+                                                <p className='font-bold text-4xl text-c-gray text-center'>{showIncome ? 350075000: '****'}</p>
                                             </div>
                                         </div>
 
@@ -273,7 +312,7 @@ const Dashboard = (props) => {
                                 </div>
                                 
                                 <div className="overflow-x-auto">
-                                    <Table className='table-fixed'>
+                                    <Table className=''>
                                         <Table.Head className='border-red-500'>
                                             <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Users</Table.HeadCell>
                                             <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>No. of Sales</Table.HeadCell>
@@ -311,10 +350,10 @@ const Dashboard = (props) => {
                         <Card className='max-h-[50vh] lg:max-h-[65vh] overflow-y-auto'>
                             <div className="flex gap-3 items-center">
                                 <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
-                                <p className='font-bold text-c-gray opacity-95 text-xl'>Popular Product</p>
+                                <p className='font-bold text-c-gray opacity-95 text-xl'>Products</p>
                             </div>
                             <div className="px-0">
-                            <Table className='overflow-x-hidden '>
+                            <Table className='overflow-x-hidden table-fixed'>
                                 <Table.Head className='w-full'>
                                     <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Product</Table.HeadCell>
                                     <Table.HeadCell className='bg-white border-c-lightgreen border-b-2 w-1/3 text-[80%] xl:text-[100%]'>Quantity</Table.HeadCell>
@@ -362,7 +401,7 @@ const Dashboard = (props) => {
                     </div>
                     
                     <div className="overflow-x-auto">
-                        <Table>
+                        <Table className='table-fixed'>
                             <Table.Head className='border-red-500'>
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Sender</Table.HeadCell>
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product</Table.HeadCell>
@@ -370,7 +409,7 @@ const Dashboard = (props) => {
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Price</Table.HeadCell>
                             </Table.Head>
                             {
-                            salesrecord_available &&
+                            salesrecord_available && sales_record?.map((sale, index) => (
                             <Table.Body>
                                 <Table.Row>
                                     <Table.Cell className='font-semibold'>Ayoola Tolu</Table.Cell>
@@ -379,6 +418,8 @@ const Dashboard = (props) => {
                                     <Table.Cell className='font-semibold'>#32,000</Table.Cell>
                                 </Table.Row>
                             </Table.Body>
+                            ))
+                            
                             }
                             
                         </Table>

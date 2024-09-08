@@ -10,10 +10,9 @@ const Wallet = (props) => {
 
     return (
         <div className="p-4 bg-gray-100 min-h-screen">
-            
-            <div className='flex flex-col md:flex-row mb-4'>
-                <div className='flex flex-col md:flex-row bg-c-lightgreen md:w-2/3 rounded-2xl md:mb-0 md:mr-4 shadow-xl pt-4 lg:px-2 xl:px-5 text-white'>
-                    <div className='text-white lg:p-2 xl:p-4 flex-grow'>
+            <div className='flex flex-col gap-4 lg:gap-0 md:flex-row mb-4'>
+                <div className='flex flex-col md:flex-row bg-c-lightgreen md:w-2/3 rounded-2xl md:mb-0 md:mr-4 shadow-xl pt-4 md:px-2 lg:px-2 xl:px-5 text-white'>
+                    <div className='text-white px-2 lg:p-2 xl:p-4 flex-grow'>
                         <div className='absolute'>
                             <p className='font-bold text-xl w-full'>Welcome, {cookieDetails["firstName"]} {cookieDetails["lastName"]}</p>
                         </div>
@@ -30,14 +29,14 @@ const Wallet = (props) => {
                             <p className="text-lg font-bold">0234567899</p>
                         </div>
                     </div>
-                    <img src={image} alt="Dashboard" className="rounded-b md:rounded-none md:rounded-r" />
+                    <img src={image} alt="Dashboard" className="rounded-b md:rounded-none md:rounded-r md:max-lg:w-[12rem] md:max-md:h-[10rem] flex" />
                 </div>
-                <Card className="w-1/3">
+                <Card className="w-full md:w-1/3">
                     <div className='flex flex-col justify-center items-center'>
                         <p className='mb-4 text-2xl font-bold text-c-gray opacity-90'>Account Balance</p>
-                        <div className='flex text-3xl items-center lg:gap-2 xl:gap-4 mb-4'>
+                        <div className='flex text-3xl items-center gap-2 lg:gap-2 xl:gap-4 mb-4'>
                             <BiRefresh/> 
-                            <p className='lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? '#150946.55' : '******'}</p> 
+                            <p className='text-sm md:text-md lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? '#150946.55' : '******'}</p> 
                             <div onClick={() => setShow_balance(!show_balance)}>
                                 {show_balance ? <FaEye /> : <FaEyeSlash />}
                             </div>
@@ -45,20 +44,20 @@ const Wallet = (props) => {
                         </div>
                         <p className='mb-3 text-md text-c-gray opacity-90 font-bold'>January 24, 2024   12.45pm</p>
                         <div className='lg:px-60 flex justify-center'>
-                            <Card className='lg:w-[80%] xl:w-full flex justify-center items-center'>
-                                <div className='flex lg:px-2 xl:px-4 lg:py-0 lg:gap-1 xl:gap-3'>
-                                <Button className='bg-c-lightgreen w-1/2'>
-                                    <div className='flex flex-col justify-center items-center'>
-                                        <FaPaperPlane className='mb-1'/>
-                                        <p>Send</p>
-                                    </div>
-                                </Button>
-                                <Button className='bg-c-lightgreen w-1/2'>
-                                    <div className='flex flex-col justify-center items-center'>
-                                        <FaWallet className='mb-1'/>
-                                        <p>Deposit</p>
-                                    </div>
-                                </Button>
+                            <Card className='w-full lg:w-[80%] xl:w-full flex justify-center items-center'>
+                                <div className='flex flex-col lg:flex-row items-center lg:px-2 xl:px-4 lg:py-0 gap-3 lg:gap-1 xl:gap-3'>
+                                    <Button className='bg-c-lightgreen w-full lg:w-1/2'>
+                                        <div className='flex flex-col justify-center items-center'>
+                                            <FaPaperPlane className='mb-1'/>
+                                            <p>Send</p>
+                                        </div>
+                                    </Button>
+                                    <Button className='bg-c-lightgreen w-full lg:w-1/2'>
+                                        <div className='flex flex-col justify-center items-center'>
+                                            <FaWallet className='mb-1'/>
+                                            <p>Deposit</p>
+                                        </div>
+                                    </Button>
                                 </div>
                             </Card>
                         </div>
