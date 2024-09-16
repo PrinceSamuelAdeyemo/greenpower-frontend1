@@ -4,6 +4,7 @@ import { FaTimes } from "react-icons/fa"
 import CustomModal from './CustomModal';
 import addSalesImage from '../assets/addsalesImage.png';
 import UploadComplete from './UploadComplete';
+import AddSalesComplete from './AddSalesComplete';
 
 
 import products_api from '../utils/products_api'
@@ -45,14 +46,16 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
             })
             .then((response) => {
-                console.log(response.data)
+                console.log("response from the sales",response.data)
+                if (response.data["status_code"] === 200){
+                    setShowModal2(true)
+                }
             })
         }
         catch{
 
         }
-        closeModal()
-        setShowModal2(true)
+        
     }
     const closeMenu = () =>{
         closeModal()
@@ -200,7 +203,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 </div>
                 <div className='my-3'>
                     <Button className='w-full bg-c-lightgreen' onClick={submitToAddSales}>Submit</Button>
-                    {showModal2 && <UploadComplete showModal={showModal2} openModal={()=>setShowModal2(true)} closeModal={()=>setShowModal2(false)}/>}
+                    {showModal2 && <AddSalesComplete showModal={showModal2} openModal={()=>setShowModal2(true)} closeModal={()=>setShowModal2(false)}/>}
                 </div>
             </div>
         </CustomModal>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Link, useLocation } from "react-router-dom"
 import { TextInput, Button, Label, } from 'flowbite-react'
 import SignupRightImage from "../assets/Rectangle 8.png"
@@ -87,6 +87,10 @@ const Signup2 = () => {
         })
     }
 
+    useEffect(() => {
+        console.log("HI")
+    })
+
 
   return (
     <div className='flex flex-row w-full h-screen'>
@@ -105,21 +109,21 @@ const Signup2 = () => {
                         <div className='mb-2 block'>
                             <Label htmlFor='surname' value='Surname' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='surname' type='text' placeholder='Afolabi' ref={lastNameRef} onChange={() => saveTempData(event, "lastName")} required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='surname' type='text' placeholder='Adeyemo' ref={lastNameRef} onChange={() => saveTempData(event, "lastName")} required />
                     </div>
 
                     <div className='w-full'>
                         <div className='mb-2 block'>
                             <Label htmlFor='other_names' value='Other Names' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='other_names' type='text' placeholder='Seunfunmi Ayomide' ref={firstNameRef} onChange={() => saveTempData(event, "firstName")} required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='other_names' type='text' placeholder='Samuel Prince' ref={firstNameRef} onChange={() => saveTempData(event, "firstName")} required />
                     </div>
 
                     <div className='w-full'>
                         <div className='mb-2 block'>
                             <Label htmlFor='address' value='Home Address' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='address' type='text' placeholder='No 52, Lane 2, Ladigbolu Estate, Oyo town, Oyo Stare.' required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='address' type='text' placeholder='1, Adam Street, Garden of Eden, Oyo State' required />
                     </div>
 
                     <div className='w-full'>
@@ -133,7 +137,7 @@ const Signup2 = () => {
                         <div className='mb-2 block'>
                             <Label htmlFor='phone_number' value='Phone Number' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='phone_number' type='number' placeholder='09066099325' ref={phoneNumberRef} onChange={() => saveTempData(event, "phoneNumber")} required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='phone_number' type='number' placeholder='07012345678' ref={phoneNumberRef} onChange={() => saveTempData(event, "phoneNumber")} required />
                     </div>
 
                     <div>

@@ -132,7 +132,7 @@ const Settings = (props) => {
                                         ref={fileInputRef2}
                                         className='hidden'
                                         onChange={(e) => console.log(e.target.files)}
-                                        accept='.csv, .xlsx'
+                                        accept=''
                                     />
                                     <Button outline className='flex items-center' onClick={() => fileInputRef2.current.click()}>
                                         <div className='flex items-center gap-2'>

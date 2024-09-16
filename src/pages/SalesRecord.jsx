@@ -112,15 +112,15 @@ const SalesRecord = (props) => {
                 <Card className='mt-4'>
                     <p className=''>Sales History</p>
                     <div className='overflow-x-auto'>
-                        <Table className='w-full table-fixed'>
+                        <Table className='w-full lg:table-fixed'>
                             <Table.Head className='normal-case border-y-2 border-c-lightgreen font-bold text-lg text-c-gray opacity-70'>
-                                <Table.HeadCell className='bg-white'>Product</Table.HeadCell>
-                                <Table.HeadCell className='bg-white'>Payment Types</Table.HeadCell>
-                                <Table.HeadCell className='bg-white text-center'>Status</Table.HeadCell>
-                                <Table.HeadCell className='bg-white text-center'>Serial Number</Table.HeadCell>
-                                <Table.HeadCell className='bg-white text-center'>Prices</Table.HeadCell>
-                                <Table.HeadCell className='bg-white text-center'>Date</Table.HeadCell>
-                                <Table.HeadCell className='bg-white text-center'>Action</Table.HeadCell>
+                                <Table.HeadCell className='bg-white text-sm'>Product</Table.HeadCell>
+                                <Table.HeadCell className='bg-white text-sm'>Payment Types</Table.HeadCell>
+                                <Table.HeadCell className='bg-white text-sm text-center'>Status</Table.HeadCell>
+                                <Table.HeadCell className='bg-white text-sm text-center'>Serial Number</Table.HeadCell>
+                                <Table.HeadCell className='bg-white text-sm text-center'>Prices</Table.HeadCell>
+                                <Table.HeadCell className='bg-white text-sm text-center'>Date</Table.HeadCell>
+                                <Table.HeadCell className='bg-white text-sm text-center'>Action</Table.HeadCell>
                             </Table.Head>
                             {salesRecordExist ?
                             <Table.Body className='font-semibold'>

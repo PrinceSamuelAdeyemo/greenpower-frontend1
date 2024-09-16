@@ -14,6 +14,7 @@ const EmailConfirmationModal = ({showModal, openModal, closeModal, pic, phoneNum
   const [showSmsModal, setShowSmsModal] = useState(false)
   const [emailCode, setEmailCode] = useState("")
   const [button_state, setButton_state] = useState(true)
+  const [emailVerifiedMessage, setEmailVerifiedMessage] = useState('')
 
   const emailCodeRef = useRef(null)
 
@@ -41,12 +42,18 @@ const EmailConfirmationModal = ({showModal, openModal, closeModal, pic, phoneNum
       if (response.data['status_code'] === 400){
         closeModal = false
       }
+      else if (response.data["status_code"] === 200){
+        setEmailVerifiedMessage('Your Email has been verified, you will be redirected to login soon.')
+        setTimeout(() => navigate("/login"), 2000)
+        
+      }
     })
   }
 
   return (
     <CustomModal2 showModal={showModal} openModal={openModal} closeModal={closeModal}>
       <div className='flex flex-col gap-4'>
+        <p className='text-center font-semibold text-c-lightgreen'>{emailVerifiedMessage}</p>
         <div className='w-full flex flex-col justify-center items-center relative'>
           <img className='object-cover h-1/2 w-1/2 bg-white' src={pic} alt="" />
           <p className='font-bold text-3xl absolute bottom-0'>Email Confirmation</p>

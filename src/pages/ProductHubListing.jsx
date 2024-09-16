@@ -6,6 +6,7 @@ import { FaDownload } from "react-icons/fa"
 
 import hubs_api from '../utils/hubs_api';
 import products_api from '../utils/products_api';
+import UpdateProduct from '../components/UpdateProduct';
 
 "use client"
 
@@ -15,6 +16,7 @@ const ProductHubListing = () => {
     const location = useLocation()
 
     const [showModal, setShowModal] = useState(false)
+    const [showUpdate, setShowUpdate] = useState(false)
     const [hub_details, setHub_details] = useState()
     const [hubProductAvailable, setHubProductAvailable] = useState(false)
     const [hubProduct, setHubProduct] = useState()
@@ -132,7 +134,7 @@ const ProductHubListing = () => {
                                     <Table.Cell className='text-center'>{hub_detail["pdtSerialNumber"]}</Table.Cell>
                                     <Table.Cell className='text-center'>{hub_detail["outrightPrice"]}</Table.Cell>
                                     <Table.Cell className='flex justify-center'>
-                                        <Button outline className='text-c-lightgreen'>Update</Button>
+                                        <Button onClick={() => setShowUpdate(true)} outline className='text-c-lightgreen'>Update</Button>
                                     </Table.Cell>
                                 </Table.Row>}
                                 
@@ -140,6 +142,11 @@ const ProductHubListing = () => {
                         ))
                         }
                     </Table>
+                    
+                    {
+                        showUpdate && <UpdateProduct showModal={showUpdate} closeModal={() => setShowUpdate(close)} />
+                    }
+
                 </div>
                 {!hubProductAvailable? (
                     <p className='text-red-700 font-bold text-center'>Product is not available for this hub, kindly add a product for this hub.</p>

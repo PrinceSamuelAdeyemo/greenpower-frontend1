@@ -20,6 +20,7 @@ const AddProduct = (props) => {
     const commissionRef = useRef(null)
     const weightedPointRef = useRef(null)
     const fileInputRef = useRef(null);
+    const serialNumberFileRef = useRef(null)
 
     var {"hubToken": hub_token} = location.state || {}
     console.log(hub_token)
@@ -70,6 +71,10 @@ const AddProduct = (props) => {
                         <div className='flex items-center gap-2 mb-3'>
                             <Label value='Serial Number' htmlFor='serial_number' className='w-3/4' />
                             <TextInput type='text' id='serial_number' ref={product_serialNumRef} className='flex-grow w-[60rem]' />
+                        </div>
+                        <div className='flex items-center gap-2 mb-3'>
+                            <Label value='Serial Number File' htmlFor='serial_number_file' className='w-3/4' />
+                            <input type="file" ref={serialNumberFileRef} alt="File containing list of all the serial numbers of a product to be added." accept='.csv, .xls, .xlsm, .xlsx' className='' />
                         </div>
 
                         <div className='flex items-center gap-2 mb-3'>

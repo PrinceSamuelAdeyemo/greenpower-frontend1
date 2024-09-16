@@ -403,10 +403,11 @@ const Dashboard = (props) => {
                     <div className="overflow-x-auto">
                         <Table className='table-fixed'>
                             <Table.Head className='border-red-500'>
-                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Sender</Table.HeadCell>
+                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Sender</Table.HeadCell>
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product</Table.HeadCell>
-                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Quantity</Table.HeadCell>
-                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Price</Table.HeadCell>
+                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Prices</Table.HeadCell>
+                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Commission Markup</Table.HeadCell>
+                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Date</Table.HeadCell>
                             </Table.Head>
                             {
                             salesrecord_available && sales_record?.map((sale, index) => (
@@ -414,8 +415,9 @@ const Dashboard = (props) => {
                                 <Table.Row>
                                     <Table.Cell className='font-semibold'>Ayoola Tolu</Table.Cell>
                                     <Table.Cell className='font-semibold'>Excellent 3D chair</Table.Cell>
-                                    <Table.Cell className='font-semibold'>18</Table.Cell>
                                     <Table.Cell className='font-semibold'>#32,000</Table.Cell>
+                                    <Table.Cell className='font-semibold'>#3,200</Table.Cell>
+                                    <Table.Cell className='font-semibold'>Jan 2, 2024</Table.Cell>
                                 </Table.Row>
                             </Table.Body>
                             ))
