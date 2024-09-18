@@ -62,7 +62,7 @@ const Signin = () => {
                     <div className='flex flex-col items-center text-center'>
                         <p className='font-bold text-2xl text-c-lightgreen'>SIGN IN</p>
                         <p>Please, enter your details to continue</p>
-                        <p className='font-bold mt-3'>{ error_details }</p>
+                        <p className='font-bold mt-3 text-red-500'>{ error_details }</p>
                     </div>
 
                     <div className='w-full'>
@@ -78,14 +78,13 @@ const Signin = () => {
                         </div>
                         <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' ref={passwordRef} id='password1' type='password' placeholder='Enter your password' required />
                         <div className='w-full flex justify-end'>
-                            <Link to="/signin" className='text-c-lightgreen font-semibold'>Forgot My Password</Link>
+                            <Link to="/resetpassword" className='text-c-lightgreen font-semibold'>Forgot My Password</Link>
                         </div>
                     </div>
                     
                     <div>
                         <Button type='submit' className='bg-c-lightgreen text-white w-full'>Sign In</Button>
                     </div>
-                    
 
                     <div className='mb-2 flex justify-center gap-2'>
                         <p>Don't have an account?</p>

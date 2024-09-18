@@ -7,19 +7,22 @@ import { FaDownload } from "react-icons/fa"
 import hubs_api from '../utils/hubs_api';
 import products_api from '../utils/products_api';
 import UpdateProduct from '../components/UpdateProduct';
+import EachHubProduct from '../components/EachHubProduct';
 
 "use client"
 
 
-const ProductHubListing = () => {
+const ProductHubListing = (props) => {
     const navigate = useNavigate()
     const location = useLocation()
+    const myCookie = props.myCookie
 
     const [showModal, setShowModal] = useState(false)
     const [showUpdate, setShowUpdate] = useState(false)
     const [hub_details, setHub_details] = useState()
     const [hubProductAvailable, setHubProductAvailable] = useState(false)
     const [hubProduct, setHubProduct] = useState()
+    const [data_for_update, setData_for_update] = useState({})
 
     var { "data": hub_data} = location.state || {}
     console.log(hub_data)
@@ -64,6 +67,25 @@ const ProductHubListing = () => {
             "hubToken": hub_token
         }})
     }
+
+    
+    const getProductToUpdate = (pdtSerialNumber, pdtName, pdtImage, outrightPrice, outrightCommission, logisticsFees, weightedPoints, pdtToken) => {
+        let data = {
+                "hubToken": hub_token,
+                "userToken": myCookie["userToken"],
+                "pdtSerialNumber": pdtSerialNumber,
+                "pdtName": pdtName,
+                "pdtImage": pdtImage,
+                "outrightPrice": outrightPrice,
+                "outrightCommission": outrightCommission,
+                "logisticsFees": logisticsFees,
+                "weightedPoints": weightedPoints,
+                "pdtToken": pdtToken
+        }
+        setData_for_update(data)
+        setShowUpdate(true)
+    }
+
     /* 
     const byPage = () => {
         products_api.post("/getProductsByPage.php", {
@@ -124,27 +146,14 @@ const ProductHubListing = () => {
                         !hubProductAvailable? 
                         <></>
                         :
-                        hub_details?.map((hub_detail, key) => (
-                            <Table.Body className='font-semibold'>
-                                {hubProductAvailable &&
-                                    <Table.Row className='border-b-2 border-c-lightgreen'>
-                                    <Table.Cell>{key+1}</Table.Cell>
-                                    <Table.Cell><img src={hub_detail["pdtImage"]} alt='Product Image' /></Table.Cell>
-                                    <Table.Cell className=''>{hub_detail["pdtName"]}</Table.Cell>
-                                    <Table.Cell className='text-center'>{hub_detail["pdtSerialNumber"]}</Table.Cell>
-                                    <Table.Cell className='text-center'>{hub_detail["outrightPrice"]}</Table.Cell>
-                                    <Table.Cell className='flex justify-center'>
-                                        <Button onClick={() => setShowUpdate(true)} outline className='text-c-lightgreen'>Update</Button>
-                                    </Table.Cell>
-                                </Table.Row>}
-                                
-                            </Table.Body>
+                        hub_details?.map((hub_detail, index) => (
+                            <EachHubProduct index={index} hubProductAvailable={hubProductAvailable} pdtImage={hub_detail["pdtImage"]} pdtName={hub_detail["pdtName"]} pdtSerialNumber={hub_detail["pdtSerialNumber"]} outrightPrice={hub_detail["outrightPrice"]} outrightCommission={hub_detail["outrightCommission"]} logisticsFees={hub_detail["logisticsFees"]} weightedPoints={hub_detail["weightedPoints"]} pdtToken={hub_detail["pdtToken"]} getProductToUpdate={getProductToUpdate}  />
                         ))
                         }
                     </Table>
                     
                     {
-                        showUpdate && <UpdateProduct showModal={showUpdate} closeModal={() => setShowUpdate(close)} />
+                        showUpdate && <UpdateProduct showModal={showUpdate} closeModal={() => setShowUpdate(close)} data_update={data_for_update} />
                     }
 
                 </div>

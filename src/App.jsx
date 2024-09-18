@@ -18,6 +18,7 @@ import Password from './components/Password'
 import Signup1 from './pages/Signup1'
 import Signup2 from './pages/Signup2'
 import Signin from './pages/Signin'
+import ForgotPassword from './pages/ForgotPassword'
 
 
 import AdminDashboard from './pages/AdminDashboard'
@@ -33,6 +34,7 @@ function App() {
         <Route path='/signup' element={<Signup1 />} />
         <Route path='/proceed-signup' element={<Signup2 />} />
         <Route path='/login' element={<Signin />} />
+        <Route path='/resetpassword' element={<ForgotPassword />} />
         <Route path="/" element={
           <DashboardLayout>
             <Dashboard />
@@ -98,6 +100,7 @@ function App() {
             <ProductHubListing/>
           </DashboardLayout>
         }/>
+        
         
       </Routes>
     </BrowserRouter>

@@ -31,24 +31,51 @@ const AddProduct = (props) => {
     };
 
     const saveProduct = () => {
-        if ((product_nameRef.current.value && product_serialNumRef.current.value && product_outrightpriceRef.current.value) != ""){
-            var data = {
-                "hubToken": hub_token,
-                "userToken": cookieDetails["userToken"],
-                "pdtSerialNumber": product_serialNumRef.current.value,
-                "pdtName": product_nameRef.current.value,
-                "pdtImage": product_imageRef.current.value,
-                "outrightPrice": Number(product_outrightpriceRef.current.value),
-                "outrightCommission": Number(commissionRef.current.value),
-                "logisticsFees": 12,
-                "weightedPoints": Number(weightedPointRef.current.value)
-                }
-                console.log(data)
-            products_api.post("addProduct.php", data)
-            .then((response) => {
-                console.log(response)
-            })
+        
+        
+        if (serialNumberFileRef.current.value){
+            
+            if ((product_nameRef.current.value && serialNumberFileRef.current.value && product_outrightpriceRef.current.value) != ""){
+                var data = {
+                    "hubToken": hub_token,
+                    "userToken": cookieDetails["userToken"],
+                    "pdtSerialNumbers": btoa(serialNumberFileRef.current.value),
+                    "pdtName": product_nameRef.current.value,
+                    "pdtImage": product_imageRef.current.value,
+                    "outrightPrice": Number(product_outrightpriceRef.current.value),
+                    "outrightCommission": Number(commissionRef.current.value),
+                    "logisticsFees": 12,
+                    "weightedPoints": Number(weightedPointRef.current.value)
+                    }
+                    console.log(data)
+                products_api.post("addProduct_csv.php", data)
+                .then((response) => {
+                    console.log(response)
+                })
+            }
         }
+        else{
+            if ((product_nameRef.current.value && product_serialNumRef.current.value && product_outrightpriceRef.current.value) != ""){
+                var data = {
+                    "hubToken": hub_token,
+                    "userToken": cookieDetails["userToken"],
+                    "pdtSerialNumber": product_serialNumRef.current.value,
+                    "pdtName": product_nameRef.current.value,
+                    "pdtImage": product_imageRef.current.value,
+                    "outrightPrice": Number(product_outrightpriceRef.current.value),
+                    "outrightCommission": Number(commissionRef.current.value),
+                    "logisticsFees": 12,
+                    "weightedPoints": Number(weightedPointRef.current.value)
+                    }
+                    console.log(data)
+                products_api.post("addProduct.php", data)
+                .then((response) => {
+                    console.log(response)
+                })
+            }
+        }
+ 
+        
     }
     
     
