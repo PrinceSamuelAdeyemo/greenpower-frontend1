@@ -20,8 +20,8 @@ const Signup1 = () => {
     var buttonRef = useRef(null)
 
     const validatePassword = (password_value) => {
-        special_symbol_pattern = /[!@#$%^&*(),.?":{}|<>]/g
-        capital_letter_pattern = /[A-Z]/g
+        let special_symbol_pattern = /[!@#$%^&*(),.?":{}|<>]/g
+        let capital_letter_pattern = /[A-Z]/g
 
         return special_symbol_pattern.test(password_value) && capital_letter_pattern.test(password_value)
     }
@@ -44,6 +44,7 @@ const Signup1 = () => {
         if ((bvnRef.current.value && password1Ref.current.value && password2Ref.current.value) !== ""){
             if (password1Ref.current.value === password2Ref.current.value){
                 if (validatePassword(password1Ref.current.value) === true){
+                    console.log(validatePassword(password1Ref.current.value))
                     setHelpertext("")
                     setShow_helpertext(false)
                 /*  users_api.post("/verifyBVN.php", {
@@ -54,8 +55,9 @@ const Signup1 = () => {
                     navigate("/proceed-signup", {state: {"data": data}})
                 }
                 else{
+                    console.log(validatePassword(password1Ref.current.value))
                     setHelpertext("Password must be at least 8 characters, must contain a special symbol and a capital letter.")
-                    setShow_helpertext(false)
+                    setShow_helpertext(true)
                 }
 
             }
