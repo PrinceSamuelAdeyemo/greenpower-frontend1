@@ -85,7 +85,7 @@ const Signup1 = () => {
 
                     {show_helpertext && 
                     <div>
-                        <p className='font-bold text-center'>{helpertext}</p>
+                        <p className='font-bold text-center text-red-500'>{helpertext}</p>
                     </div>
                     }
                     <div className='w-full'>
