@@ -19,6 +19,13 @@ const Signup1 = () => {
     var password2Ref = useRef(null)
     var buttonRef = useRef(null)
 
+    const validatePassword = (password_value) => {
+        special_symbol_pattern = /[!@#$%^&*(),.?":{}|<>]/g
+        capital_letter_pattern = /[A-Z]/g
+
+        return special_symbol_pattern.test(password_value) && capital_letter_pattern.test(password_value)
+    }
+
     var inputData = (event, input_type) => {
         switch (input_type) {
             case "bvn":
@@ -36,15 +43,21 @@ const Signup1 = () => {
 
         if ((bvnRef.current.value && password1Ref.current.value && password2Ref.current.value) !== ""){
             if (password1Ref.current.value === password2Ref.current.value){
-                setHelpertext("")
-                setShow_helpertext(false)
-               /*  users_api.post("/verifyBVN.php", {
-                    "bvn": data["bvn"]
-                }).then((response) => {
-                    console.log(response)
-                }) */
-                navigate("/proceed-signup", {state: {"data": data}})
-                
+                if (validatePassword(password1Ref.current.value) === true){
+                    setHelpertext("")
+                    setShow_helpertext(false)
+                /*  users_api.post("/verifyBVN.php", {
+                        "bvn": data["bvn"]
+                    }).then((response) => {
+                        console.log(response)
+                    }) */
+                    navigate("/proceed-signup", {state: {"data": data}})
+                }
+                else{
+                    setHelpertext("Password must be at least 8 characters, must contain a special symbol and a capital letter.")
+                    setShow_helpertext(false)
+                }
+
             }
             else{
                 setHelpertext("Passwords don't match")
