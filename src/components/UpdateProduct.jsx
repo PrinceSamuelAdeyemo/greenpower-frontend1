@@ -1,11 +1,18 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import { Card, Label, TextInput, Select } from 'flowbite-react'
 
 import CustomModal from './CustomModal'
 
 import products_api from '../utils/products_api'
+import hubs_api from '../utils/hubs_api'
 
 const UpdateProduct = ({ showModal, closeModal, data_update }) => {
+    const [hub_available, setHub_available] = useState(false)
+    const [hubs_list, setHubs_list] = useState([])
+    const [currentHub, setCurrentHub] = useState()
+    const [hubChanged, setHubChanged] = useState(0)
+
+
     console.log(data_update)
     const product_nameRef = useRef(null)
     const serial_numberRef = useRef(null)
@@ -14,6 +21,7 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
     const commissionRef = useRef(null)
     const weighted_pointsRef = useRef(null)
     const logistics_feeRef = useRef(null)
+    const currentHubRef = useRef(null)
 
     const getProfileForUpdate = () => {
         products_api.post("/updateProduct.php", {
@@ -27,6 +35,37 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
                 "outrightCommission":commissionRef.current.value,
                 "logisticsFees": logistics_feeRef.current.value,
                 "weightedPoints": weighted_pointsRef.current.value,
+                "hubToken": currentHub
+        })
+        .then((response) => {
+            console.log(response)
+        })
+    }
+
+    const getHubsList = () => {
+        console.log(hubChanged, "from hublist")
+        hubs_api.get("/getHubs.php")
+        .then((response) => {
+            var hubs = response.data["data"]
+            console.log(hubs)
+            setHubs_list(hubs)
+            setHub_available(true)
+            setCurrentHub(hubs[0]["hubToken"])
+            console.log("AA")
+        })
+    }
+
+    const changeHub = () => {
+        if (currentHubRef.current){
+            setCurrentHub(currentHubRef.current.value)
+        }
+        
+    }
+
+    const deleteProduct = () => {
+        console.log("About to delete", data_update["pdtToken"])
+        products_api.post("/deleteProduct.php", {
+            "pdtToken": data_update["pdtToken"]
         })
         .then((response) => {
             console.log(response)
@@ -34,8 +73,12 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
     }
 
     useEffect(() => {
+        getHubsList()
+    }, [])
 
-    })
+    useEffect(() => {
+        changeHub()
+    }, [hubChanged])
 
   return (
     <CustomModal showModal={showModal} closeModal={closeModal}>
@@ -57,7 +100,17 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
                 <div className='flex items-center gap-2 mb-3'>
                     <Label value='Product Image' htmlFor='product_image' className='w-3/4' />
                     <input type="file" alt="" ref={product_imageRef} accept='image/*' className='' />
-                    
+                </div>
+
+                <div className='flex items-center gap-2 mb-3'>
+                    <Label value='Select Hub' htmlFor='hub' className='w-1/4' />
+                    <Select id='hub' ref={currentHubRef} onChange={(event) => setHubChanged(hubChanged+1)} >
+                        {hub_available &&
+                            hubs_list.map((hub, key) => (
+                                <option value={hub["hubToken"]} key={hub["hubToken"]} className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'>{hub["hubName"]}</option>
+                            ))
+                        }
+                    </Select>
                 </div>
             </div>
 
@@ -85,7 +138,8 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
                 </div>
             </div>
             <p className='text-c-lightgreen font-semibold'>Click to add more payment plan +</p>
-            <div className='w-full flex justify-center'>
+            <div className='w-full flex gap-4 justify-center'>
+                <button onClick={() => {deleteProduct(data_update["hubToken"])}} className='bg-red-600 text-white w-[40%] h-10 rounded' >Delete product</button>
                 <button onClick={getProfileForUpdate} className='bg-c-lightgreen text-white w-[40%] h-10 rounded' >Save</button>
             </div>
         {/* </form> */}

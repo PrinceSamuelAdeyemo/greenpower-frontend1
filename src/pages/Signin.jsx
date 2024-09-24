@@ -41,7 +41,7 @@ const Signin = () => {
                         "lastName": response_data['lastName'],
                         "userToken": response_data['userToken'],
                         "phoneNumber": response_data['phoneNumber'],
-                        "ADMIN": response_data["ADMIN"]
+                        "ADMIN": 1//response_data["ADMIN"]
                     }
                     document.cookie = COOKIE_NAME + "=" + (JSON.stringify(COOKIE_VALUE)) + "; expires=" + COOKIE_EXPIRES //+ "; path=" + COOKIE_PATH;
                     navigate("/")
