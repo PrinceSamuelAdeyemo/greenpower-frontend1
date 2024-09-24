@@ -38,6 +38,13 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
                 "hubToken": currentHub
         })
         .then((response) => {
+            if (response.data["status_code"] === 200){
+                alert("Product has been updated successfully")
+                closeModal()
+            }
+            else{
+                alert("Error saving product")
+            }
             console.log(response)
         })
     }
@@ -69,7 +76,17 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
         })
         .then((response) => {
             console.log(response)
+            if (response.data["status_code"] === 200){
+                alert("Product has been deleted successfully")
+                closeModal()
+            }
+            else{
+                alert("Error deleting product")
+            }
+            
         })
+
+        
     }
 
     useEffect(() => {
