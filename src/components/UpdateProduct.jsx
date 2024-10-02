@@ -72,6 +72,7 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
     const deleteProduct = () => {
         console.log("About to delete", data_update["pdtToken"])
         products_api.post("/deleteProduct.php", {
+            "userToken": data_update["userToken"],
             "pdtToken": data_update["pdtToken"]
         })
         .then((response) => {

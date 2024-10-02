@@ -3,6 +3,7 @@ import { FaPlus } from "react-icons/fa"
 
 import AddHubModal from '../components/AddHubModal';
 import HubDisplay from '../components/HubDisplay';
+import SuccessfulHubModal from '../components/SuccessfulHubModal';
 
 import hubs_api from '../utils/hubs_api';
 import products_api from '../utils/products_api';
@@ -39,13 +40,8 @@ const Products = (props) => {
         setShowModal(true)
     }
 
-    var createHub = (add_more) => {
-        if (add_more){
-
-        }
+    var createHub = () => {
         
-        setShowModal2(true)
-        setShowModal(false)
         hubs_api.post("/createHub.php", {
             "userToken": userToken,
             "hubName": hubname.trim()
@@ -54,6 +50,8 @@ const Products = (props) => {
             console.log(response)
             if (response.data['status_code'] == 200){
                 hubs_data()
+                setShowModal2(true)
+                //setShowModal(false)
             }
         })
     }
@@ -86,7 +84,9 @@ const Products = (props) => {
             <div className='w-40 h-40 border-3 border-c-lightgreen rounded-full flex justify-center items-center' onClick={addToHub} >
                 <FaPlus size="40" title='A plus sign' color='#388F36' />
             </div>}
-            {(showModal === true) ? <AddHubModal hubName={hubname} setHubname={setHubname} createHub={createHub} userToken={userToken} showModal={showModal} openModal={() => setShowModal(true)} closeModal={(event) => setShowModal(false)} /> : <></>}
+            {(showModal === true) ? <AddHubModal hubName={hubname} setHubname={setHubname} createHub={createHub} userToken={userToken} showModal={showModal} openModal={() => setShowModal(true)} closeModal={(event) => setShowModal(false)} showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} /> : <></>}
+            {showModal2 && <SuccessfulHubModal showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} />}
+            
         </div>
 
         {hubs_available && <div className='flex gap-4 flex-wrap mt-10 px-2'>

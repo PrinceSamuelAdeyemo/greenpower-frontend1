@@ -141,7 +141,6 @@ const AddProduct = (props) => {
                             <TextInput type='text' id='weighted_points' ref={weightedPointRef} className='flex-grow w-[60rem]' />
                         </div>
                     </div>
-                    <p className='text-c-lightgreen font-semibold'>Click to add more payment plan +</p>
                     <div className='w-full flex justify-center'>
                         <button className='bg-c-lightgreen text-white w-[40%] h-10 rounded' onClick={saveProduct}>Save</button>
                     </div>

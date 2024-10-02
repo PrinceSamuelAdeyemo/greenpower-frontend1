@@ -5,7 +5,7 @@ import { TextInput } from 'flowbite-react'
 
 import hubs_api from '../utils/hubs_api';
 
-const AddHubModal = ({showModal, openModal, closeModal, createHub, hubName, setHubname }) => {
+const AddHubModal = ({showModal, openModal, closeModal, createHub, hubName, setHubname, showModal2, openModal2, closeModal2 }) => {
     var inputRef = useRef()
     const [button_state, setButton_state] = useState(true)
     const [show_modal2, setShowModal2] = useState(false)
@@ -36,7 +36,7 @@ const AddHubModal = ({showModal, openModal, closeModal, createHub, hubName, setH
             <button className={`h-10 rounded ${(Number(hubName) !==0 ) ?  'text-white bg-c-lightgreen font-semibold': 'text-c-lightgreen bg-gray-300' }`} disabled={button_state} onClick={createHub}>Save</button>
             <button className='text-center text-c-lightgreen font-semibold' onClick={closeModal}>Close</button>
         </div>
-        {show_modal2 && <SuccessfulHubModal showModal={show_modal2} openModal={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} />}
+        {show_modal2 && <SuccessfulHubModal showModal={showModal2} openModal={openModal2} closeModal2={closeModal2} />}
     </CustomModal2>
   )
 }
