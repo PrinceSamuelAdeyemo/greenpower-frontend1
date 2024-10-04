@@ -19,12 +19,21 @@ import three_rings from "../assets/Frame 204.png"
 const Sidebar = ({closeSidebar, myCookie}) => {
     const [openModal, setOpenModal] = useState(false)
     const [admin, setAdmin] = useState(0)
-    console.log(myCookie)
+    //console.log(myCookie)
     var getAdminStatus = () => {
         if (myCookie !== ""){
             var admin_status = myCookie["ADMIN"]
             setAdmin(admin_status)
         }
+      }
+
+      //document.cookie = ""
+
+      var logoutUserDetails = () => {
+        var cookie_object = JSON.parse(localStorage.getItem('dataValue'))
+        console.log(cookie_object)
+        localStorage.removeItem('dataValue')
+        navigate("/login")
       }
 
     useEffect(() => {
@@ -87,7 +96,7 @@ const Sidebar = ({closeSidebar, myCookie}) => {
                     <img src={settingsIcon} />
                     Settings
                 </li></Link>
-                <Link to="/login"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
+                <Link type="button" onClick={logoutUserDetails} className="w-full"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
                     <img src={logoutIcon} />
                     Log Out
                 </li></Link>

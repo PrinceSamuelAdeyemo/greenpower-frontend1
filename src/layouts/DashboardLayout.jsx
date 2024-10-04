@@ -7,13 +7,17 @@ const DashboardLayout = ({children}) => {
     const navigate = useNavigate()
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [test, setTest] = useState('')
+    const [toggleRole, setToggleRole] = useState(false)
     const [cookieDetails, setCookieDetails] = useState({
       "firstName": "",
       "lastName": "",
       "phoneNumber": "",
       "userToken": "",
       "email": "",
+      "profilePicture": "",
+      "kycDetails": "",
+      "ADMIN": 0,
+      "can_switch": 0
     })
  
   const toggleSidebar = () => {
@@ -21,29 +25,27 @@ const DashboardLayout = ({children}) => {
   };
 
   var getUserDetails = () => {
+    console.log(localStorage.dataValue)
     var logged_in = false;
     if (cookieDetails["userToken"] == ""){
-      var cookie_object = document.cookie.split(";")
-      console.log(cookie_object.includes("GREENPOWER_USERDETAILS"))
-      for (var i = 0; i < cookie_object.length; i++){
-        if (cookie_object[i].includes("GREENPOWER_USERDETAILS=")){
-          console.log(cookie_object[i].includes("GREENPOWER_USERDETAILS="))
-          var cookie_values = JSON.parse(cookie_object[i].split("=")[1])
-          setTest(cookie_values["userToken"])
-          setCookieDetails(cookie_values)
-          /* setCookieDetails((prevValues) => ({
-            ...prevValues, "firstName": cookie_values["firstName"], "lastName": cookie_values["lastName"], "phoneNumber": cookie_values["phoneNumber"], "userToken": cookie_values["userToken"], "email": cookie_values["email"], "admin_status": cookie_values["ADMIN"]
-          })) */
-          logged_in = true
-          break;
-        }
-        else{
-          //logged_in = false
-          //navigate("/login")
-        }
-        if (logged_in == false){
-          //navigate("/login")
-        }
+      if (localStorage.dataValue){
+        var cookie_values = JSON.parse(localStorage["dataValue"])
+        setCookieDetails((prevValues) => ({
+          ...prevValues, 
+          "firstName": cookie_values["firstName"], 
+          "lastName": cookie_values["lastName"], 
+          "phoneNumber": cookie_values["phoneNumber"], 
+          "userToken": cookie_values["userToken"], 
+          "email": cookie_values["email"], 
+          "ADMIN": cookie_values["ADMIN"],
+          "profilePicture": cookie_values["profilePicture"],
+          "kycDetails": cookie_values["kycDetails"],
+          "can_switch": cookie_values["can_switch"]
+        }))
+        logged_in = true
+      }
+      else{
+        navigate("/login")
       }
     }
     
@@ -70,7 +72,7 @@ const DashboardLayout = ({children}) => {
       </div>
 
       <div className='lg:px-1 pb-1 xl:px-3 xl:pb-3 md:w-[75%] lg:w-[80%] min-h-[100vh]'>
-        <Navigation toggleSidebar={toggleSidebar}/>
+        <Navigation myCookie={cookieDetails} toggleSidebar={toggleSidebar}/>
         <div className='pt-3'>
           {childrenWithProps}
         </div>

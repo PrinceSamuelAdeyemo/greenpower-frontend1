@@ -11,7 +11,7 @@ const Signin = () => {
     var COOKIE_NAME = "GREENPOWER_USERDETAILS"
     var COOKIE_PATH = "/cookie/auth_greenpower"
     // Cookie expiry date/time is set to 3 days (36 hours)
-    var COOKIE_EXPIRES = (new Date(Date.now() + 259200000)).toUTCString()
+    var CURRENT_TIME_LOGGED_IN = (new Date(Date.now() + 259200000)).toUTCString()
     var COOKIE_VALUE;
 
     var emailRef = useRef(null)
@@ -23,6 +23,7 @@ const Signin = () => {
 
     var submitData = (event) => {
         event.preventDefault();
+        navigate("/")
         users_api.post("/login.php", {
             "identifier": emailRef.current.value,
             "password": passwordRef.current.value
@@ -41,9 +42,17 @@ const Signin = () => {
                         "lastName": response_data['lastName'],
                         "userToken": response_data['userToken'],
                         "phoneNumber": response_data['phoneNumber'],
-                        "ADMIN": response_data["ADMIN"]
+                        "profilePicture": response_data['profilePicture'],
+                        "kycDetails": response_data['kycDetails'],
+                        "ADMIN": 1, //response_data["ADMIN"]
+                        "can_switch": 0,
                     }
-                    document.cookie = COOKIE_NAME + "=" + (JSON.stringify(COOKIE_VALUE)) + "; expires=" + COOKIE_EXPIRES //+ "; path=" + COOKIE_PATH;
+                    if (COOKIE_VALUE["ADMIN"] === 1){
+                        COOKIE_VALUE["can_switch"] = 1
+                    }
+                    //document.cookie = COOKIE_NAME + "=" + (JSON.stringify(COOKIE_VALUE)) + "; expires=" + COOKIE_EXPIRES //+ "; path=" + COOKIE_PATH;
+                    localStorage.setItem('dataValue', JSON.stringify(COOKIE_VALUE))
+                    console.log(COOKIE_VALUE)
                     navigate("/")
                 }
             }
