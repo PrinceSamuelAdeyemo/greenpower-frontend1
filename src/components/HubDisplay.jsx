@@ -6,7 +6,7 @@ import { FaEllipsisV } from "react-icons/fa"
 import hubs_api from '../utils/hubs_api'
 
 
-const HubDisplay = ({hub, hubsData}) => {
+const HubDisplay = ({userToken, hub, hubsData}) => {
 
   var user_token = hub["userToken"]
   var hub_id = hub["id"]
@@ -27,8 +27,9 @@ const HubDisplay = ({hub, hubsData}) => {
     console.log("Clicked, but will pop over still come on?")
      
     try{
-      console.log("About to send ", hub["hubToken"])
-      hubs_api.post("/deleteHub.php", {
+      console.log("About to send ", userToken,  hub["hubToken"])
+      hubs_api.delete("/deleteHub.php", {
+      "userToken": userToken,
       "hubToken": String(hub["hubToken"])
     })
     .then((response) => {

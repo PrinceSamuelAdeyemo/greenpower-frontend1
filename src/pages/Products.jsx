@@ -4,6 +4,7 @@ import { FaPlus } from "react-icons/fa"
 import AddHubModal from '../components/AddHubModal';
 import HubDisplay from '../components/HubDisplay';
 import SuccessfulHubModal from '../components/SuccessfulHubModal';
+import ErrorModal from '../components/ErrorModal';
 
 import hubs_api from '../utils/hubs_api';
 import products_api from '../utils/products_api';
@@ -15,6 +16,8 @@ const Products = (props) => {
 
     const [showModal, setShowModal] = useState(false);
     const [showModal2, setShowModal2] = useState(false);
+    const [errorModal, setShowErrorModal] = useState(false)
+    const [errorMessage, setShowErrorMessage] = useState('')
     const [hubname, setHubname] = useState("")
     const [hubs_available, setHubs_available] = useState(false)
     
@@ -53,6 +56,14 @@ const Products = (props) => {
                 setShowModal2(true)
                 //setShowModal(false)
             }
+            else if ((response.data["status_code"] === 400) && (response.data["message"] === "Hub already exists")){
+                setShowErrorMessage("Hub already exists.")
+                setShowErrorModal(true)
+            }
+            else{
+                setShowErrorMessage("We ran into creating a new hub, Kindly try again.")
+                setShowErrorModal(true)
+            }
         })
     }
 
@@ -84,14 +95,14 @@ const Products = (props) => {
             <div className='w-40 h-40 border-3 border-c-lightgreen rounded-full flex justify-center items-center' onClick={addToHub} >
                 <FaPlus size="40" title='A plus sign' color='#388F36' />
             </div>}
-            {(showModal === true) ? <AddHubModal hubName={hubname} setHubname={setHubname} createHub={createHub} userToken={userToken} showModal={showModal} openModal={() => setShowModal(true)} closeModal={(event) => setShowModal(false)} showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} /> : <></>}
-            {showModal2 && <SuccessfulHubModal showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} />}
-            
+            {(showModal === true) ? <AddHubModal hubName={hubname} setHubname={setHubname} createHub={createHub} userToken={userToken} showModal={showModal} openModal={() => setShowModal(true)} closeModal={(event) => setShowModal(false)} showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} errorMessage={errorMessage} /> : <></>}
+            {showModal2 && <SuccessfulHubModal showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} title={"Add Hub"} message={'Hub created successfully.'} />}
+            {errorModal && <ErrorModal showModal2={errorModal} openModal2={() => setShowErrorModal(true)} closeModal2={() => setShowErrorModal(false)} message={errorMessage} />}
         </div>
 
         {hubs_available && <div className='flex gap-4 flex-wrap mt-10 px-2'>
             {hubs_list?.map((hub, key) => (
-                <HubDisplay key={hub["id"]} hub={hub} hubtoken="" hubsData={hubs_data} />
+                <HubDisplay key={hub["id"]} userToken={userToken} hub={hub} hubtoken="" hubsData={hubs_data} />
             ))
             }
             

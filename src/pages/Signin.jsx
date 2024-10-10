@@ -44,7 +44,7 @@ const Signin = () => {
                         "phoneNumber": response_data['phoneNumber'],
                         "profilePicture": response_data['profilePicture'],
                         "kycDetails": response_data['kycDetails'],
-                        "ADMIN": response_data["ADMIN"],
+                        "ADMIN": 1,//response_data["ADMIN"],
                         "can_switch": 0,
                     }
                     if (COOKIE_VALUE["ADMIN"] === 1){

@@ -53,7 +53,7 @@ const DashboardLayout = ({children}) => {
 
   useEffect(() => {
     getUserDetails()
-  }, [cookieDetails])
+  }, [cookieDetails, localStorage.dataValue])
 
 
   // Clone each child and pass the cookie as a prop

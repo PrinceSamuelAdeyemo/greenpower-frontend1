@@ -6,10 +6,16 @@ import profilePic from "../assets/Rectangle 37.png"
 import products_api from '../utils/products_api'
 import { useLocation } from 'react-router-dom'
 
+import SuccessfulHubModal from '../components/SuccessfulHubModal'
+import ErrorModal from '../components/ErrorModal'
+
 const AddProduct = (props) => {
     const location = useLocation()
     var cookieDetails = props.myCookie
     const [email, setEmail] = useState('')
+    const [showModal2, setShowModal2] = useState(false)
+    const [errorModal, setErrorModal] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
 
     // Refs
     const product_nameRef = useRef(null)
@@ -51,6 +57,13 @@ const AddProduct = (props) => {
                 products_api.post("addProduct_csv.php", data)
                 .then((response) => {
                     console.log(response)
+                    if (response.data["status_code"] === 200){
+                        setShowModal2(true)
+                    }
+                    else{
+                        setErrorMessage('Error in adding product to hub. Kindly check your inputs and make sure you fill in all required fields appropriately.')
+                        setErrorModal(true)
+                    }
                 })
             }
         }
@@ -71,6 +84,13 @@ const AddProduct = (props) => {
                 products_api.post("addProduct.php", data)
                 .then((response) => {
                     console.log(response)
+                    if (response.data["status_code"] === 200){
+                        setShowModal2(true)
+                    }
+                    else{
+                        setErrorMessage('Error in adding product to hub. Kindly check your inputs and make sure you fill in all required fields appropriately.')
+                        setErrorModal(true)
+                    }
                 })
             }
         }
@@ -145,7 +165,8 @@ const AddProduct = (props) => {
                         <button className='bg-c-lightgreen text-white w-[40%] h-10 rounded' onClick={saveProduct}>Save</button>
                     </div>
                 {/* </form> */}
-                
+                {showModal2 && <SuccessfulHubModal showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} title={"Add Product"} message={'Product added to hub successfully.'} />}
+                {errorModal && <ErrorModal showModal2={errorModal} openModal2={() => setErrorModal(true)} closeModal2={() => setErrorModal(false)} message={errorMessage} />}
                 
             </Card>
 
