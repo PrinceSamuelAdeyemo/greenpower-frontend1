@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRef, useState, useEffect } from 'react'
 import { Link, useLocation } from "react-router-dom"
-import { TextInput, Button, Label, } from 'flowbite-react'
+import { TextInput, Button, Label, Select } from 'flowbite-react'
 import SignupRightImage from "../assets/Rectangle 8.png"
 
 import EmailConfirmationModal from '../components/EmailConfirmationModal'
@@ -25,12 +25,14 @@ const Signup2 = () => {
         "lastName": "",
         "email": "",
         "phoneNumber": "",
+        "gender": ""
     })
 
     var firstNameRef = useRef(null)
     var lastNameRef = useRef(null)
     var emailRef = useRef(null)
     var phoneNumberRef = useRef(null)
+    var genderRef = useRef(null)
 
     var saveTempData = (event, input_data) => {
         switch(input_data){
@@ -46,6 +48,8 @@ const Signup2 = () => {
             case "phoneNumber":
                 setData(prevData => ({...prevData, "phoneNumber": phoneNumberRef.current.value}))
                 break;
+            case "gender":
+                setData(prevData => ({...prevData, "gender": genderRef.current.value}))
         }
     }
 
@@ -68,6 +72,7 @@ const Signup2 = () => {
                     ...data
                 })
                 .then((response) => {
+                    console.log(response)
                     if (response.data["data"]){
                         setHelpertext("")
                         console.log("HHHH", response)
@@ -75,6 +80,7 @@ const Signup2 = () => {
                     }
                     else if (response.data["message"]){
                         setHelpertext(response.data["message"])
+                        console.log(response)
                     }
                 })
                 
@@ -140,10 +146,20 @@ const Signup2 = () => {
                         <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='phone_number' type='number' placeholder='07012345678' ref={phoneNumberRef} onChange={() => saveTempData(event, "phoneNumber")} required />
                     </div>
 
+                    <div className='w-full'>
+                        <div className='mb-2 block'>
+                            <Label htmlFor='gender' value='Gender' className='font-bold' />
+                        </div>
+                        <Select className='flex-grow border-c-lightgreen text-c-lightgreen' id='gender'  placeholder='Male/Female' ref={genderRef} onChange={() => saveTempData(event, "gender")} required >
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                        </Select>
+                    </div>
+
                     <div>
                         <Button type='submit' className='bg-c-lightgreen text-white w-full'>Proceed</Button>
                     </div>
-                    {showModal && <EmailConfirmationModal showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} pic={emailconfirmpic} phoneNumber={data["phoneNumber"]} />}
+                    {showModal && <EmailConfirmationModal showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} pic={emailconfirmpic} email={data["email"]} />}
 
                     <div className='mb-2 flex gap-2'>
                         <p>Already have an account?</p>

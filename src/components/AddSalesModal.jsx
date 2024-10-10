@@ -31,6 +31,8 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
 
     const submitToAddSales = () =>{
         try{
+            console.log(parseFloat((currentProduct["outrightPrice"]).toFixed(2)))
+            console.log((55/1).toFixed(2))
             console.log("CURRENT HUB", currentHub)
             console.log("CURRENT PRODUCT", currentProduct)
             console.log(typeof(parseInt(currentProduct["logisticsFees"])))
@@ -42,7 +44,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 "pdtSerialNumber": currentProduct["pdtSerialNumber"],
                 "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
                 "payment_option": "outright",
-                "amountPaid": Number(currentProduct["outrightPrice"]),
+                "amountPaid": parseFloat((currentProduct["outrightPrice"]).toFixed(2)),
                 "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
             })
             .then((response) => {

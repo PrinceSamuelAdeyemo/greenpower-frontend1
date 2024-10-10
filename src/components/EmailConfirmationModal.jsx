@@ -7,7 +7,7 @@ import smsconfirmpic from "../assets/3d-mobile-phone-with-security-code-padlock-
 
 import users_api from '../utils/users_api'
 
-const EmailConfirmationModal = ({showModal, openModal, closeModal, pic, phoneNumber}) => {
+const EmailConfirmationModal = ({showModal, openModal, closeModal, pic, email}) => {
 
   const navigate = useNavigate()
   
@@ -60,7 +60,7 @@ const EmailConfirmationModal = ({showModal, openModal, closeModal, pic, phoneNum
         </div>
 
         <div className='flex flex-col justify-center items-center text-center gap-3'>
-          <p className='w-[85%] text-xl font-medium text-center'>We have sent a verification code to phone number {phoneNumber}. Please enter the code below</p>
+          <p className='w-[85%] text-xl font-medium text-center'>We have sent a verification code to email {email}. Please enter the code below</p>
           <input type="text" ref={emailCodeRef} maxLength="6" onChange={ handleInput } className='text-3xl font-semibold border-x-0 border-t-0 border-b-2 border-b-c-lightgreen hover:border-0 hover:outline-none active:border-0 active:outline-none w-1/2 text-center focus:border-0 focus:outline-none ring-transparent' />
           <Button className='bg-c-lightgreen w-[80%]' disabled={button_state} onClick={verify_email}>Confirm</Button>
           <p className='text-c-lightgreen border-none outline-none underline' onClick={openSmsConfirmation}>Send SMS Instead</p>
