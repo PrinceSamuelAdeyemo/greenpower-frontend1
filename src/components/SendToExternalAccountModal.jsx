@@ -1,28 +1,90 @@
-import React from 'react'
+import React, { useEffect, useReducer, useRef, useState } from 'react'
 import { Button, Select, TextInput } from 'flowbite-react';
 import CustomModal from './CustomModal'
 
+import wallets_api from '../utils/wallets_api';
+
 const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cookieDetails, openModal }) => {
+    const bankCodeRef = useRef(null)
+    const accountNumberRef = useRef(null)
+    const amountRef = useRef(null)
+
+    const [bankList, setBankList] = useState([])
+
+    // Functions
+    const getBankList = () => {
+        try{
+            wallets_api.post("/bankList", {
+                "userToken": cookieDetails["userToken"]
+            })
+            .then((response) => {
+                console.log(response)
+                if (response.data["status_code"] === 200){
+                    setBankList((response.data["data"]["data"]))
+                }
+            })
+        }
+        catch(error){
+
+        }
+    }
+
+    const verifyBankAccount = () => {
+        let test_pattern = /^\d{10}$/
+        if (test_pattern.test(accountNumberRef.current.value)){
+            console.log(cookieDetails["userToken"], bankCodeRef.current.value, accountNumberRef.current.value)
+            try{
+                wallets_api.post("/verifyBankAccount.php", {
+                    "userToken": "9IISHuwNEdj",
+                    "bankCode": "609104",
+                    "accNo": "0037228681"
+                })
+                .then((response) => {
+                    console.log(response)
+                })
+            }
+            catch(error){
+
+            }
+        }
+    }
 
     const backToSendMoneyModal = (event) => {
         closeModal3()
         openModal()
     }
 
+    useEffect(() => {
+        console.log(cookieDetails)
+        getBankList()
+    }, [])
+
   return (
     <CustomModal showModal={showModal3} openModal={openModal3} closeModal={closeModal3}>
         <div className='flex flex-col items-center gap-5 w-full' onClick={() => console.log(2)}>
             <form className='flex flex-col gap-8 w-full'>
-                <div className='flex gap-4'>
+                <div className='flex flex-col gap-2'>
                     <p>Bank</p>
-                    <Select className='w-full'>
-                        <option value="">A</option>
-                        <option value="">B</option>
+                    <Select ref={bankCodeRef} className='w-full'>
+                    {
+                            bankList.map((bank, index) => (
+                                <option value={bank["bankCode"]}>{bank["bankName"]}</option>
+                            ))
+                        }
+                        
                     </Select>
                 </div>
-                <div className='flex gap-4'>
+                <div className='flex flex-col gap-2'>
+                    <p>Account Number:</p>
+                    <TextInput pattern='[0-9]{10}' onChange={verifyBankAccount} ref={accountNumberRef} className='w-full'></TextInput>
+                </div>
+                <div className='flex flex-col gap-2'>
+                    <p>Account Name</p>
+                    <TextInput value="eeee" className='w-full focus:ring-0 border-0 outline-0'></TextInput>
+                </div>
+                <div className='flex flex-col gap-2'>
                     <p>Amount:</p>
-                    <TextInput className='w-full'></TextInput>
+                    <TextInput pattern='[0-9]{0,10}' ref={amountRef} className='w-full'></TextInput>
                 </div>
 
                 <div className='flex justify-between'>
