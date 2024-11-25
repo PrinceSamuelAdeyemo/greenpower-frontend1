@@ -14,6 +14,9 @@ import dashImage from '../assets/dash-image.png';
 import weighted_points_api from '../utils/weighted_points_api';
 import sales_api from '../utils/sales_api';
 import products_api from '../utils/products_api';
+import wallets_api from '../utils/wallets_api';
+
+import SendMoneyModal from '../components/SendMoneyModal';
 
 const Dashboard = (props) => {
     var cookieDetails = props.myCookie
@@ -29,6 +32,8 @@ const Dashboard = (props) => {
     // Products
     var [products_available, setProducts_available] = useState(false)
     const [productList, setProductList] = useState([])
+    //Wallets
+    var [walletBalance, setWalletBalance] = useState()
 
     const [showUsers, setShowUsers] = useState(true)
     const [showIncome, setShowIncome] = useState(false)
@@ -114,10 +119,27 @@ const Dashboard = (props) => {
         console.log(error)
        }
     }
+
+    const getWalletBalance = () => {
+        try{
+            wallets_api.post("/checkAccountBalance.php", {
+                "userToken": cookieDetails["userToken"]
+            })
+            .then((response) => {
+                if (response.data["status_code"] === 200){
+                    setWalletBalance(response.data["data"]["balance"])
+                }
+            })
+        }
+        catch (error) {
+
+        }
+    }
     
 
     useEffect(() => {
         getFewProducts()
+        getWalletBalance()
     }, [products_api])
 
     useEffect(() => {
@@ -167,7 +189,7 @@ const Dashboard = (props) => {
                                         <div  className="flex items-center gap-2 text-lg font-bold">
                                             <BiRefresh /> 
                                             {
-                                                showBalance ? <><p>#15,000</p> <FaEye onClick={() => setShowBalance(!showBalance)} /></> : <><p>******</p> <FaEyeSlash onClick={() => setShowBalance(!showBalance)} /></>
+                                                showBalance ? <><p>#{walletBalance}</p> <FaEye onClick={() => setShowBalance(!showBalance)} /></> : <><p>******</p> <FaEyeSlash onClick={() => setShowBalance(!showBalance)} /></>
                                             } 
                                         </div>
                                     </div>

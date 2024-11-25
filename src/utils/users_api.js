@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const users_api = axios.create({
-    baseURL: 'https://greenpower.reni.com.ng/v1/api/users',
+    baseURL: 'http://stagging-affiliate.greenpowernig.com/v1/api/users',
     //headers: {'X-Custom-Header': 'foobar'}
   });
 

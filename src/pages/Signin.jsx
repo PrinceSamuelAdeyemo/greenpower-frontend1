@@ -50,7 +50,6 @@ const Signin = () => {
                     if (COOKIE_VALUE["ADMIN"] === 1){
                         COOKIE_VALUE["can_switch"] = 1
                     }
-                    //document.cookie = COOKIE_NAME + "=" + (JSON.stringify(COOKIE_VALUE)) + "; expires=" + COOKIE_EXPIRES //+ "; path=" + COOKIE_PATH;
                     localStorage.setItem('dataValue', JSON.stringify(COOKIE_VALUE))
                     console.log(COOKIE_VALUE)
                     navigate("/")

@@ -57,8 +57,31 @@ const Signup2 = () => {
 
     var submitData = (event) => {
         event.preventDefault()
+
+        try {
+            console.log("eeee")
+            users_api.post("/register.php", {
+                ...data
+            })
+            .then((response) => {
+                console.log(response)
+                if (response.data["data"]){
+                    setHelpertext("")
+                    console.log("HHHH", response)
+                    setShowModal(true)
+                }
+                else if (response.data["message"]){
+                    setHelpertext(response.data["message"])
+                    console.log(response)
+                }
+            })
+            
+           } 
+           catch (error) {
+            console.log("Error in submitting data", error)
+           }
         
-        Object.keys(data).map((key) => {
+        /* Object.keys(data).map((key) => {
             if (Number(data[key]) === 0){
                 setHelpertext("Incomplete details")
                 setShow_helpertext(true)
@@ -68,6 +91,7 @@ const Signup2 = () => {
                 setShow_helpertext(false)
                 
                try {
+                console.log("eeee")
                 users_api.post("/register.php", {
                     ...data
                 })
@@ -90,7 +114,7 @@ const Signup2 = () => {
                }
                
             }
-        })
+        }) */
     }
 
     useEffect(() => {
@@ -163,7 +187,7 @@ const Signup2 = () => {
 
                     <div className='mb-2 flex gap-2'>
                         <p>Already have an account?</p>
-                        <Link to="/signin" className='text-c-lightgreen font-bold'>Sign in</Link>
+                        <Link to="/login" className='text-c-lightgreen font-bold'>Sign in</Link>
                     </div>
                 </div>
 

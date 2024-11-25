@@ -1,12 +1,48 @@
 import { Button, Card, Table } from 'flowbite-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import image from '../assets/dashImage2.png';
 import { BiRefresh } from 'react-icons/bi';
 import { FaEye, FaEyeSlash, FaPaperPlane, FaWallet } from 'react-icons/fa';
 
+// APIs
+import wallets_api from '../utils/wallets_api';
+
+// Components/Modals
+import SendMoneyModal from '../components/SendMoneyModal';
+import SendToGreenPowerAccountModal from '../components/SendToGreenPowerAccountModal';
+import SendToExternalAccountModal from '../components/SendToExternalAccountModal';
+
 const Wallet = (props) => {
     var cookieDetails = props.myCookie;
     var [show_balance, setShow_balance] = useState(false);
+    const [showModal, setShowModal] = useState(false)
+    const [showModal2, setShowModal2] = useState(false)
+    const [showModal3, setShowModal3] = useState(false)
+    const [walletBalance, setWalletBalance] = useState()
+
+    const getWalletBalance = () => {
+        try{
+            wallets_api.post("/checkAccountBalance.php", {
+                "userToken": cookieDetails["userToken"]
+            })
+            .then((response) => {
+                if (response.data["status_code"] === 200){
+                    setWalletBalance(response.data["data"]["balance"])
+                }
+            })
+        }
+        catch (error) {
+            
+        }
+    }
+
+    const openSendMoneyModal = () => {
+
+    }
+
+    useEffect(() => {
+        getWalletBalance()
+    })
 
     return (
         <div className="p-4 bg-gray-100 min-h-screen">
@@ -36,7 +72,7 @@ const Wallet = (props) => {
                         <p className='mb-4 text-2xl font-bold text-c-gray opacity-90'>Account Balance</p>
                         <div className='flex text-3xl items-center gap-2 lg:gap-2 xl:gap-4 mb-4'>
                             <BiRefresh/> 
-                            <p className='text-sm md:text-md lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? '#150946.55' : '******'}</p> 
+                            <p className='text-sm md:text-md lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? `#${walletBalance}` : '******'}</p> 
                             <div onClick={() => setShow_balance(!show_balance)}>
                                 {show_balance ? <FaEye /> : <FaEyeSlash />}
                             </div>
@@ -46,7 +82,7 @@ const Wallet = (props) => {
                         <div className='lg:px-60 flex justify-center'>
                             <Card className='w-full lg:w-[80%] xl:w-full flex justify-center items-center'>
                                 <div className='flex flex-col lg:flex-row items-center lg:px-2 xl:px-4 lg:py-0 gap-3 lg:gap-1 xl:gap-3'>
-                                    <Button className='bg-c-lightgreen w-full lg:w-1/2'>
+                                    <Button className='bg-c-lightgreen w-full lg:w-1/2' onClick={() => setShowModal(true)}>
                                         <div className='flex flex-col justify-center items-center'>
                                             <FaPaperPlane className='mb-1'/>
                                             <p>Send</p>
@@ -100,6 +136,10 @@ const Wallet = (props) => {
                     </Table>
                 </div>
             </Card>
+            {showModal && <SendMoneyModal cookieDetails={cookieDetails} showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} openModal2={() => setShowModal2(true)} openModal3={() => setShowModal3(true)} />}
+            {showModal2 && <SendToGreenPowerAccountModal showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} cookieDetails={cookieDetails} openModal={() => setShowModal(true)} />}
+            {showModal3 && <SendToExternalAccountModal showModal3={showModal3} openModal3={() => setShowModal3(true)} closeModal3={() => setShowModal3(false)} cookieDetails={cookieDetails} openModal={() => setShowModal(true)} />}
+
         </div>
     );
 }

@@ -6,6 +6,7 @@ import SignupRightImage from "../assets/Rectangle 8.png"
 import Signup2 from './Signup2'
 
 import users_api from '../utils/users_api'
+import axios from 'axios'
 
 const Signup1 = () => {
     const navigate = useNavigate()
@@ -26,6 +27,7 @@ const Signup1 = () => {
         return special_symbol_pattern.test(password_value) && capital_letter_pattern.test(password_value)
     }
 
+
     var inputData = (event, input_type) => {
         switch (input_type) {
             case "bvn":
@@ -38,21 +40,26 @@ const Signup1 = () => {
     }
 
 
-    var openSignup2 = (event) => {
+    var openSignup2 = async (event) => {
         event.preventDefault();
-
+        
         if ((bvnRef.current.value && password1Ref.current.value && password2Ref.current.value) !== ""){
             if (password1Ref.current.value === password2Ref.current.value){
                 if (validatePassword(password1Ref.current.value) === true){
                     console.log(validatePassword(password1Ref.current.value))
                     setHelpertext("")
                     setShow_helpertext(false)
-                /*  users_api.post("/verifyBVN.php", {
+                    users_api.post("/verifyBVN.php", {
                         "bvn": data["bvn"]
                     }).then((response) => {
                         console.log(response)
-                    }) */
-                    navigate("/proceed-signup", {state: {"data": data}})
+                        if (response.data["status_code"] === 200){
+                            setHelpertext("")
+                            setShow_helpertext(false)
+                            navigate("/proceed-signup", {state: {"data": data}})
+                        }
+                    })
+                    
                 }
                 else{
                     console.log(validatePassword(password1Ref.current.value))
@@ -116,7 +123,7 @@ const Signup1 = () => {
 
                     <div className='mb-2 flex gap-2'>
                         <p>Already have an account?</p>
-                        <Link to="/signin" className='text-c-lightgreen font-bold'>Sign in</Link>
+                        <Link to="/login" className='text-c-lightgreen font-bold'>Sign in</Link>
                     </div>
                 </div>
             </form>
