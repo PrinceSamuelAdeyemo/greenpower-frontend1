@@ -148,19 +148,6 @@ const Dashboard = (props) => {
         }
     }
 
-    const updateHubToken = () => {
-        try {
-            users_api.post('/updateHub', {
-                "userToken": "",
-                "hubToken": ""
-            })
-            .then((response) => {
-                console.log(response.data)
-            })
-        } catch (error) {
-            
-        }
-    }
     
 
     useEffect(() => {

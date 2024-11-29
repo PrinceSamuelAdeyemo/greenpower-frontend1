@@ -1,54 +1,51 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Checkbox, Label, Select, TextInput } from 'flowbite-react';
-import { FaTimes } from "react-icons/fa"
 import CustomModal3 from './CustomModal3';
-import addSalesImage from '../assets/addsalesImage.png';
-import UploadComplete from './UploadComplete';
-import AddSalesComplete from './AddSalesComplete';
 
-
-import products_api from '../utils/products_api'
+import users_api from '../utils/users_api';
 import hubs_api from '../utils/hubs_api';
-import sales_api from '../utils/sales_api';
 
-const UpdateHubModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
+
+
+const UpdateHubModal = ({ showModal, openModal, closeModal, userToken }) => {
     var cookieDetails = cookieDetails;
 
-    const [showModal2, setShowModal2] = useState(false)
     const [hub_available, setHub_available] = useState(false)
     const [hubs_list, setHubs_list] = useState([])
-    const [hubChanged, setHubChanged] = useState(0)
+    const [disabledButton, setDisabledButton] = useState(true)
 
     const currentHubRef = useRef(null)
 
     
     const getHubsList = () => {
-        console.log(hubChanged, "from hublist")
         hubs_api.get("/getHubs.php")
         .then((response) => {
-            console.log(111111111111111111)
             var hubs = response.data["data"]
-            console.log(hubs)
             setHubs_list(hubs)
             setHub_available(true)
-            setCurrentHub(hubs[0]["hubToken"])
-            getProductsByHub(hubs[0]["hubToken"])
-            console.log("AA")
         })
+    }
+
+    const tempUpdateUserHub = () => {
+        currentHubRef.current.value === '0' ? setDisabledButton(true) : setDisabledButton(false)
     }
 
     const updateUserHub = () => {
-        hubs_api.post('updateHub', {
-            "userToken": "",
-            "hubToken": ""
+        if (currentHubRef.current.value !== '0'){
+            users_api.post('updateHub', {
+            "userToken": userToken,
+            "hubToken": currentHubRef.current.value
         })
         .then((response) => {
-            console.log(response)
+            console.log("Update Response",response)
+            if (response.data["status_code"] === 200){
+                closeModal()
+            }
         })
+        }
     }
 
     useEffect(() => {
-        console.log(hubChanged, "lola")
         getHubsList()
     }, [])
 
@@ -66,7 +63,8 @@ const UpdateHubModal = ({ showModal, openModal, closeModal, cookieDetails }) => 
             <div className='w-full my-3 px-4'>
                 <div className='my-3'>
                     <Label value='Select Hub' htmlFor='hub' />
-                    <Select id='hub' className='flex-grow' ref={currentHubRef} onChange={(event) => setHubChanged(hubChanged+1) }>
+                    <Select onChange={tempUpdateUserHub} id='hub' className='flex-grow' ref={currentHubRef} >
+                        <option value={'0'} className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'>----</option>
                         {hub_available &&
                             hubs_list.map((hub, key) => (
                                 <option value={hub["hubToken"]} key={hub["hubToken"]} className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'>{hub["hubName"]}</option>
@@ -76,7 +74,7 @@ const UpdateHubModal = ({ showModal, openModal, closeModal, cookieDetails }) => 
                 </div>
 
                 <div className='w-full flex justify-center'>
-                    <button className='bg-c-lightgreen text-white w-fit px-4 py-2 rounded-md'>Save</button>
+                    <button onClick={updateUserHub} className='bg-c-lightgreen text-white w-fit px-4 py-2 rounded-md disabled:bg-gray-600' disabled={disabledButton}>Save</button>
                 </div>
                 
             </div>
