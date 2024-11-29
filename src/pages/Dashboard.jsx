@@ -16,11 +16,14 @@ import sales_api from '../utils/sales_api';
 import products_api from '../utils/products_api';
 import wallets_api from '../utils/wallets_api';
 
-import SendMoneyModal from '../components/SendMoneyModal';
+import UpdateHubModal from '../components/UpdateHubModal';
+
+import users_api from '../utils/users_api';
 
 const Dashboard = (props) => {
     var cookieDetails = props.myCookie
     var admin_status = cookieDetails["ADMIN"]
+
     // Weighted points
     var [weighted_available, setWeighted_available] = useState(false)
     var [no_weighted_point, setNo_weighted_point] = useState(true)
@@ -34,10 +37,13 @@ const Dashboard = (props) => {
     const [productList, setProductList] = useState([])
     //Wallets
     var [walletBalance, setWalletBalance] = useState()
+    // Hubs
+    const [hubsList, setHubsList] = useState([])
 
     const [showUsers, setShowUsers] = useState(true)
     const [showIncome, setShowIncome] = useState(false)
     const [showBalance, setShowBalance] = useState(false)
+    const [userHubTokenModal, setUserHubTokenModal] = useState(true)
 
     
     const navigate = useNavigate()
@@ -135,9 +141,30 @@ const Dashboard = (props) => {
 
         }
     }
+
+    const getHubToken = () => {
+        if ((cookieDetails["ADMIN"] === 1) && (cookieDetails["userHubToken"] === null)){
+            setUserHubTokenModal(true)
+        }
+    }
+
+    const updateHubToken = () => {
+        try {
+            users_api.post('/updateHub', {
+                "userToken": "",
+                "hubToken": ""
+            })
+            .then((response) => {
+                console.log(response.data)
+            })
+        } catch (error) {
+            
+        }
+    }
     
 
     useEffect(() => {
+        getHubToken()
         getFewProducts()
         getWalletBalance()
     }, [products_api])
@@ -456,6 +483,10 @@ const Dashboard = (props) => {
                     </div>
                 </div>
             </>
+            }
+
+            {
+                userHubTokenModal && <UpdateHubModal showModal={userHubTokenModal} openModal={() => setUserHubTokenModal(true)} closeModal={() => setUserHubTokenModal(false)} userToken={cookieDetails["userToken"]} />
             }
             
         </div>

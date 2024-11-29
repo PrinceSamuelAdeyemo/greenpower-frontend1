@@ -33,9 +33,8 @@ const Signin = () => {
             
             if (response.data["data"]){
                 response_data = response.data["data"]
-
+                console.log("LOGGGGEDDDDD IN DAAAAATTTTA",response_data)
                 if ((response_data !== "") && ("userToken" in response_data)){
-                    console.log(response_data["ADMIN"])
                     var COOKIE_VALUE = {
                         "email": response_data['email'],
                         "firstName": response_data['firstName'],
@@ -44,11 +43,26 @@ const Signin = () => {
                         "phoneNumber": response_data['phoneNumber'],
                         "profilePicture": response_data['profilePicture'],
                         "kycDetails": response_data['kycDetails'],
-                        "ADMIN": response_data["ADMIN"],
+                        "ADMIN": 1,//response_data["ADMIN"],
                         "can_switch": 0,
+                        "gender": response_data['gender'],
+                        "userHubToken": response_data['hubToken'],
+                        "userReni": response_data['renitoken'],
                     }
                     if (COOKIE_VALUE["ADMIN"] === 1){
                         COOKIE_VALUE["can_switch"] = 1
+                    }
+                    if (response_data["bvn_on_reni"] === 0){
+                        try {
+                            users_api.post('/updateReniUserBVN.php', {
+                                "userToken": response_data["userToken"]
+                            })
+                            .then((response) => {
+                                console.log("update reni bvn",response.data)
+                            })
+                        } catch (error) {
+                            console.log(error)
+                        }
                     }
                     localStorage.setItem('dataValue', JSON.stringify(COOKIE_VALUE))
                     console.log(COOKIE_VALUE)

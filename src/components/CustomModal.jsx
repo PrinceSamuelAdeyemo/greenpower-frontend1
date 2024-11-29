@@ -3,7 +3,7 @@ import { Button, Modal, ModalBody } from 'flowbite-react';
 import { FaTimes } from "react-icons/fa"
 
 
-const CustomModal = ({ showModal, openModal, closeModal, title, children }) => {
+const CustomModal = ({ showModal, openModal, closeModal, title, children, dismissibleStatus }) => {
     //const [ showModal, setShowModal ] = useState(false)
 
     return (

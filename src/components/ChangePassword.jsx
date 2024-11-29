@@ -19,13 +19,14 @@ const ChangePassword = ({ showModal, openModal, closeModal, userToken}) => {
         }
         else{
             setPasswordInform("")
-            users_api.post("resetPassword.php", {
+            users_api.post("changePassword.php", {
             "userToken": userToken,
             "oldPassword": oldPasswordRef.current.value,
             "newPassword": newPasswordRef.current.value,
             "verifyNewPassword": verifyNewPasswordRef.current.value
         })
         .then((response) => {
+            console.log(response)
             if (response.data["status_code"] === 200){
                 oldPasswordRef.current.value === ""
                 newPasswordRef.current.value === ""
@@ -33,9 +34,7 @@ const ChangePassword = ({ showModal, openModal, closeModal, userToken}) => {
                 closeModal = false
             }
         })
-        }
-        
-        
+        }        
     }
 
   return (
@@ -56,7 +55,7 @@ const ChangePassword = ({ showModal, openModal, closeModal, userToken}) => {
                 <TextInput ref={verifyNewPasswordRef} />
             </div>
             <div className='flex justify-end'>
-                <Button onClick={sendToResetPassword} className='bg-success'>Reset</Button>
+                <Button onClick={sendToResetPassword} className='bg-success'>Change</Button>
             </div>
         </div>
     </CustomModal>
