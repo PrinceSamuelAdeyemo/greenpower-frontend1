@@ -58,7 +58,14 @@ const Signin = () => {
                                 "userToken": response_data["userToken"]
                             })
                             .then((response) => {
-                                console.log("update reni bvn",response.data)
+                                console.log("Update reni bvn response here", response)
+                                if (response.data["status_code"] === 200){
+                                    console.log("update reni bvn",response.data)
+                                }
+                                else{
+                                    navigate('/login')
+                                }
+                                
                             })
                         } catch (error) {
                             console.log(error)
