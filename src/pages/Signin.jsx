@@ -57,7 +57,7 @@ const Signin = () => {
                             users_api.post('/updateReniUserBVN.php', {
                                 "userToken": response_data["userToken"]
                             })
-                            .then((response) => {
+                            .then((response) => {tt
                                 console.log("Update reni bvn response here", response)
                                 if (response.data["status_code"] === 200){
                                     console.log("update reni bvn",response.data)

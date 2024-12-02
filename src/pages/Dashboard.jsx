@@ -43,7 +43,7 @@ const Dashboard = (props) => {
     const [showUsers, setShowUsers] = useState(true)
     const [showIncome, setShowIncome] = useState(false)
     const [showBalance, setShowBalance] = useState(false)
-    const [userHubTokenModal, setUserHubTokenModal] = useState(true)
+    const [userHubTokenModal, setUserHubTokenModal] = useState(false)
 
     
     const navigate = useNavigate()
