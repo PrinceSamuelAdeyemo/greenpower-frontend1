@@ -35,8 +35,8 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
             console.log(cookieDetails["userToken"], bankCodeRef.current.value, accountNumberRef.current.value)
             try{
                 wallets_api.post("/verifyBankAccount.php", {
-                    "Usertoken": cookieDetails["userToken"],
-                    //"usertoken": cookieDetails["userToken"],
+                    //"Usertoken": cookieDetails["userToken"],
+                    "usertoken": cookieDetails["userToken"],
                     //"UserToken": cookieDetails["userToken"],
                     "bankCode": bankCodeRef.current.value,
                     "accNo": accountNumberRef.current.value
