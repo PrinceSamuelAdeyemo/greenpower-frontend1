@@ -10,6 +10,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
     const amountRef = useRef(null)
 
     const [bankList, setBankList] = useState([])
+    const [accountName, setAccountName] = useState('')
 
     // Functions
     const getBankList = () => {
@@ -35,19 +36,38 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
             console.log(cookieDetails["userToken"], bankCodeRef.current.value, accountNumberRef.current.value)
             try{
                 wallets_api.post("/verifyBankAccount.php", {
-                    //"Usertoken": cookieDetails["userToken"],
                     "usertoken": cookieDetails["userToken"],
-                    //"UserToken": cookieDetails["userToken"],
                     "bankCode": bankCodeRef.current.value,
                     "accNo": accountNumberRef.current.value
                 })
                 .then((response) => {
                     console.log(response)
+                    if (response.data["status_code"] === 200){
+                        setAccountName(response.data["data"]["accountName"])
+                    }
                 })
             }
             catch(error){
 
             }
+        }
+    }
+
+    const transferMoney = (event) => {
+        event.preventDefault();
+        try {
+            wallets_api.post('interBankTransfer.php', {
+                "userid": cookieDetails["userToken"],
+                "payeeName": accountName,
+                "amount": amountRef.current.value,
+                "bankCode": bankCodeRef.current.value,
+                "accNo": accountNumberRef.current.value
+            })
+            .then((response) => {
+                console.log(response)
+            })
+        } catch (error) {
+            
         }
     }
 
@@ -64,7 +84,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
   return (
     <CustomModal showModal={showModal3} openModal={openModal3} closeModal={closeModal3}>
         <div className='flex flex-col items-center gap-5 w-full' onClick={() => console.log(2)}>
-            <form className='flex flex-col gap-8 w-full'>
+            <form onSubmit={(event) => transferMoney(event)} className='flex flex-col gap-8 w-full'>
                 <div className='flex flex-col gap-2'>
                     <p>Bank</p>
                     <Select ref={bankCodeRef} className='w-full'>
@@ -82,7 +102,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                 </div>
                 <div className='flex flex-col gap-2'>
                     <p>Account Name</p>
-                    <TextInput value="eeee" className='w-full focus:ring-0 border-0 outline-0'></TextInput>
+                    <TextInput className='w-full focus:ring-0 border-0 outline-0' value={accountName}></TextInput>
                 </div>
                 <div className='flex flex-col gap-2'>
                     <p>Amount:</p>

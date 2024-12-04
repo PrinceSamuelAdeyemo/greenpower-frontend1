@@ -4,6 +4,7 @@ import { FaBell, FaCamera, FaEdit, FaImage, FaLock, FaSignOutAlt, FaUserCheck } 
 import profilePic from "../assets/Rectangle 37.png"
 
 import products_api from '../utils/products_api'
+import upload_product_by_csv from '../utils/upload_product_by_csv'
 import { useLocation } from 'react-router-dom'
 
 import SuccessfulHubModal from '../components/SuccessfulHubModal'
@@ -45,7 +46,8 @@ const AddProduct = (props) => {
                 var data = {
                     "hubToken": hub_token,
                     "userToken": cookieDetails["userToken"],
-                    "pdtSerialNumbers": btoa(serialNumberFileRef.current.value),
+                    //"pdtSerialNumbers": btoa(serialNumberFileRef.current.value),
+                    "pdtSerialNumbers": serialNumberFileRef.current.value,
                     "pdtName": product_nameRef.current.value,
                     "pdtImage": product_imageRef.current.value,
                     "outrightPrice": Number(product_outrightpriceRef.current.value),
@@ -54,7 +56,7 @@ const AddProduct = (props) => {
                     "weightedPoints": Number(weightedPointRef.current.value)
                     }
                     console.log(data)
-                products_api.post("addProduct_csv.php", data)
+                upload_product_by_csv.post("addProduct_csv_fd.php", data)
                 .then((response) => {
                     console.log(response)
                     if (response.data["status_code"] === 200){

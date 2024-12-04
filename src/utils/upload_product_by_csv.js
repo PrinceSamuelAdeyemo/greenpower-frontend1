@@ -1,11 +1,11 @@
 import axios from "axios";
 
 
-const products_api = axios.create({
+const upload_product_by_csv = axios.create({
     baseURL: 'http://stagging-affiliate.greenpowernig.com/v1/api/products',
-    /* headers: {
+    headers: {
       'Content-Type': 'multipart/form-data'
-    } */
+    }
   });
 
-export default products_api
+export default upload_product_by_csv

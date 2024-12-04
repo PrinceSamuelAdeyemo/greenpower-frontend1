@@ -7,7 +7,6 @@ import SuccessfulHubModal from '../components/SuccessfulHubModal';
 import ErrorModal from '../components/ErrorModal';
 
 import hubs_api from '../utils/hubs_api';
-import products_api from '../utils/products_api';
 import sales_api from '../utils/sales_api';
 
 const Products = (props) => {
