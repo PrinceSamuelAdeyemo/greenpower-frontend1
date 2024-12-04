@@ -1,5 +1,5 @@
 import React, { useRef, useState} from 'react'
-import { Button, Select, TextInput } from 'flowbite-react';
+import { Button, Select, Spinner, TextInput } from 'flowbite-react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import CustomModal from './CustomModal'
 
@@ -12,44 +12,57 @@ const SendToGreenPowerAccountModal = ({ showModal2, openModal2, closeModal2, coo
     const [userAvailability, setUserAvailability] = useState()
     const [users, setUsers] = useState()
     const [buttonDisabled, setButtonDisabled] = useState(true)
+    const [emailValidated, setEmailValidated] = useState()
+    const [amountValidated, setAmountValidated] = useState()
+    const [loading, setLoading] = useState(false)
 
-    const validateAllFields = () => {
-        let pattern = /^[0-9]{2,10}$/
-        if ((userAvailability === true) && (pattern.test(amountRef.current.value))){
-            setButtonDisabled(false)
-        }
-        else{
-            setButtonDisabled(true)
-        }
-    }
 
     const backToSendMoneyModal = (event) => {
         closeModal2()
         openModal()
     }
 
-    const checkPayeeAvailability = (event) => {
-        try {
-            users_api.post('userData', {
-                "identifier": emailRef.current.value
-            })
-            .then((response) => {
-                console.log(response)
-                if (response.data["status_code"] === 200){
-                    setUserAvailability(true)
-                }
-                else{
-                    setUserAvailability(false)
-                }
+    const validateEmail = async () => {
+        if (/^$/.test(emailRef.current.value.trim())){
+            setLoading(false)
+        }
+        else{
+            setLoading(true)
+            try {
+                await users_api.post('userData', {
+                    "identifier": emailRef.current.value
+                })
+                .then((response) => {
+                    console.log(response)
+                    if (response.data["status_code"] === 200){
+                        setLoading(false)
+                        setUserAvailability(true)
+                        setEmailValidated(true)
+                    }
+                    else{
+                        setLoading(false)
+                        setUserAvailability(false)
+                        setEmailValidated(true)
+                    }
+    
+                    if ((response.data["status_code"] === 200) && (response.data["data"].length === 1)){
+                        setUsers(response.data["data"][0])
+                        console.log(response.data["data"][0])
+                    }
+                })
+            } catch (error) {
+            }   
+        }
+    }
 
-                if ((response.data["status_code"] === 200) && (response.data["data"].length === 1)){
-                    setUsers(response.data["data"][0])
-                    console.log(response.data["data"][0])
-                }
-            })
-        } catch (error) {
-            
-        }   
+    const validateAmount = () => {
+        let amount_pattern = /\d{2,10}$/
+        if (amount_pattern.test(amountRef.current.value)){
+            setAmountValidated(true)
+        }
+        else{
+            setAmountValidated(false)
+        }
     }
 
     const transferMoney = (event) => {
@@ -75,28 +88,38 @@ const SendToGreenPowerAccountModal = ({ showModal2, openModal2, closeModal2, coo
     <CustomModal showModal={showModal2} openModal={openModal2} closeModal={closeModal2}>
         <div className='flex flex-col items-center gap-5 w-full' onClick={() => console.log(2)}>
             <form onSubmit={transferMoney} className='flex flex-col gap-8 w-full'>
+            
                 <div className='flex gap-4'>
                     <p>Recipient</p>
                     <div className='flex gap-2 w-full items-center'>
-                        <TextInput onChange={validateAllFields} onBlur={checkPayeeAvailability} ref={emailRef} className='w-full'></TextInput>
+                        <TextInput onChange={validateEmail} ref={emailRef} className='w-full'></TextInput>
                         {
+                            emailValidated === true ? 
+                            userAvailability === true ? <span><FaCheck className='text-c-lightgreen' /></span> : <span><FaTimes className='text-red-500' /></span>
+                            : 
+                            <Spinner />
+                        }
+                        {/* {
                             userAvailability === true ? <span><FaCheck className='text-c-lightgreen' /></span> : ''
                         }
                         {
                             userAvailability === false ? <span><FaTimes className='text-red-500' /></span> : ''
                         }
+                        {
+                            loading === true ? <Spinner /> : ''
+                        } */}
                         
                     </div>
                     
                 </div>
                 <div className='flex gap-4'>
                     <p>Amount:</p>
-                    <TextInput onChange={validateAllFields} ref={amountRef} pattern='[0-9]{2,10}' className='w-full'></TextInput>
+                    <TextInput onChange={validateAmount} ref={amountRef} pattern='[0-9]{2,10}' className='w-full'></TextInput>
                 </div>
 
                 <div className='flex justify-between'>
                     <Button type='button' className='bg-red-600' onClick={backToSendMoneyModal}>Back</Button>
-                    <Button type='submit' className='bg-c-lightgreen' disabled={buttonDisabled}>Send</Button>
+                    <Button type='submit' className='bg-c-lightgreen' disabled={!(userAvailability && amountValidated)}>Send</Button>
                 </div>
             </form> 
         </div>

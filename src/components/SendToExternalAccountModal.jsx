@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useRef, useState } from 'react'
-import { Button, Select, TextInput } from 'flowbite-react';
+import { Button, Select, Spinner, TextInput } from 'flowbite-react';
 import CustomModal from './CustomModal'
 
 import wallets_api from '../utils/wallets_api';
@@ -11,8 +11,19 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
 
     const [bankList, setBankList] = useState([])
     const [accountName, setAccountName] = useState('')
+    const [buttonDisabled, setButtonDisabled] = useState(true)
 
     // Functions
+    const validateAllFields = () => {
+        let pattern = /^[0-9]{2,10}$/
+        if ((bankCodeRef.current.value) && (pattern.test(amountRef.current.value))){
+            setButtonDisabled(false)
+        }
+        else{
+            setButtonDisabled(true)
+        }
+    }
+
     const getBankList = () => {
         try{
             wallets_api.post("/bankList", {
@@ -87,14 +98,17 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
             <form onSubmit={(event) => transferMoney(event)} className='flex flex-col gap-8 w-full'>
                 <div className='flex flex-col gap-2'>
                     <p>Bank</p>
+                    {bankList.length !== 0 ?
                     <Select ref={bankCodeRef} className='w-full'>
-                    {
-                            bankList.map((bank, index) => (
+                        {
+                            bankList?.map((bank, index) => (
                                 <option value={bank["bankCode"]}>{bank["bankName"]}</option>
                             ))
                         }
                         
                     </Select>
+                    : <Spinner color='success' />
+                    }
                 </div>
                 <div className='flex flex-col gap-2'>
                     <p>Account Number:</p>
@@ -111,7 +125,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
 
                 <div className='flex justify-between'>
                     <Button type='button' className='bg-red-600' onClick={backToSendMoneyModal}>Back</Button>
-                    <Button type='submit' className='bg-c-lightgreen'>Send</Button>
+                    <Button type='submit' className='bg-c-lightgreen' disabled={buttonDisabled}>Send</Button>
                 </div>
             </form> 
         </div>
