@@ -20,6 +20,7 @@ const Wallet = (props) => {
     const [showModal3, setShowModal3] = useState(false)
     const [showModal4, setShowModal4] = useState(false)
     const [walletBalance, setWalletBalance] = useState()
+    const [walletBalanceDisplay, setWalletBalanceDisplay] = useState()
 
     const getWalletBalance = () => {
         try{
@@ -32,6 +33,7 @@ const Wallet = (props) => {
                     console.log("Balance is here", response)
                     //setWalletBalance(response.data["data"]["balance"])
                     setWalletBalance(response.data["data"]["balance"])
+                    setWalletBalanceDisplay(response.data["data"]["balance_th"])
                 }
             })
         }
@@ -62,7 +64,7 @@ const Wallet = (props) => {
                         </div>
                         <div className="mb-4">
                             <p className="text-sm">Account Name</p>
-                            <p className="text-lg font-bold">John Doe</p>
+                            <p className="text-lg font-bold">{cookieDetails["firstName"]} {cookieDetails["lastName"]}</p>
                         </div>
                         <div className="mb-4">
                             <p className="text-sm">Account Number</p>
@@ -75,8 +77,8 @@ const Wallet = (props) => {
                     <div className='flex flex-col justify-center items-center'>
                         <p className='mb-4 text-2xl font-bold text-c-gray opacity-90'>Account Balance</p>
                         <div className='flex text-3xl items-center gap-2 lg:gap-2 xl:gap-4 mb-4'>
-                            <BiRefresh/> 
-                            <p className='text-sm md:text-md lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? `₦${walletBalance}` : '******'}</p> 
+                            <BiRefresh onClick={getWalletBalance} /> 
+                            <p className='text-sm md:text-md lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? (walletBalance ? `₦${walletBalanceDisplay}` : '₦--') : '******'}</p> 
                             <div onClick={() => setShow_balance(!show_balance)}>
                                 {show_balance ? <FaEye /> : <FaEyeSlash />}
                             </div>

@@ -10,7 +10,7 @@ const UserWeightedPoints = (props) => {
     const [admin_status, setAdmin_status] = useState(false)
     
     const getUsersWeightedPoints = () => {
-        if (cookieDetails["ADMIN"] == 1){
+        if (cookieDetails["ADMIN"] === 1){
             setAdmin_status(true)
             weighted_points_api.get("/getPointsByUsers.php")
             .then((response) =>{
@@ -36,14 +36,23 @@ const UserWeightedPoints = (props) => {
                 "userToken": cookieDetails["userToken"]
             })
             .then((response) =>{
+                let total_weighted_points = 0;
                 console.log("response for user", response)
                 var received_data_status_code = response.data["status_code"]
                 if (received_data_status_code == 400){
                     setW_points(0)
                 }
-                else(
+                else{
+                    for (let i=0; i < (response.data["data"].length - 2); i++){
+                        setUsersWeightedPoints((prevValue) => {
+                            [prevValue].push(response.data["data"][i])
+                        })
+                    }
+                    //setUsersWeightedPoints(response.data["data"])
+                    console.log(userWeightedPoints)
+                    
                     setW_points(1)
-                )
+                }
             })
         }
         }
@@ -52,6 +61,7 @@ const UserWeightedPoints = (props) => {
     useEffect(() => {
         console.log("About to run.")
         getUsersWeightedPoints()
+        console.log("weighted",userWeightedPoints)
     }, [weighted_points_api])
 
   return (
@@ -70,16 +80,16 @@ const UserWeightedPoints = (props) => {
         <div className='mt-8'>
             <Table className='w-full table-fixed'>
                 <Table.Head className='text-center normal-case border-b-2 border-c-lightgreen'>
-                    <Table.HeadCell className='bg-white text-lg'>User</Table.HeadCell>
+                    <Table.HeadCell className='bg-white text-lg'>Product Name</Table.HeadCell>
                     <Table.HeadCell className='bg-white text-lg'>No of orders</Table.HeadCell>
                     <Table.HeadCell className='bg-white text-lg'>Accumulated WP</Table.HeadCell>
                 </Table.Head>
                 <Table.Body>
                 {userWeightedPoints?.map((each_weighted_point, index) => (
                     <Table.Row className='text-center border-b-2 border-c-lightgreen'>
-                        <Table.Cell>{each_weighted_point["user"]}</Table.Cell>
-                        <Table.Cell>{each_weighted_point["user"]}</Table.Cell>
-                        <Table.Cell>{each_weighted_point["user"]}</Table.Cell>
+                        <Table.Cell>{each_weighted_point["productName"]}</Table.Cell>
+                        <Table.Cell></Table.Cell>
+                        <Table.Cell></Table.Cell>
                     </Table.Row>
                     ))
                 }

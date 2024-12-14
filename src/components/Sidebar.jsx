@@ -64,14 +64,16 @@ const Sidebar = ({closeSidebar, myCookie}) => {
                         </li>
                     </Link>
                  : 
-                    <Link to="/wallet"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
+                    ''
+                    
+                }
+
+                <Link to="/wallet"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">
                     {/* <FaCreditCard className="inline-block mr-2" /> */}
                         <img src={walletIcon}/>
                         Wallet
                         </li>
                     </Link>
-                    
-                }
                 
                 {(admin == 0) ? 
                     <Link to="/sales"><li className="flex ps-2 lg:px-0 py-3 gap-2 hover:bg-c-muchlightgreen rounded-xl font-semibold hover:text-white">

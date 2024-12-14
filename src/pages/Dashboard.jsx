@@ -37,6 +37,7 @@ const Dashboard = (props) => {
     const [productList, setProductList] = useState([])
     //Wallets
     var [walletBalance, setWalletBalance] = useState()
+    var [walletBalanceDisplay, setWalletBalanceDisplay] = useState()
     // Hubs
     const [hubsList, setHubsList] = useState([])
 
@@ -132,8 +133,10 @@ const Dashboard = (props) => {
                 "userToken": cookieDetails["userToken"]
             })
             .then((response) => {
-                if (response.data["status_code"] === 200){
+                console.log(response)
+                if (response.data["success"] === true){
                     setWalletBalance(response.data["data"]["balance"])
+                    setWalletBalanceDisplay(response.data["data"]["balance_th"])
                 }
             })
         }
@@ -202,9 +205,9 @@ const Dashboard = (props) => {
                                     <div className="mb-1" >
                                         <p className="text-sm">Account Balance</p>
                                         <div  className="flex items-center gap-2 text-lg font-bold">
-                                            <BiRefresh /> 
+                                            <BiRefresh onClick={getWalletBalance} /> 
                                             {
-                                                showBalance ? <><p>#{walletBalance}</p> <FaEye onClick={() => setShowBalance(!showBalance)} /></> : <><p>******</p> <FaEyeSlash onClick={() => setShowBalance(!showBalance)} /></>
+                                                showBalance ? <><p>{(walletBalance ? `₦${walletBalanceDisplay}` : '₦--')}</p> <FaEye onClick={() => setShowBalance(!showBalance)} /></> : <><p>******</p> <FaEyeSlash onClick={() => setShowBalance(!showBalance)} /></>
                                             } 
                                         </div>
                                     </div>

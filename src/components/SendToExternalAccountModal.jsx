@@ -16,8 +16,9 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
 
     // Functions
     const validateAllFields = () => {
-        let pattern = /^[0-9]{2,10}$/
-        if ((bankCodeRef.current.value) && (pattern.test(amountRef.current.value))){
+        let amount_pattern = /^[0-9]{2,10}$/
+        let account_name_pattern =  /\s/
+        if ((bankCodeRef.current.value) && (amount_pattern.test(amountRef.current.value)) && (account_name_pattern.test(accountName))){
             setButtonDisabled(false)
         }
         else{
@@ -105,7 +106,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                 <div className='flex flex-col gap-2'>
                     <p>Bank</p>
                     {bankList.length !== 0 ?
-                    <Select ref={bankCodeRef} className='w-full'>
+                    <Select onChange={validateAllFields} ref={bankCodeRef} className='w-full'>
                         {
                             bankList?.map((bank, index) => (
                                 <option value={bank["bankCode"]}>{bank["bankName"]}</option>
@@ -118,7 +119,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                 </div>
                 <div className='flex flex-col gap-2'>
                     <p>Account Number:</p>
-                    <TextInput pattern='[0-9]{10}' onChange={verifyBankAccount} ref={accountNumberRef} className='w-full'></TextInput>
+                    <TextInput pattern='[0-9]{10}' onChange={() => {verifyBankAccount(); validateAllFields()}} ref={accountNumberRef} className='w-full'></TextInput>
                 </div>
                 <div className='flex flex-col gap-2'>
                     <p>Account Name</p>
@@ -126,12 +127,12 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                 </div>
                 <div className='flex flex-col gap-2'>
                     <p>Amount:</p>
-                    <TextInput pattern='[0-9]{0,10}' ref={amountRef} className='w-full'></TextInput>
+                    <TextInput onChange={validateAllFields} pattern='[0-9]{0,10}' ref={amountRef} className='w-full'></TextInput>
                 </div>
 
                 <div className='flex justify-between'>
                     <Button type='button' className='bg-red-600' onClick={backToSendMoneyModal}>Back</Button>
-                    <Button type='submit' className='bg-c-lightgreen' disabled={!buttonDisabled}>Send</Button>
+                    <Button type='submit' className='bg-c-lightgreen' disabled={buttonDisabled}>Send</Button>
                 </div>
             </form> 
         </div>
