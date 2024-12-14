@@ -151,6 +151,7 @@ const Dashboard = (props) => {
     
 
     useEffect(() => {
+        console.log("From dashboard",cookieDetails)
         getHubToken()
         getFewProducts()
         getWalletBalance()

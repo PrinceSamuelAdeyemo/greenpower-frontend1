@@ -42,8 +42,18 @@ const AddProduct = (props) => {
         
         if (serialNumberFileRef.current.value){
             
-            if ((product_nameRef.current.value && serialNumberFileRef.current.value && product_outrightpriceRef.current.value) != ""){
-                var data = {
+            if (!(/^\s$/.test(product_nameRef.current.value.trim())) && !(/^\s$/.test(product_outrightpriceRef.current.value.trim())) && serialNumberFileRef.current.value != ""){
+                const formData = new FormData()
+                formData.append("hubToken", hub_token);
+                formData.append("userToken", cookieDetails["userToken"]);
+                formData.append("pdtSerialNumbers", serialNumberFileRef.current.files[0]);
+                formData.append("pdtName", product_nameRef.current.value);
+                formData.append("pdtImage", "");//product_imageRef.current.value);
+                formData.append("outrightPrice", Number(product_outrightpriceRef.current.value));
+                formData.append("outrightCommission", Number(commissionRef.current.value));
+                formData.append("logisticsFees", 12); //static for now
+                formData.append("weightedPoints", Number(weightedPointRef.current.value));
+                /* var data = {
                     "hubToken": hub_token,
                     "userToken": cookieDetails["userToken"],
                     //"pdtSerialNumbers": btoa(serialNumberFileRef.current.value),
@@ -52,11 +62,11 @@ const AddProduct = (props) => {
                     "pdtImage": product_imageRef.current.value,
                     "outrightPrice": Number(product_outrightpriceRef.current.value),
                     "outrightCommission": Number(commissionRef.current.value),
-                    "logisticsFees": 12,
+                    "logisticsFees": 12, //static for now
                     "weightedPoints": Number(weightedPointRef.current.value)
                     }
-                    console.log(data)
-                upload_product_by_csv.post("addProduct_csv_fd.php", data)
+                    console.log(data) */
+                upload_product_by_csv.post("addProduct_csv_fd.php", formData)
                 .then((response) => {
                     console.log(response)
                     if (response.data["status_code"] === 200){
@@ -123,7 +133,7 @@ const AddProduct = (props) => {
                         </div>
                         <div className='flex items-center gap-2 mb-3'>
                             <Label value='Serial Number File' htmlFor='serial_number_file' className='w-3/4' />
-                            <input type="file" ref={serialNumberFileRef} alt="File containing list of all the serial numbers of a product to be added." accept='.csv, .xls, .xlsm, .xlsx' className='' />
+                            <input type="file" ref={serialNumberFileRef} alt="File containing list of all the serial numbers of a product to be added." accept='.csv' className='' />
                         </div>
 
                         <div className='flex items-center gap-2 mb-3'>

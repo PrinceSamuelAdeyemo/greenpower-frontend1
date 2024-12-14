@@ -88,6 +88,7 @@ const SalesRecord = (props) => {
 
 
     useEffect(() => {
+        console.log("ALALALAL", cookieDetails)
         if (admin_status == 1){
             getHubs()
         }

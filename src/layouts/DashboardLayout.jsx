@@ -40,7 +40,10 @@ const DashboardLayout = ({children}) => {
           "ADMIN": cookie_values["ADMIN"],
           "profilePicture": cookie_values["profilePicture"],
           "kycDetails": cookie_values["kycDetails"],
-          "can_switch": cookie_values["can_switch"]
+          "can_switch": cookie_values["can_switch"],
+          "gender": cookie_values["gender"],
+          "userHubToken": cookie_values["userHubToken"],
+          "userReni": cookie_values["userReni"]
         }))
         logged_in = true
       }
@@ -48,7 +51,6 @@ const DashboardLayout = ({children}) => {
         navigate("/login")
       }
     }
-    
   }
 
   useEffect(() => {

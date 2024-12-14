@@ -17,11 +17,11 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     const [showModal2, setShowModal2] = useState(false)
     const [hub_available, setHub_available] = useState(false)
     const [products_available, setProducts_available] = useState(false)
-    const [hubs_list, setHubs_list] = useState([])
+    //const [hubs_list, setHubs_list] = useState([])
     const [products_list, setProducts_list] = useState([])
     const [outright_payment, setOutright_payment] = useState(true)
     // current hub token and current product
-    const [currentHub, setCurrentHub] = useState()
+    const [currentHub, setCurrentHub] = useState({})
     const [currentProduct, setCurrentProduct] = useState({})
     const [hubChanged, setHubChanged] = useState(0)
 
@@ -36,15 +36,26 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             console.log("CURRENT HUB", currentHub)
             console.log("CURRENT PRODUCT", currentProduct)
             console.log(typeof(parseInt(currentProduct["logisticsFees"])))
-            sales_api.post("/addSale.php", {
+            console.log({
                 "pdtName": currentProduct["pdtName"],
-                "hubToken": currentHub,
+                "hubToken": cookieDetails["userHubToken"],
                 "userToken": cookieDetails["userToken"],
                 "pdtToken": currentProduct["pdtToken"],
                 "pdtSerialNumber": currentProduct["pdtSerialNumber"],
                 "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
                 "payment_option": "outright",
-                "amountPaid": parseFloat((currentProduct["outrightPrice"]).toFixed(2)),
+                "amountPaid": parseFloat((currentProduct["outrightPrice"])).toFixed(2),
+                "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
+            })
+            sales_api.post("/addSale.php", {
+                "pdtName": currentProduct["pdtName"],
+                "hubToken": cookieDetails["userHubToken"],
+                "userToken": cookieDetails["userToken"],
+                "pdtToken": currentProduct["pdtToken"],
+                "pdtSerialNumber": currentProduct["pdtSerialNumber"],
+                "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
+                "payment_option": "outright",
+                "amountPaid": parseFloat((currentProduct["outrightPrice"])).toFixed(2),
                 "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
             })
             .then((response) => {
@@ -54,8 +65,8 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 }
             })
         }
-        catch{
-
+        catch (error){
+            console.log("Error here", error)
         }
         
     }
@@ -64,39 +75,45 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     }
 
     const getHubsList = () => {
+        
         console.log(hubChanged, "from hublist")
         hubs_api.get("/getHubs.php")
         .then((response) => {
             console.log(111111111111111111)
             var hubs = response.data["data"]
-            console.log(hubs)
-            setHubs_list(hubs)
+            for (let i = 0; i<hubs.length; i++){
+                if (hubs[i]["hubToken"] === cookieDetails["userHubToken"]){
+                    setCurrentHub(hubs[i])
+                }
+            }
+            console.log("HUBS",hubs)
+            //setHubs_list(hubs)
             setHub_available(true)
-            setCurrentHub(hubs[0]["hubToken"])
-            getProductsByHub(hubs[0]["hubToken"])
+
+            getProductsByHub(cookieDetails["userHubToken"])
             console.log("AA")
         })
     }
 
-    var getProductsByHub = async () => {
-        console.log(hubChanged, "from productbyhub")
+    const getProductsByHub = async () => {
+        /* console.log(hubChanged, "from productbyhub")
         var current_hub_token;
         currentHubRef.current.value ? current_hub_token = currentHubRef.current.value :  current_hub_token = hubs_list[0]["hubToken"]
-        setCurrentHub(current_hub_token)
+        setCurrentHub(current_hub_token) */
         try{
             await products_api.post("/getProductsByHub.php", {
-            "hubToken": current_hub_token
+                "hubToken": cookieDetails["userHubToken"]
+            //"hubToken": current_hub_token
         })
         .then((response) => {
             if (!response.ok){
                 setProducts_available(false)
             }
             var products = response.data["data"]
-            console.log(products)
+            console.log("Hub products here",products)
             setProducts_list(products)
             setCurrentProduct(products[0])
             setProducts_available(true)
-            console.log("BB")
         })
         }
         catch{
@@ -129,6 +146,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     
     useEffect(() => {
         console.log(hubChanged, "lola")
+        console.log("ALL", cookieDetails)
         getHubsList()
     }, [])
 
@@ -145,13 +163,15 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             <div className='w-full my-3 px-4'>
                 <div className='my-3'>
                     <Label value='Select Hub' htmlFor='hub' />
-                    <Select id='hub' className='flex-grow' ref={currentHubRef} onChange={(event) => setHubChanged(hubChanged+1) }>
+                    <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen font-bold' id='hub' type='text' value={currentHub["hubName"]} disabled readOnly />
+                    {/* <Select id='hub' className='flex-grow' ref={currentHubRef} onChange={(event) => setHubChanged(hubChanged+1) }>
+                        
                         {hub_available &&
                             hubs_list.map((hub, key) => (
                                 <option value={hub["hubToken"]} key={hub["hubToken"]} className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'>{hub["hubName"]}</option>
                             ))
                         }
-                    </Select>
+                    </Select> */}
                 </div>
                 
                 <div className=' my-3'>

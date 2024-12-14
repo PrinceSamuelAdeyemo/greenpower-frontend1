@@ -18,6 +18,7 @@ const Wallet = (props) => {
     const [showModal, setShowModal] = useState(false)
     const [showModal2, setShowModal2] = useState(false)
     const [showModal3, setShowModal3] = useState(false)
+    const [showModal4, setShowModal4] = useState(false)
     const [walletBalance, setWalletBalance] = useState()
 
     const getWalletBalance = () => {
@@ -26,7 +27,10 @@ const Wallet = (props) => {
                 "userToken": cookieDetails["userToken"]
             })
             .then((response) => {
-                if (response.data["status_code"] === 200){
+                console.log(response)
+                if (response.data["success"] === true){
+                    console.log("Balance is here", response)
+                    //setWalletBalance(response.data["data"]["balance"])
                     setWalletBalance(response.data["data"]["balance"])
                 }
             })
@@ -72,7 +76,7 @@ const Wallet = (props) => {
                         <p className='mb-4 text-2xl font-bold text-c-gray opacity-90'>Account Balance</p>
                         <div className='flex text-3xl items-center gap-2 lg:gap-2 xl:gap-4 mb-4'>
                             <BiRefresh/> 
-                            <p className='text-sm md:text-md lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? `#${walletBalance}` : '******'}</p> 
+                            <p className='text-sm md:text-md lg:text-xl xl:text-4xl font-bold text-c-lightgreen'>{show_balance ? `₦${walletBalance}` : '******'}</p> 
                             <div onClick={() => setShow_balance(!show_balance)}>
                                 {show_balance ? <FaEye /> : <FaEyeSlash />}
                             </div>
@@ -137,8 +141,8 @@ const Wallet = (props) => {
                 </div>
             </Card>
             {showModal && <SendMoneyModal cookieDetails={cookieDetails} showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} openModal2={() => setShowModal2(true)} openModal3={() => setShowModal3(true)} />}
-            {showModal2 && <SendToGreenPowerAccountModal showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} cookieDetails={cookieDetails} openModal={() => setShowModal(true)} />}
-            {showModal3 && <SendToExternalAccountModal showModal3={showModal3} openModal3={() => setShowModal3(true)} closeModal3={() => setShowModal3(false)} cookieDetails={cookieDetails} openModal={() => setShowModal(true)} />}
+            {showModal2 && <SendToGreenPowerAccountModal showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} cookieDetails={cookieDetails} openModal={() => setShowModal(true)} walletBalance={walletBalance} />}
+            {showModal3 && <SendToExternalAccountModal showModal3={showModal3} openModal3={() => setShowModal3(true)} closeModal3={() => setShowModal3(false)} cookieDetails={cookieDetails} openModal={() => setShowModal(true)} walletBalance={walletBalance} />}
 
         </div>
     );
