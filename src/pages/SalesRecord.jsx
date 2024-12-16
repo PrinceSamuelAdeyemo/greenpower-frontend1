@@ -80,6 +80,7 @@ const SalesRecord = (props) => {
     }
 
     useEffect(() => {
+        console.log("HEEEEEEEE")
         if (admin_status == 0){
             console.log("SHOULD NOT RUN THIS")
             getUserSalesHistory()
@@ -128,13 +129,13 @@ const SalesRecord = (props) => {
                                 {
                                     sales_list?.map((sale, key) => (
                                         <Table.Row className='border-b-2 border-c-lightgreen'>
-                                            <Table.Cell>Product Name</Table.Cell>
+                                            <Table.Cell>{sale["pdtName"]}</Table.Cell>
                                             <Table.Cell>{sale["payment_option"]}</Table.Cell>
                                             <Table.Cell className=''>
                                                 <div className='border flex items-center justify-center bg-blue-100 rounded'>{sale["approval_status"]}
                                                 </div>
                                             </Table.Cell>
-                                            <Table.Cell className='text-center'>{sale["pdtSerialNumber"]}</Table.Cell>
+                                            <Table.Cell className='text-center w-1 overflow-x-hidden'>{sale["pdtSerialNumber"]}</Table.Cell>
                                             <Table.Cell className='text-center'>N{sale["amountPaid"]}</Table.Cell>
                                             <Table.Cell className='text-center'>{`${month_map[sale["created_at"].split(" ")[0].split("-")[1]]} ${sale["created_at"].split(" ")[0].split("-")[2]}, ${sale["created_at"].split(" ")[0].split("-")[0]}`}</Table.Cell>
                                             <Table.Cell className='flex justify-center'>

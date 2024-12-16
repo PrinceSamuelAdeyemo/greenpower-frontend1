@@ -29,7 +29,7 @@ const Wallet = (props) => {
             })
             .then((response) => {
                 console.log(response)
-                if (response.data["success"] === true){
+                if (response.data["status_code"] === 200){
                     console.log("Balance is here", response)
                     //setWalletBalance(response.data["data"]["balance"])
                     setWalletBalance(response.data["data"]["balance"])

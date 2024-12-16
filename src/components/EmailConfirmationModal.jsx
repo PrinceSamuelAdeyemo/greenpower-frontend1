@@ -35,6 +35,7 @@ const EmailConfirmationModal = ({showModal, openModal, closeModal, pic, email}) 
   const verify_email = () => {
     console.log(emailCode)
     users_api.post("/verifyEmail.php", {
+      "mail": email,
       "token": emailCode
     })
     .then((response) => {

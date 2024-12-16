@@ -42,13 +42,9 @@ const UserWeightedPoints = (props) => {
                 if (received_data_status_code == 400){
                     setW_points(0)
                 }
-                else{
-                    for (let i=0; i < (response.data["data"].length - 2); i++){
-                        setUsersWeightedPoints((prevValue) => {
-                            [prevValue].push(response.data["data"][i])
-                        })
-                    }
-                    //setUsersWeightedPoints(response.data["data"])
+                else if (received_data_status_code == 200){
+                    console.log(response.data["data"]["data"])
+                    setUsersWeightedPoints(response.data["data"]["data"])
                     console.log(userWeightedPoints)
                     
                     setW_points(1)
@@ -89,7 +85,7 @@ const UserWeightedPoints = (props) => {
                     <Table.Row className='text-center border-b-2 border-c-lightgreen'>
                         <Table.Cell>{each_weighted_point["productName"]}</Table.Cell>
                         <Table.Cell></Table.Cell>
-                        <Table.Cell></Table.Cell>
+                        <Table.Cell>{each_weighted_point["weightedPoints"]}</Table.Cell>
                     </Table.Row>
                     ))
                 }

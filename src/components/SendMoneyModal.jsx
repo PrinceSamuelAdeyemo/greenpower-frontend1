@@ -11,7 +11,7 @@ const SendMoneyModal = ({ showModal, openModal, closeModal, cookieDetails, openM
                 <p className='self-start text-c-lightgreen font-semibold'>Transfer to:</p>
                 <div className='flex flex-col gap-4 w-full lg:w-[80%]'>
                     {cookieDetails["ADMIN"] === 0 ? ' ': <Button className='w-full bg-c-lightgreen h-16 flex items-center justify-center focus:ring-0' onClick={openModal2}>GreenPower Account</Button>}
-                    <Button className='w-full bg-c-lightgreen h-16 flex items-center justify-center focus:ring-0' onClick={openModal3}>External Account</Button>
+                    <Button className='w-full bg-c-lightgreen h-16 flex items-center justify-center focus:ring-0' onClick={openModal3}>Bank Account (Interbank)</Button>
                 </div>
             </div>
         </CustomModal>

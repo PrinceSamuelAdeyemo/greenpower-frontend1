@@ -68,7 +68,10 @@ const Signup2 = () => {
                 if (response.data["data"]){
                     setHelpertext("")
                     console.log("HHHH", response)
-                    setShowModal(true)
+                    if (response.data["status_code"] === 200){
+                        setShowModal(true)
+                    }
+                    
                 }
                 else if (response.data["message"]){
                     setHelpertext(response.data["message"])
@@ -124,10 +127,9 @@ const Signup2 = () => {
 
   return (
     <div className='flex flex-row w-full h-screen'>
-        <div className='flex justify-center items-center w-1/2'>
-            
+        <div className='flex justify-center items-center w-full lg:w-1/2'>
             <form onSubmit={submitData} className='flex flex-col justify-center items-center w-[80%] h-full'>
-                <div className='flex flex-col gap-4 lg:w-[100%] xl:w-[80%] h-[70%]'>
+                <div className='flex flex-col gap-4 md:w-full lg:w-[100%] xl:w-[80%] h-[70%]'>
 
                     {show_helpertext && 
                         <div>
@@ -175,6 +177,7 @@ const Signup2 = () => {
                             <Label htmlFor='gender' value='Gender' className='font-bold' />
                         </div>
                         <Select className='flex-grow border-c-lightgreen text-c-lightgreen' id='gender'  placeholder='Male/Female' ref={genderRef} onChange={() => saveTempData(event, "gender")} required >
+                            <option value="">----</option>
                             <option value="Female">Female</option>
                             <option value="Male">Male</option>
                         </Select>
@@ -190,14 +193,11 @@ const Signup2 = () => {
                         <Link to="/login" className='text-c-lightgreen font-bold'>Sign in</Link>
                     </div>
                 </div>
-
-                
-                
             </form>
         </div>
-        <div className='w-1/2 bg-signuprightImage bg-cover bg-no-repeat'>
-
-        </div>
+        {/* <div className='w-0 lg:w-1/2'>
+            <img src={SignupRightImage} alt="" className='w-full h-full' />
+        </div> */}
     </div>
   )
 }

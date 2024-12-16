@@ -110,14 +110,17 @@ const Dashboard = (props) => {
     // USER FUNCTION
     var getUserWeightedPoints = () => {
         try{
-             weighted_points_api.get("/getPointsByUser.php")
+             weighted_points_api.post("/getPointsByUser.php", {
+                "userToken": cookieDetails["userToken"]
+             })
              .then((response) => {
                 console.log(response)
                 if (response.data["status_code"] == 400){
                     setWeighted_available(false)
                 }
                 else{
-                    setWeighted_point(response.data["data"])
+                    console.log()
+                    setWeighted_point(response.data["data"]["total_weighted_points"])
                     setWeighted_available(true)
                 }
              })
@@ -134,8 +137,10 @@ const Dashboard = (props) => {
             })
             .then((response) => {
                 console.log(response)
-                if (response.data["success"] === true){
+                if (response.data["status_code"] === 200){
+                    console.log(response.data["data"])
                     setWalletBalance(response.data["data"]["balance"])
+                    console.log(walletBalance)
                     setWalletBalanceDisplay(response.data["data"]["balance_th"])
                 }
             })
@@ -163,7 +168,7 @@ const Dashboard = (props) => {
     useEffect(() => {
         
         if (admin_status === 0){
-
+            getUserWeightedPoints()
         }
         else if (admin_status == 1){
             getUsersWeightedPoints()

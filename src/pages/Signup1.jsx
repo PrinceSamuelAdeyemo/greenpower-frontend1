@@ -58,6 +58,10 @@ const Signup1 = () => {
                             setShow_helpertext(false)
                             navigate("/proceed-signup", {state: {"data": data}})
                         }
+                        else if (response.data["status_code"] === 400){
+                            setHelpertext(response.data["message"])
+                            setShow_helpertext(true)
+                        }
                     })
                     
                 }
@@ -82,9 +86,9 @@ const Signup1 = () => {
 
   return (
     <div className='flex flex-row w-full h-screen'>
-        <div className='flex justify-center items-center w-1/2'>
+        <div className='flex justify-center items-center w-full lg:w-1/2'>
             <form onSubmit={openSignup2} className='flex flex-col justify-center items-center w-[80%] h-full'>
-                <div className='flex flex-col gap-8 lg:w-[100%] xl:w-[80%] h-[70%]'>
+                <div className='flex flex-col gap-8 md:w-full lg:w-[100%] xl:w-[80%] h-[70%]'>
                     <div className='flex flex-col items-center'>
                         <p className='font-bold text-2xl text-c-lightgreen'>SIGN UP</p>
                         <p>Please, enter your details to continue</p>
@@ -128,9 +132,12 @@ const Signup1 = () => {
                 </div>
             </form>
         </div>
-        <div className='w-1/2 bg-signuprightImage bg-cover bg-no-repeat'>
-
+        <div className='w-0 lg:w-1/2'>
+            <img src={SignupRightImage} alt="" className='w-full h-full' />
         </div>
+        {/* <div className='w-0 lg-w-1/2 bg-signuprightImage bg-cover bg-no-repeat'>
+
+        </div> */}
     </div>
   )
 }
