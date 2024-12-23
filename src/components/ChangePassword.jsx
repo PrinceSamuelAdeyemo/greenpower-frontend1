@@ -28,10 +28,16 @@ const ChangePassword = ({ showModal, openModal, closeModal, userToken}) => {
         .then((response) => {
             console.log(response)
             if (response.data["status_code"] === 200){
-                oldPasswordRef.current.value === ""
-                newPasswordRef.current.value === ""
-                verifyNewPasswordRef.current.value === ""
-                closeModal = false
+                oldPasswordRef.current.value = ""
+                newPasswordRef.current.value = ""
+                verifyNewPasswordRef.current.value = ""
+                setPasswordInform(response.data["data"])
+                setTimeout(() => {
+                closeModal()
+                }, 1000)
+            }
+            else{
+                setPasswordInform(response.data["message"])
             }
         })
         }        

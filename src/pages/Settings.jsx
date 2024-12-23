@@ -20,6 +20,8 @@ const Settings = (props) => {
     const [new_phone_number, setNew_phone_number] = useState()
     const [makeReadOnly, setMakeReadOnly] = useState(true)
     const [resetPassword, setResetPassword] = useState(false)
+    const [profilePictureAvailable, setProfilePictureAvailable] = useState(false)
+    const [documentAvailable, setDocumentAvailable] = useState(false)
 
     const fileInputRef1 = useRef(null);
     
@@ -35,17 +37,27 @@ const Settings = (props) => {
         
     })
 
-    
-    const handleButtonDeleteImage = () => {
+    const handleButtonUpdateImage = () => {
+        if (fileInputRef1.current.files[0] !== ''){
+            setProfilePictureAvailable(true)
+        }
+        else{
+            setProfilePictureAvailable(false)
+        }
+    }
 
+    const handleDocumentUpload = () => {
+        if (fileInputRef2.current.files[0] !== ''){
+            setDocumentAvailable(true)
+        }
+        else{
+            setDocumentAvailable(false)
+        }
     }
 
     const changePhoneNumberInput = () => {
         setBasic_details((prevValue) => ({"phoneNumber": phone_number_ref.current.value, ...prevValue }))
         console.log(basic_details)
-    }
-    const handleButtonUploadDocs = () => {
-        
     }
 
     const  updateProfileInfo= () => {
@@ -139,7 +151,7 @@ const Settings = (props) => {
                                 type='file'
                                 ref={fileInputRef1}
                                 className='hidden'
-                                onChange={(e) => console.log(e.target.files)}
+                                onChange={(e) => handleButtonUpdateImage()}
                                 accept='image/*'
                             />
                             <Button outline className='flex items-center' onClick={() => fileInputRef1.current.click()}>
@@ -150,7 +162,7 @@ const Settings = (props) => {
                             </Button>
                         </div>
                         <p className='mt-2 font-medium'>Delete image</p>
-                        <Button type='button' onClick={updateProfileInfo} className='bg-c-lightgreen'>Save</Button>
+                        <Button type='button' onClick={updateProfileInfo} className='bg-c-lightgreen' disabled={!profilePictureAvailable}>Save</Button>
                     </div>
                 </div>
             </Card>
@@ -222,7 +234,7 @@ const Settings = (props) => {
                                         type='file'
                                         ref={fileInputRef2}
                                         className='hidden'
-                                        onChange={(e) => console.log(e.target.files)}
+                                        onChange={(e) => handleDocumentUpload()}
                                         accept=''
                                     />
                                     <Button outline className='flex items-center' onClick={() => fileInputRef2.current.click()}>
@@ -232,7 +244,7 @@ const Settings = (props) => {
                                         </div>
                                     </Button>
                                 </div>
-                                <Button type='submit' className='bg-c-lightgreen'>Save</Button>
+                                <Button type='submit' className='bg-c-lightgreen' disabled={!documentAvailable}>Save</Button>
                             </div>
                         </div>
                     </div>

@@ -23,7 +23,6 @@ const Signin = () => {
 
     var submitData = (event) => {
         event.preventDefault();
-        navigate("/")
         users_api.post("/login.php", {
             "identifier": emailRef.current.value,
             "password": passwordRef.current.value
@@ -31,7 +30,7 @@ const Signin = () => {
             response_data = response.data["data"]
             console.log(response_data)
             
-            if (response.data["data"]){
+            if (response.data["status_code"] !== 400 && response.data["data"]){
                 response_data = response.data["data"]
                 console.log("LOGGGGEDDDDD IN DAAAAATTTTA",response_data)
                 if ((response_data !== "") && ("userToken" in response_data)){
@@ -43,7 +42,7 @@ const Signin = () => {
                         "phoneNumber": response_data['phoneNumber'],
                         "profilePicture": response_data['profilePicture'],
                         "kycDetails": response_data['kycDetails'],
-                        "ADMIN": 1,//response_data["ADMIN"],
+                        "ADMIN": response_data["ADMIN"],
                         "can_switch": 0,
                         "gender": response_data['gender'],
                         "userHubToken": response_data['hubToken'],
