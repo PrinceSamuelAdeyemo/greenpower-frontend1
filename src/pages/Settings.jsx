@@ -5,6 +5,7 @@ import { FaBell, FaCamera, FaEdit, FaImage, FaLock, FaSignOutAlt, FaUserCheck } 
 import users_api from '../utils/users_api'
 
 import ChangePassword from '../components/ChangePassword'
+import ReloadPage from '../components/ReloadPage'
 import profilePic from "../assets/Rectangle 37.png"
 
 
@@ -15,6 +16,7 @@ const Settings = (props) => {
     var email_address = props.email;
     var phoneNumber = props.phoneNumber
 
+    const [offlineStatus, setOfflineStatus] = useState(false)
     const [email, setEmail] = useState('')
     const phone_number_ref = useRef(null)
     const [new_phone_number, setNew_phone_number] = useState()
@@ -72,6 +74,12 @@ const Settings = (props) => {
             }).then((response) => {
                 console.log(response)
             })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
             .catch(error => (
                 console.log(error)
             ))
@@ -93,6 +101,12 @@ const Settings = (props) => {
             .then((response) => {
                 console.log(response)
             })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
         }
     }
 
@@ -102,6 +116,7 @@ const Settings = (props) => {
 
     return (
         <div>
+            {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
             <Card>
                 <div className='flex flex-col gap-3 w-full md:w-3/5 rounded-none'>
                     <p className='font-bold mb-2'>Account Information</p>

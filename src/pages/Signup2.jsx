@@ -5,6 +5,7 @@ import { TextInput, Button, Label, Select } from 'flowbite-react'
 import SignupRightImage from "../assets/Rectangle 8.png"
 
 import EmailConfirmationModal from '../components/EmailConfirmationModal'
+import ReloadPage from '../components/ReloadPage'
 
 import emailconfirmpic from "../assets/3001931-removebg-preview 1.png"
 //import axios from 'axios'
@@ -78,6 +79,12 @@ const Signup2 = () => {
                     console.log(response)
                 }
             })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                    setOfflineStatus(true);
+                }
+            })
             
            } 
            catch (error) {
@@ -127,6 +134,7 @@ const Signup2 = () => {
 
   return (
     <div className='flex flex-row w-full h-screen'>
+        {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
         <div className='flex justify-center items-center w-full lg:w-1/2'>
             <form onSubmit={submitData} className='flex flex-col justify-center items-center w-[80%] h-full'>
                 <div className='flex flex-col gap-4 md:w-full lg:w-[100%] xl:w-[80%] h-[70%]'>

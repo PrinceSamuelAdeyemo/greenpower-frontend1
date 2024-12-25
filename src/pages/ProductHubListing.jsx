@@ -8,6 +8,7 @@ import hubs_api from '../utils/hubs_api';
 import products_api from '../utils/products_api';
 import UpdateProduct from '../components/UpdateProduct';
 import EachHubProduct from '../components/EachHubProduct';
+import ReloadPage from '../components/ReloadPage';
 
 "use client"
 
@@ -17,6 +18,7 @@ const ProductHubListing = (props) => {
     const location = useLocation()
     const myCookie = props.myCookie
 
+    const [offlineStatus, setOfflineStatus] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [showUpdate, setShowUpdate] = useState(false)
     const [hub_details, setHub_details] = useState()
@@ -40,6 +42,12 @@ const ProductHubListing = (props) => {
                     productsByHub(response.data["data"]["hubToken"])
                 }
             })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
         }
         catch(error){
             console.log(error)
@@ -58,6 +66,12 @@ const ProductHubListing = (props) => {
             else{
                 setHub_details(response.data["data"])
                 setHubProductAvailable(true)
+            }
+        })
+        .catch((error) => {
+            if (error.message.includes("Network Error")){
+                console.log("error is here", error)
+            setOfflineStatus(true);
             }
         })
     }
@@ -109,6 +123,7 @@ const ProductHubListing = (props) => {
 
     return (
         <div className='p-4'>
+            {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
             <div>
                 <p className='text-3xl font-bold text-gray-700'>Products</p>
             </div>

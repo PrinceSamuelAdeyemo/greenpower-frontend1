@@ -7,6 +7,7 @@ import sales_api from '../utils/sales_api';
 import hubs_api from '../utils/hubs_api';
 
 import AdminHubSalesRecord from '../components/AdminHubSalesRecord';
+import ReloadPage from '../components/ReloadPage';
 
 const SalesRecord = (props) => {
     var cookieDetails = props.myCookie
@@ -14,6 +15,7 @@ const SalesRecord = (props) => {
     var admin_status = cookieDetails["ADMIN"]
 
     const navigate = useNavigate()
+    const [offlineStatus, setOfflineStatus] = useState(false)
     const [salesRecordExist, setSalesRecordExist] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [hubs_available, setHubs_available] = useState(false)
@@ -54,6 +56,12 @@ const SalesRecord = (props) => {
                 setSalesRecordExist(false)
             }
         })
+        .catch((error) => {
+            if (error.message.includes("Network Error")){
+                console.log("error is here", error)
+            setOfflineStatus(true);
+            }
+        })
         }catch (error){
             console.log(error)
         }
@@ -71,6 +79,12 @@ const SalesRecord = (props) => {
                     setHubs_list(JSON.stringify(receivedData))
                     setHubs_available(true)
                     //setHubs_list((hubs_list) => [...hubs_list, ...receivedData])
+                }
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
                 }
             })
         }
@@ -98,7 +112,7 @@ const SalesRecord = (props) => {
 
     return (
         <div className='p-4'>
-            
+            {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
             {
                 (admin_status !== 1) ?
                 <>

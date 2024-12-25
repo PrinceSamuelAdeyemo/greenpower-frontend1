@@ -4,7 +4,6 @@ import SuccessfulHubModal from './SuccessfulHubModal'
 import ErrorModal from './ErrorModal'
 import { TextInput } from 'flowbite-react'
 
-import hubs_api from '../utils/hubs_api';
 
 const AddHubModal = ({showModal, openModal, closeModal, createHub, hubName, setHubname, showModal2, openModal2, closeModal2, errorMessage }) => {
     var inputRef = useRef()

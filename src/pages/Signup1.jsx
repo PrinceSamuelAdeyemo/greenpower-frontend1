@@ -4,6 +4,7 @@ import { TextInput, Button, Label, } from 'flowbite-react'
 import SignupRightImage from "../assets/Rectangle 8.png"
 
 import Signup2 from './Signup2'
+import ReloadPage from '../components/ReloadPage'
 
 import users_api from '../utils/users_api'
 import axios from 'axios'
@@ -11,6 +12,7 @@ import axios from 'axios'
 const Signup1 = () => {
     const navigate = useNavigate()
 
+    const [offlineStatus, setOfflineStatus] = useState(false)
     const [show_helpertext, setShow_helpertext] = useState(false)
     const [helpertext, setHelpertext] = useState("")
     const [data, setData] = useState({"bvn": "", "password": ""})
@@ -63,6 +65,12 @@ const Signup1 = () => {
                             setShow_helpertext(true)
                         }
                     })
+                    .catch((error) => {
+                        if (error.message.includes("Network Error")){
+                            console.log("error is here", error)
+                            setOfflineStatus(true);
+                        }
+                    })
                     
                 }
                 else{
@@ -86,6 +94,7 @@ const Signup1 = () => {
 
   return (
     <div className='flex flex-row w-full h-screen'>
+        {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
         <div className='flex justify-center items-center w-full lg:w-1/2'>
             <form onSubmit={openSignup2} className='flex flex-col justify-center items-center w-[80%] h-full'>
                 <div className='flex flex-col gap-8 md:w-full lg:w-[100%] xl:w-[80%] h-[70%]'>

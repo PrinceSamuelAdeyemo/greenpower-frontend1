@@ -4,10 +4,12 @@ import { Link, useNavigate } from "react-router-dom"
 import { TextInput, Button, Label, } from 'flowbite-react'
 
 import users_api from '../utils/users_api'
+import ReloadPage from '../components/ReloadPage'
 
 
 const ForgotPassword = (event) => {
     var [error_details, setError_details] = useState("")
+    const [offlineStatus, setOfflineStatus] = useState(false)
     const emailRef = useRef(null)
 
     const resetPassword = (event) => {
@@ -26,6 +28,12 @@ const ForgotPassword = (event) => {
                     setError_details("We don't have this email address in our record, kindly check your input and try again.")
                 }
             })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
 
         }
         else{
@@ -36,6 +44,7 @@ const ForgotPassword = (event) => {
 
   return (
     <div className='flex justify-center items-center h-screen'>
+        {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
             <form onSubmit={resetPassword} className='flex flex-col justify-center items-center w-[90%] lg:w-[50%] h-full'>
                 <div className='flex flex-col gap-8 w-[100%] xl:w-[80%] h-[70%]'>
                     <div className='flex flex-col items-center text-center'>

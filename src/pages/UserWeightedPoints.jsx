@@ -2,8 +2,11 @@ import { Button, Table } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 
 import weighted_points_api from '../utils/weighted_points_api'
+import ReloadPage from '../components/ReloadPage'
 
 const UserWeightedPoints = (props) => {
+    const [offlineStatus, setOfflineStatus] = useState(false)
+
     var cookieDetails = props.myCookie
     const [w_points, setW_points] = useState()
     const [userWeightedPoints, setUsersWeightedPoints] = useState([])
@@ -28,7 +31,12 @@ const UserWeightedPoints = (props) => {
                     setW_points(total_weighted_points)
                     setUsersWeightedPoints(received_data)
                 }
-                
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
             })
         }
         else{
@@ -46,8 +54,13 @@ const UserWeightedPoints = (props) => {
                     console.log(response.data["data"]["data"])
                     setUsersWeightedPoints(response.data["data"]["data"])
                     console.log(userWeightedPoints)
-                    
                     setW_points(1)
+                }
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
                 }
             })
         }
@@ -62,6 +75,7 @@ const UserWeightedPoints = (props) => {
 
   return (
     <div>
+        {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
         <div className='flex px-4'>
             <p className='text-2xl font-bold'>User Weighted points</p>
             <div className='flex gap-3 ml-auto'>

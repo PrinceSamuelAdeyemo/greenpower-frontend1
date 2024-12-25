@@ -11,10 +11,12 @@ import wallets_api from '../utils/wallets_api';
 import SendMoneyModal from '../components/SendMoneyModal';
 import SendToGreenPowerAccountModal from '../components/SendToGreenPowerAccountModal';
 import SendToExternalAccountModal from '../components/SendToExternalAccountModal';
+import ReloadPage from '../components/ReloadPage';
 
 const Wallet = (props) => {
     var cookieDetails = props.myCookie;
-    var [show_balance, setShow_balance] = useState(false);
+    const [offlineStatus, setOfflineStatus] = useState(false)
+    const [show_balance, setShow_balance] = useState(false);
     const [showModal, setShowModal] = useState(false)
     const [showModal2, setShowModal2] = useState(false)
     const [showModal3, setShowModal3] = useState(false)
@@ -36,6 +38,12 @@ const Wallet = (props) => {
                     setWalletBalanceDisplay(response.data["data"]["balance_th"])
                 }
             })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
         }
         catch (error) {
             
@@ -52,6 +60,7 @@ const Wallet = (props) => {
 
     return (
         <div className="p-4 bg-gray-100 min-h-screen">
+            {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
             <div className='flex flex-col gap-4 lg:gap-0 md:flex-row mb-4'>
                 <div className='flex flex-col md:flex-row bg-c-lightgreen md:w-2/3 rounded-2xl md:mb-0 md:mr-4 shadow-xl pt-4 md:px-2 lg:px-2 xl:px-5 text-white'>
                     <div className='text-white px-2 lg:p-2 xl:p-4 flex-grow'>

@@ -5,6 +5,7 @@ import AddHubModal from '../components/AddHubModal';
 import HubDisplay from '../components/HubDisplay';
 import SuccessfulHubModal from '../components/SuccessfulHubModal';
 import ErrorModal from '../components/ErrorModal';
+import ReloadPage from '../components/ReloadPage';
 
 import hubs_api from '../utils/hubs_api';
 import sales_api from '../utils/sales_api';
@@ -13,6 +14,7 @@ const Products = (props) => {
     var cookieDetails = props.myCookie
     var userToken = cookieDetails["userToken"]
 
+    const [offlineStatus, setOfflineStatus] = useState(false)
     const [showModal, setShowModal] = useState(false);
     const [showModal2, setShowModal2] = useState(false);
     const [errorModal, setShowErrorModal] = useState(false)
@@ -30,6 +32,12 @@ const Products = (props) => {
             .then((response) => {
                 if (response.data['status_code'] == 200){
                     console.log(response)
+                }
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
                 }
             })
         }catch {
@@ -64,6 +72,12 @@ const Products = (props) => {
                 setShowErrorModal(true)
             }
         })
+        .catch((error) => {
+            if (error.message.includes("Network Error")){
+                console.log("error is here", error)
+            setOfflineStatus(true);
+            }
+        })
     }
 
     var hubs_data = () => {
@@ -73,6 +87,12 @@ const Products = (props) => {
             console.log(hubs)
             setHubs_available(true)
             setHubs_list(hubs)
+        })
+        .catch((error) => {
+            if (error.message.includes("Network Error")){
+                console.log("error is here", error)
+            setOfflineStatus(true);
+            }
         })
     }
 
@@ -86,6 +106,7 @@ const Products = (props) => {
 
   return (
     <div className=''>
+        {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
         <div>
             <p className='font-bold text-2xl text-gray-500 ps-8'>Select Hub</p>
         </div>

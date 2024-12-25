@@ -17,6 +17,7 @@ import products_api from '../utils/products_api';
 import wallets_api from '../utils/wallets_api';
 
 import UpdateHubModal from '../components/UpdateHubModal';
+import ReloadPage from '../components/ReloadPage';
 
 import users_api from '../utils/users_api';
 
@@ -24,6 +25,8 @@ const Dashboard = (props) => {
     var cookieDetails = props.myCookie
     var admin_status = cookieDetails["ADMIN"]
 
+
+    const [offlineStatus, setOfflineStatus] = useState(false)
     // Weighted points
     var [weighted_available, setWeighted_available] = useState(false)
     var [no_weighted_point, setNo_weighted_point] = useState(true)
@@ -66,9 +69,16 @@ const Dashboard = (props) => {
                    console.log("Done")
                }
             })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                    setOfflineStatus(true);
+                }
+            })
        }
       catch (error) {
        console.log(error)
+
       }
     }
 
@@ -86,6 +96,12 @@ const Dashboard = (props) => {
                     setWeighted_available(true)
                 }
              })
+             .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                    setOfflineStatus(true);
+                }
+            })
         }
        catch (error) {
         console.log(error)
@@ -100,6 +116,12 @@ const Dashboard = (props) => {
                 console.log(truncated_sales_history)
                 setSales_record(truncated_sales_history)
                 setSalesrecord_available(true)
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
             })
         }
         catch (error){
@@ -144,6 +166,12 @@ const Dashboard = (props) => {
                     setWalletBalanceDisplay(response.data["data"]["balance_th"])
                 }
             })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
         }
         catch (error) {
 
@@ -182,6 +210,7 @@ const Dashboard = (props) => {
     return (
 
         <div className=''>
+        {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
             <div className='px-4 pb-2'>
                 <p className='font-bold text-gray-400 text-3xl'>Dashboard</p>
             </div>

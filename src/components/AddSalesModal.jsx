@@ -6,7 +6,6 @@ import addSalesImage from '../assets/addsalesImage.png';
 import UploadComplete from './UploadComplete';
 import AddSalesComplete from './AddSalesComplete';
 
-
 import products_api from '../utils/products_api'
 import hubs_api from '../utils/hubs_api';
 import sales_api from '../utils/sales_api';

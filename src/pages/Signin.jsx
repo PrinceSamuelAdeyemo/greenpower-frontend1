@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { TextInput, Button, Label, } from 'flowbite-react'
 import SignupRightImage from "../assets/Rectangle 8.png"
 
+import ReloadPage from '../components/ReloadPage'
+
 import users_api from '../utils/users_api'
 
 const Signin = () => {
+    const [offlineStatus, setOfflineStatus] = useState(false);
     /////////////    COOKIE DETAILS  ///////////////////
     var COOKIE_NAME = "GREENPOWER_USERDETAILS"
     var COOKIE_PATH = "/cookie/auth_greenpower"
@@ -21,77 +24,87 @@ const Signin = () => {
 
     const navigate = useNavigate()
 
-    var submitData = (event) => {
+    var submitData = async (event) => {
         event.preventDefault();
-        users_api.post("/login.php", {
-            "identifier": emailRef.current.value,
-            "password": passwordRef.current.value
-        }).then((response) => {
-            response_data = response.data["data"]
-            console.log(response_data)
-            
-            if (response.data["status_code"] !== 400 && response.data["data"]){
+        try{
+            users_api.post("/login.php", {
+                "identifier": emailRef.current.value,
+                "password": passwordRef.current.value
+            }).then((response) => {
                 response_data = response.data["data"]
-                console.log("LOGGGGEDDDDD IN DAAAAATTTTA",response_data)
-                if ((response_data !== "") && ("userToken" in response_data)){
-                    var COOKIE_VALUE = {
-                        "email": response_data['email'],
-                        "firstName": response_data['firstName'],
-                        "lastName": response_data['lastName'],
-                        "userToken": response_data['userToken'],
-                        "phoneNumber": response_data['phoneNumber'],
-                        "profilePicture": response_data['profilePicture'],
-                        "kycDetails": response_data['kycDetails'],
-                        "ADMIN": response_data["ADMIN"],
-                        "can_switch": 0,
-                        "gender": response_data['gender'],
-                        "userHubToken": response_data['hubToken'],
-                        "userReni": response_data['renitoken'],
-                    }
-                    if (COOKIE_VALUE["ADMIN"] === 1){
-                        COOKIE_VALUE["can_switch"] = 1
-                    }
-                    if (response_data["bvn_on_reni"] === 0){
-                        try {
-                            users_api.post('/updateReniUserBVN.php', {
-                                "userToken": response_data["userToken"]
-                            })
-                            .then((response) => {
-                                console.log("Update reni bvn response here", response)
-                                if (response.data["status_code"] === 200){
-                                    console.log("update reni bvn",response.data)
-                                }
-                                else{
-                                    //navigate('/login')
-                                }
-                                
-                            })
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }
-                    localStorage.setItem('dataValue', JSON.stringify(COOKIE_VALUE))
-                    console.log(COOKIE_VALUE)
-                    navigate("/")
-                }
-            }
-            else if (response.data["message"]){
-                setError_details(response.data["message"])
-            }
-        })
-    }
+                console.log(response_data)
 
+                if (response.data["status_code"] !== 400 && response.data["data"]){
+                    response_data = response.data["data"]
+                    console.log("LOGGGGEDDDDD IN DAAAAATTTTA",response_data)
+                    if ((response_data !== "") && ("userToken" in response_data)){
+                        var COOKIE_VALUE = {
+                            "email": response_data['email'],
+                            "firstName": response_data['firstName'],
+                            "lastName": response_data['lastName'],
+                            "userToken": response_data['userToken'],
+                            "phoneNumber": response_data['phoneNumber'],
+                            "profilePicture": response_data['profilePicture'],
+                            "kycDetails": response_data['kycDetails'],
+                            "ADMIN": response_data["ADMIN"],
+                            "can_switch": 0,
+                            "gender": response_data['gender'],
+                            "userHubToken": response_data['hubToken'],
+                            "userReni": response_data['renitoken'],
+                        }
+                        if (COOKIE_VALUE["ADMIN"] === 1){
+                            COOKIE_VALUE["can_switch"] = 1
+                        }
+                        if (response_data["bvn_on_reni"] === 0){
+                            try {
+                                users_api.post('/updateReniUserBVN.php', {
+                                    "userToken": response_data["userToken"]
+                                })
+                                .then((response) => {
+                                    console.log("Update reni bvn response here", response)
+                                    if (response.data["status_code"] === 200){
+                                        console.log("update reni bvn",response.data)
+                                    }
+                                    else{
+                                        //navigate('/login')
+                                    }
+                                    
+                                })
+                            } catch (error) {
+                                console.log(error)
+                                setOfflineStatus(true);
+                            }
+                        }
+                        localStorage.setItem('dataValue', JSON.stringify(COOKIE_VALUE))
+                        console.log(COOKIE_VALUE)
+                        navigate("/")
+                    }
+                }
+                else if (response.data["message"]){
+                    setError_details(response.data["message"])
+                }
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
+        }
+        catch (error) {
+            
+            
+        }
+        
+    }
 
   return (
     <div className='flex flex-col md:flex-row w-full h-screen'>
+        {offlineStatus && <ReloadPage offlineStatus={offlineStatus} />}
         <div className='flex justify-center items-center md:w-1/2'>
             <form onSubmit={submitData} className='flex flex-col justify-center items-center w-[90%] lg:w-[70%] h-full'>
                 <div className='flex flex-col gap-8 w-[100%] xl:w-[80%] h-[70%]'>
-                    <div className='flex flex-col items-center text-center'>
-                        <p className='font-bold text-2xl text-c-lightgreen'>SIGN IN</p>
-                        <p>Please, enter your details to continue</p>
-                        <p className='font-bold mt-3 text-red-500'>{ error_details }</p>
-                    </div>
+                    
 
                     <div className='w-full'>
                         <div className='mb-2 block'>
