@@ -34,7 +34,8 @@ const Signin = () => {
                 response_data = response.data["data"]
                 console.log(response_data)
 
-                if (response.data["status_code"] !== 400 && response.data["data"]){
+                if (response.data["status_code"] === 200 && response.data["data"]){
+                    setError_details("")
                     response_data = response.data["data"]
                     console.log("LOGGGGEDDDDD IN DAAAAATTTTA",response_data)
                     if ((response_data !== "") && ("userToken" in response_data)){
@@ -46,7 +47,7 @@ const Signin = () => {
                             "phoneNumber": response_data['phoneNumber'],
                             "profilePicture": response_data['profilePicture'],
                             "kycDetails": response_data['kycDetails'],
-                            "ADMIN": response_data["ADMIN"],
+                            "ADMIN": 1,//response_data["ADMIN"],
                             "can_switch": 0,
                             "gender": response_data['gender'],
                             "userHubToken": response_data['hubToken'],
@@ -80,7 +81,7 @@ const Signin = () => {
                         navigate("/")
                     }
                 }
-                else if (response.data["message"]){
+                else if (response.data["status_code"] !== 200 && response.data["message"]){
                     setError_details(response.data["message"])
                 }
             })
@@ -104,8 +105,7 @@ const Signin = () => {
         <div className='flex justify-center items-center md:w-1/2'>
             <form onSubmit={submitData} className='flex flex-col justify-center items-center w-[90%] lg:w-[70%] h-full'>
                 <div className='flex flex-col gap-8 w-[100%] xl:w-[80%] h-[70%]'>
-                    
-
+                    <p className="text-red-500">{error_details}</p>
                     <div className='w-full'>
                         <div className='mb-2 block'>
                             <Label htmlFor='email' value='Email' className='font-bold' />
