@@ -47,7 +47,7 @@ const Signin = () => {
                             "phoneNumber": response_data['phoneNumber'],
                             "profilePicture": response_data['profilePicture'],
                             "kycDetails": response_data['kycDetails'],
-                            "ADMIN": 1,//response_data["ADMIN"],
+                            "ADMIN": response_data["ADMIN"],
                             "can_switch": 0,
                             "gender": response_data['gender'],
                             "userHubToken": response_data['hubToken'],
