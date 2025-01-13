@@ -24,7 +24,12 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     const [currentProduct, setCurrentProduct] = useState({})
     const [hubChanged, setHubChanged] = useState(0)
 
+    const [error_details, setError_details] = useState('')
+
     const paymentOptionRef = useRef(null)
+    const downPaymentRef = useRef(null)
+    const installmentAmountRef = useRef(null)
+    const durationRef = useRef(null)
     const currentHubRef = useRef(null)
     const currentProductRef = useRef(null)
 
@@ -60,10 +65,11 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             .then((response) => {
                 console.log("response from the sales",response.data)
                 if (response.data["status_code"] === 200){
+                    setError_details('')
                     setShowModal2(true)
                 }
                 else{
-                    
+                    setError_details("Something went wrong.")
                 }
             })
         }
@@ -160,6 +166,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             closeModal={closeModal}
             title="Add Sales"
          >
+            <p className='text-center text-red-500'>{error_details}</p>
             <img src={addSalesImage} alt="Add Sales" />
 
             <div className='w-full my-3 px-4'>
