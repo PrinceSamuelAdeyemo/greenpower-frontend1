@@ -41,6 +41,7 @@ const EmailConfirmationModal = ({showModal, openModal, closeModal, pic, email}) 
     .then((response) => {
       console.log(response)
       if (response.data['status_code'] === 400){
+        setEmailVerifiedMessage("We ran into an error while verifying your account.")
         closeModal = false
       }
       else if (response.data["status_code"] === 200){
