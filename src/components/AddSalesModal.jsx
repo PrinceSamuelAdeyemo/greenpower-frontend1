@@ -62,6 +62,9 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 if (response.data["status_code"] === 200){
                     setShowModal2(true)
                 }
+                else{
+                    
+                }
             })
         }
         catch (error){

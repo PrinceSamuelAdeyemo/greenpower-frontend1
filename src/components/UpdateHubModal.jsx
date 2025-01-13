@@ -13,6 +13,7 @@ const UpdateHubModal = ({ showModal, openModal, closeModal, userToken }) => {
     const [hub_available, setHub_available] = useState(false)
     const [hubs_list, setHubs_list] = useState([])
     const [disabledButton, setDisabledButton] = useState(true)
+    const [error_detaiils, setError_details] = useState('')
 
     const currentHubRef = useRef(null)
 
@@ -41,6 +42,9 @@ const UpdateHubModal = ({ showModal, openModal, closeModal, userToken }) => {
             if (response.data["status_code"] === 200){
                 closeModal()
             }
+            else if (response.data["status_code"] === 400){
+                setError_details(response.data["message"])
+            }
         })
         }
     }
@@ -61,6 +65,7 @@ const UpdateHubModal = ({ showModal, openModal, closeModal, userToken }) => {
          >
 
             <div className='w-full my-3 px-4'>
+                <p className='text-red-500 text-center'>{error_detaiils}</p>
                 <div className='my-3'>
                     <Label value='Select Hub' htmlFor='hub' />
                     <Select onChange={tempUpdateUserHub} id='hub' className='flex-grow' ref={currentHubRef} >
