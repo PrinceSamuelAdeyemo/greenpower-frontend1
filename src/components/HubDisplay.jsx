@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Popover } from "flowbite-react"
 import hubvectorpic from "../assets/hubVector.png"
@@ -7,6 +7,8 @@ import hubs_api from '../utils/hubs_api'
 
 
 const HubDisplay = ({userToken, hub, hubsData}) => {
+
+  const [error_details, setError_details] = useState('')
 
   var user_token = hub["userToken"]
   var hub_id = hub["id"]
@@ -36,10 +38,11 @@ const HubDisplay = ({userToken, hub, hubsData}) => {
         console.log(response.data)
         console.log(response.data["status_code"])
         if (response.data["status_code"] == 200){
+            setError_details('')
             hubsData()
         }
         else{
-            
+            setError_details('Something went wrong.')
         }
     })
     }catch (error) {
