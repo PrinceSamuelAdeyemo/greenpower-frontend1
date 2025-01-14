@@ -37,6 +37,9 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                     setBankList((response.data["data"]["data"]))
                     console.log(bankList.length)
                 }
+                else{
+                    setErrorMessage("Something went wrong.")
+                }
             })
         }
         catch(error){
@@ -59,6 +62,9 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                     if (response.data["status_code"] === 200){
                         setAccountName(response.data["data"]["accountName"])
                     }
+                    else{
+                        setErrorMessage("Something went wrong.")
+                    }
                 })
             }
             catch(error){
@@ -78,7 +84,14 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                 "accNo": accountNumberRef.current.value
             })
             .then((response) => {
+                if (response.data["status_code"] === 200) {
+                    setErrorMessage("")
+                }
+                else{
+                    setErrorMessage("Something went wrong.")
+                }
                 console.log(response)
+
             })
         } catch (error) {
             
