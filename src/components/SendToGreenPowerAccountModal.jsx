@@ -15,6 +15,7 @@ const SendToGreenPowerAccountModal = ({ showModal2, openModal2, closeModal2, coo
     const [emailValidated, setEmailValidated] = useState()
     const [amountValidated, setAmountValidated] = useState()
     const [errorMessage, setErrorMessage] = useState()
+    const [successMessage, setSuccessMessage] = useState()
     const [loading, setLoading] = useState(false)
 
 
@@ -74,6 +75,14 @@ const SendToGreenPowerAccountModal = ({ showModal2, openModal2, closeModal2, coo
                 "amount": amountRef.current.value
             })
             .then((response) => {
+                if (response.data["status_code"] === 200){
+                    setErrorMessage("")
+                    setSuccessMessage("Transfer successful")
+                }
+                else{
+                    setSuccessMessage("")
+                    setErrorMessage("Something went wrong with the transfer.")
+                }
                 console.log(response)
                 console.log({
                     "r_userToken": users["userToken"],
@@ -94,6 +103,10 @@ const SendToGreenPowerAccountModal = ({ showModal2, openModal2, closeModal2, coo
   return (
     <CustomModal showModal={showModal2} openModal={openModal2} closeModal={closeModal2}>
         <div className='flex flex-col items-center gap-5 w-full' onClick={() => console.log(2)}>
+            <div className=''>
+                <p>{successMessage}</p>
+                <p>{errorMessage}</p>
+            </div>
             <form onSubmit={transferMoney} className='flex flex-col gap-8 w-full'>
                 <div className='flex gap-4'>
                     <p>Walet Balance:</p>
