@@ -8,6 +8,7 @@ import upload_product_by_csv from '../utils/upload_product_by_csv'
 import { useLocation } from 'react-router-dom'
 
 import SuccessfulHubModal from '../components/SuccessfulHubModal'
+
 import ErrorModal from '../components/ErrorModal'
 
 const AddProduct = (props) => {
@@ -19,6 +20,11 @@ const AddProduct = (props) => {
     const [errorMessage, setErrorMessage] = useState('')
     const [errorMessage2, setErrorMessage2] = useState('')
     const [showInstallment, setShowInstallment] = useState(false)
+
+    const [threeInstallment, setThreeInstallment] = useState(false)
+    const [sixInstallment, setSixInstallment] = useState(false)
+    const [nineInstallment, setNineInstallment] = useState(false)
+    const [twelveInstallment, setTwelveInstallment] = useState(false)
 
     // Refs
     const product_nameRef = useRef(null)
@@ -36,6 +42,11 @@ const AddProduct = (props) => {
     const durationRef = useRef(null)
     const installmentAmountRef = useRef(null)
 
+    const threeInstallmentRef = useRef(null)
+    const sixInstallmentRef = useRef(null)
+    const nineInstallmentRef = useRef(null)
+    const twelveInstallmentRef = useRef(null)
+
     var {"hubToken": hub_token} = location.state || {}
     console.log(hub_token)
     
@@ -44,8 +55,23 @@ const AddProduct = (props) => {
         fileInputRef.current.click();
     };
 
-    const toggleInstallmentDiv = () => {
-        durationRef.current.value === "0" ? setShowInstallment(false) : setShowInstallment(true);
+    const toggleInstallmentDiv = (month) => {
+        switch (month){
+            case "three":
+                setThreeInstallment(!threeInstallment);
+                break;
+            case "six":
+                setSixInstallment(!sixInstallment);
+                break;
+            case "nine":
+                setNineInstallment(!nineInstallment);
+                break;
+            case "twelve":
+                setTwelveInstallment(!nineInstallment);
+                break;
+        }
+        //durationRef.current.value === "0" ? setShowInstallment(false) : setShowInstallment(true);
+        
     }
 
     const saveProduct = () => {
@@ -260,34 +286,42 @@ const AddProduct = (props) => {
                             <TextInput type='text' id='logistics_fees' ref={product_logisticsFeesRef} className='flex-grow w-[60rem]' />
                         </div>
                         <div className='flex items-center gap-2 mb-3'>
-                            <Label value='Payment Plan' htmlFor='payment_plan' className='w-3/4' />
-                            <Select onChange={toggleInstallmentDiv} id='payment_plan' ref={durationRef} className='flex-grow w-[60rem]'>
+                            <Label value='Payment Plan' htmlFor='payment_plan' className='w-1/2' />
+                            <div className="flex justify-between w-full flex-grow-1">
+                                <div className="flex gap-1 items-center justify-center">
+                                    <Label value="3 months" />
+                                    <TextInput ref={threeInstallmentRef} onChange={() => toggleInstallmentDiv("three")} type="checkbox" className="w-5" />
+                                </div>
+                                <div className="flex gap-1 items-center justify-center">
+                                    <Label value="6 months" />
+                                    <TextInput ref={sixInstallmentRef} onChange={() => toggleInstallmentDiv("six")} type="checkbox" className="w-5" />
+                                </div>
+                                <div className="flex gap-1 items-center justify-center">
+                                    <Label value="9 months" />
+                                    <TextInput ref={nineInstallmentRef} onChange={() => toggleInstallmentDiv("nine")} type="checkbox" className="w-5" />
+                                </div>
+                                <div className="flex gap-1 items-center justify-center">
+                                    <Label value="12 months" />
+                                    <TextInput ref={twelveInstallmentRef} onChange={() => toggleInstallmentDiv("twelve")} type="checkbox" className="w-5" />
+                                </div>
+                            </div>
+                            
+                            {/* <Select onChange={toggleInstallmentDiv} id='payment_plan' ref={durationRef} className='flex-grow w-[60rem]'>
                                 <option value={0}>---</option>
                                 <option value={3}>3 months</option>
                                 <option value={6}>6 months</option>
                                 <option value={9}>9 months</option>
                                 <option value={12}>12 months</option>
-                            </Select>
+                            </Select> */}
                         </div>
 
                         {showInstallment &&
                         <div className='flex flex-col gap-2'>
                             <p className='text-center font-bold text-red-500'>{errorMessage2}</p>
                             <p className='font-bold'>Installment details</p>
-                            <div className='flex flex-col gap-3'>
-                                <div className='flex items-center gap-2 mb-3'>
-                                    <Label value='Down Payment' htmlFor='downpayment' className='w-3/4' />
-                                    <TextInput type='text' id='downpayment' ref={downPaymentRef} className='flex-grow w-[60rem]' required />
-                                </div>
-                                <div className='flex items-center gap-2 mb-3'>
-                                    <Label value='Installment Amount' htmlFor='installmentAmount' className='w-3/4' />
-                                    <TextInput type='text' id='installmentAmount' ref={installmentAmountRef} className='flex-grow w-[60rem]' required />
-                                </div>
-                                <div className='flex items-center gap-2 mb-3'>
-                                    <Label value='Installment Commission' htmlFor='installmentCommission' className='w-3/4' />
-                                    <TextInput type='text' id='installmentCommission' ref={installmentCommissionRef} className='flex-grow w-[60rem]' required />
-                                </div>
-                            </div>
+                            {threeInstallment && <AddInstallmentMonth month={3} />}
+                            <AddInstallmentMonth month={3} />
+                            
                         </div>}
                     </div>
                     <div className='w-full flex justify-center'>
