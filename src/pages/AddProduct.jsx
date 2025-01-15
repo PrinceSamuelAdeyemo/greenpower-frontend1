@@ -1,5 +1,5 @@
 import { Avatar, Button, Card, FileInput, Label, Select, TextInput, ToggleSwitch } from 'flowbite-react'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FaBell, FaCamera, FaEdit, FaImage, FaLock, FaSignOutAlt, FaUserCheck } from 'react-icons/fa'
 import profilePic from "../assets/Rectangle 37.png"
 
@@ -8,7 +8,7 @@ import upload_product_by_csv from '../utils/upload_product_by_csv'
 import { useLocation } from 'react-router-dom'
 
 import SuccessfulHubModal from '../components/SuccessfulHubModal'
-
+import AddInstallmentMonth from  '../components/AddInstallmentMonth'
 import ErrorModal from '../components/ErrorModal'
 
 const AddProduct = (props) => {
@@ -20,7 +20,14 @@ const AddProduct = (props) => {
     const [errorMessage, setErrorMessage] = useState('')
     const [errorMessage2, setErrorMessage2] = useState('')
     const [showInstallment, setShowInstallment] = useState(false)
+    const [installmentDetails, setInstallmentDetails] = useState([
+        { month: 3, downPayment: 0, installment_amount: 0, installmentCommission: 0 },
+        { month: 6, downPayment: 0, installment_amount: 0, installmentCommission: 0 },
+        { month: 9, downPayment: 0, installment_amount: 0, installmentCommission: 0 },
+        { month: 12, downPayment: 0, installment_amount: 0, installmentCommission: 0 },
+      ]);
 
+    const [onetime, setOnetime] = useState(true)
     const [threeInstallment, setThreeInstallment] = useState(false)
     const [sixInstallment, setSixInstallment] = useState(false)
     const [nineInstallment, setNineInstallment] = useState(false)
@@ -39,7 +46,6 @@ const AddProduct = (props) => {
 
     const downPaymentRef = useRef(null)
     const installmentCommissionRef = useRef(null)
-    const durationRef = useRef(null)
     const installmentAmountRef = useRef(null)
 
     const threeInstallmentRef = useRef(null)
@@ -56,6 +62,7 @@ const AddProduct = (props) => {
     };
 
     const toggleInstallmentDiv = (month) => {
+        
         switch (month){
             case "three":
                 setThreeInstallment(!threeInstallment);
@@ -67,26 +74,35 @@ const AddProduct = (props) => {
                 setNineInstallment(!nineInstallment);
                 break;
             case "twelve":
-                setTwelveInstallment(!nineInstallment);
+                setTwelveInstallment(!twelveInstallment);
                 break;
+            
+        }
+
+        if (threeInstallmentRef.current.checked === true || sixInstallmentRef.current.checked === true || nineInstallmentRef.current.checked === true || twelveInstallmentRef.current.checked === true){
+            setShowInstallment(true)
+            setOnetime(false)
+        }
+        else{
+            setOnetime(true)
+            setShowInstallment(false)
         }
         //durationRef.current.value === "0" ? setShowInstallment(false) : setShowInstallment(true);
         
     }
 
+
     const saveProduct = () => {
-        
-        
         if (serialNumberFileRef.current.value){
             // Compute if serial number file is to be included.
             if (!(/^\s$/.test(product_nameRef.current.value.trim())) && !(/^\s$/.test(product_outrightpriceRef.current.value.trim())) && serialNumberFileRef.current.value != ""){
-                if (durationRef.current.value === "0"){
+                if (onetime){
                     const formData = new FormData()
                     formData.append("hubToken", hub_token);
                     formData.append("userToken", cookieDetails["userToken"]);
                     formData.append("pdtSerialNumbers", serialNumberFileRef.current.files[0]);
                     formData.append("pdtName", product_nameRef.current.value);
-                    formData.append("pdtImage", "");//product_imageRef.current.value);
+                    formData.append("pdtImage", product_imageRef.current.file[0]);
                     formData.append("outrightPrice", Number(product_outrightpriceRef.current.value));
                     formData.append("outrightCommission", Number(product_outrightCommissionRef.current.value));
                     formData.append("logisticsFees", Number(product_logisticsFeesRef.current.value)); //static for now
@@ -105,44 +121,40 @@ const AddProduct = (props) => {
                     })
                 }
                 else{
-                    if (/\d/.test(installmentCommissionRef.current.value.trim()) && /\d/.test(downPaymentRef.current.value.trim()) && /\d/.test(installmentAmountRef.current.value.trim())) {
-                        setErrorMessage2('')
-                        var paymentPlan = [
-                            {
-                                "commissionEarned": Number(installmentCommissionRef.current.value.trim()),
-                                "downPayment": Number(downPaymentRef.current.value.trim()),
-                                "duration": Number(durationRef.current.value.trim()),
-                                "installment_amount": Number(installmentAmountRef.current.value.trim())
-                            }
-                        ]
-
-                        const formData = new FormData()
-                        formData.append("hubToken", hub_token);
-                        formData.append("userToken", cookieDetails["userToken"]);
-                        formData.append("pdtSerialNumbers", serialNumberFileRef.current.files[0]);
-                        formData.append("pdtName", product_nameRef.current.value);
-                        formData.append("pdtImage", "");//product_imageRef.current.value);
-                        formData.append("outrightPrice", Number(product_outrightpriceRef.current.value));
-                        formData.append("outrightCommission", Number(product_outrightCommissionRef.current.value));
-                        formData.append("logisticsFees", Number(product_logisticsFeesRef.current.value)); //static for now
-                        formData.append("weightedPoints", Number(weightedPointRef.current.value));
-                        formData.append("paymentPlan", paymentPlan);
-                        
-                        upload_product_by_csv.post("addProduct_csv_fd.php", formData)
-                        .then((response) => {
-                            console.log(response)
-                            if (response.data["status_code"] === 200){
-                                setShowModal2(true)
-                            }
-                            else{
-                                setErrorMessage('Error in adding product to hub. Kindly check your inputs and make sure you fill in all required fields appropriately.')
-                                setErrorModal(true)
-                            }
-                        })
-                    }
-                    else{
-                        setErrorMessage2('Fields must be a valid number and not empty')
-                    }
+                    setInstallmentDetails(prevDetails => {
+                        return prevDetails.filter(detail =>
+                            detail.downPayment !== 0 &&
+                            detail.installment_amount !== 0 &&
+                            detail.installmentCommission !== 0
+                        );
+                    });
+                    
+                    setErrorMessage2('')
+                    
+                    console.log(installmentDetails)
+                    const formData = new FormData()
+                    formData.append("hubToken", hub_token);
+                    formData.append("userToken", cookieDetails["userToken"]);
+                    formData.append("pdtSerialNumbers", serialNumberFileRef.current.files[0]);
+                    formData.append("pdtName", product_nameRef.current.value);
+                    formData.append("pdtImage", product_imageRef.current.file[0]);
+                    formData.append("outrightPrice", Number(product_outrightpriceRef.current.value));
+                    formData.append("outrightCommission", Number(product_outrightCommissionRef.current.value));
+                    formData.append("logisticsFees", Number(product_logisticsFeesRef.current.value)); //static for now
+                    formData.append("weightedPoints", Number(weightedPointRef.current.value));
+                    formData.append("paymentPlan", installmentDetails);
+                    
+                    upload_product_by_csv.post("addProduct_csv_fd.php", formData)
+                    .then((response) => {
+                        console.log(response)
+                        if (response.data["status_code"] === 200){
+                            setShowModal2(true)
+                        }
+                        else{
+                            setErrorMessage('Error in adding product to hub. Kindly check your inputs and make sure you fill in all required fields appropriately.')
+                            setErrorModal(true)
+                        }
+                    })
                 }
             }
             else{
@@ -152,8 +164,7 @@ const AddProduct = (props) => {
         else{
             // Compute if serial number only is to be included.
             if ((product_nameRef.current.value && product_serialNumRef.current.value && product_outrightpriceRef.current.value) != ""){
-                if (durationRef.current.value === "0"){
-                    alert("ee")
+                if (onetime){
                     var data = {
                         "hubToken": hub_token,
                         "userToken": cookieDetails["userToken"],
@@ -179,8 +190,15 @@ const AddProduct = (props) => {
                     })
                 }
                 else{
-                    if (/\d/.test(installmentCommissionRef.current.value.trim()) && /\d/.test(downPaymentRef.current.value.trim()) && /\d/.test(installmentAmountRef.current.value.trim())) {
-                        var data = {
+                    setInstallmentDetails(prevDetails => {
+                        return prevDetails.filter(detail =>
+                            detail.downPayment !== 0 &&
+                            detail.installment_amount !== 0 &&
+                            detail.installmentCommission !== 0
+                        );
+                    });
+                    
+                            var data = {
                             "hubToken": hub_token,
                             "userToken": cookieDetails["userToken"],
                             "pdtSerialNumber": product_serialNumRef.current.value,
@@ -190,14 +208,7 @@ const AddProduct = (props) => {
                             "outrightCommission": Number(product_outrightCommissionRef.current.value),
                             "logisticsFees": Number(product_logisticsFeesRef.current.value),
                             "weightedPoints": Number(weightedPointRef.current.value),
-                            "paymentPlan": [
-                                    {
-                                        "commissionEarned": Number(installmentCommissionRef.current.value.trim()),
-                                        "downPayment": Number(downPaymentRef.current.value.trim()),
-                                        "duration": Number(durationRef.current.value.trim()),
-                                        "installment_amount": Number(installmentAmountRef.current.value.trim())
-                                    }
-                                ]
+                            "paymentPlan": installmentDetails
                             }
                         console.log(data)
                         products_api.post("addProduct.php", data)
@@ -211,23 +222,23 @@ const AddProduct = (props) => {
                                 setErrorModal(true)
                             }
                         })
-                    }
-                    else{
-                        setErrorMessage('Error in adding product to hub. Kindly check your inputs and make sure you fill in all required fields appropriately.')
-                        setErrorModal(true)
-                    }
+                    
+                    
                 }
             }
-            else{
-                setErrorMessage('Error in adding product to hub. Kindly check your inputs and make sure you fill in all required fields appropriately.')
-                setErrorModal(true)
-            }
+           
         }
  
         
     }
     
+    useEffect(() => {
+      
+    console.log(installmentDetails)
+      
+    }, [installmentDetails])
     
+
     return (
         <div>
             <div className='px-4 pb-2'>
@@ -319,13 +330,14 @@ const AddProduct = (props) => {
                         <div className='flex flex-col gap-2'>
                             <p className='text-center font-bold text-red-500'>{errorMessage2}</p>
                             <p className='font-bold'>Installment details</p>
-                            {threeInstallment && <AddInstallmentMonth month={3} />}
-                            <AddInstallmentMonth month={3} />
-                            
+                            {threeInstallment && <AddInstallmentMonth key={3} month={3} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
+                            {sixInstallment && <AddInstallmentMonth key={6} month={6} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
+                            {nineInstallment && <AddInstallmentMonth key={9} month={9} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
+                            {twelveInstallment && <AddInstallmentMonth key={12} month={12} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
                         </div>}
                     </div>
                     <div className='w-full flex justify-center'>
-                        <button className='bg-c-lightgreen text-white w-[40%] h-10 rounded' onClick={saveProduct}>Save</button>
+                        <button className='bg-c-lightgreen text-white w-[40%] h-10 rounded' onClick={saveProduct}>Add Product</button>
                     </div>
                     
                 {/* </form> */}
