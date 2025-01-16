@@ -22,6 +22,8 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     // current hub token and current product
     const [currentHub, setCurrentHub] = useState({})
     const [currentProduct, setCurrentProduct] = useState({})
+    const [paymentPlans, setPaymentPlans] = useState([])
+    const [currentPaymentPlan, setCurrentPaymentPlan] = useState({})
     const [hubChanged, setHubChanged] = useState(0)
 
     const [error_details, setError_details] = useState('')
@@ -36,7 +38,6 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
     const submitToAddSales = () =>{
         try{
             //console.log(parseFloat((currentProduct["outrightPrice"]).toFixed(2)))
-            console.log((55/1).toFixed(2))
             console.log("CURRENT HUB", currentHub)
             console.log("CURRENT PRODUCT", currentProduct)
             console.log(typeof(parseInt(currentProduct["logisticsFees"])))
@@ -51,27 +52,59 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 "amountPaid": parseFloat((currentProduct["outrightPrice"])).toFixed(2),
                 "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
             })
-            sales_api.post("/addSale.php", {
-                "pdtName": currentProduct["pdtName"],
-                "hubToken": cookieDetails["userHubToken"],
-                "userToken": cookieDetails["userToken"],
-                "pdtToken": currentProduct["pdtToken"],
-                "pdtSerialNumber": currentProduct["pdtSerialNumber"],
-                "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
-                "payment_option": "outright",
-                "amountPaid": parseFloat((currentProduct["outrightPrice"])).toFixed(2),
-                "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
-            })
-            .then((response) => {
-                console.log("response from the sales",response.data)
-                if (response.data["status_code"] === 200){
-                    setError_details('')
-                    setShowModal2(true)
-                }
-                else{
-                    setError_details("Something went wrong.")
-                }
-            })
+
+            if (outright_payment === true){
+                sales_api.post("/addSale.php", {
+                    "pdtName": currentProduct["pdtName"],
+                    "hubToken": cookieDetails["userHubToken"],
+                    "userToken": cookieDetails["userToken"],
+                    "pdtToken": currentProduct["pdtToken"],
+                    "pdtSerialNumber": currentProduct["pdtSerialNumber"],
+                    "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
+                    "payment_option": "outright",
+                    "amountPaid": parseFloat((currentProduct["outrightPrice"])).toFixed(2),
+                    "commissionEarned": Number(currentProduct["outrightCommission"]).toFixed(2),
+                    "payment_type": "outright"
+                })
+                .then((response) => {
+                    console.log("response from the sales",response.data)
+                    if (response.data["status_code"] === 200){
+                        setError_details('')
+                        setShowModal2(true)
+                    }
+                    else{
+                        setError_details("Something went wrong.")
+                    }
+                })
+            }
+            else{
+                sales_api.post("/addSale.php", {
+                    "pdtName": currentProduct["pdtName"],
+                    "hubToken": cookieDetails["userHubToken"],
+                    "userToken": cookieDetails["userToken"],
+                    "pdtToken": currentProduct["pdtToken"],
+                    "pdtSerialNumber": currentProduct["pdtSerialNumber"],
+                    "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
+                    "payment_option": {
+                        "downPayment": currentPaymentPlan["downPayment"],
+                        "commissionEarned": currentPaymentPlan["installmentCommission"],
+                        "duration": currentPaymentPlan["month"],
+                        "installment_amount": currentPaymentPlan["installment_amount"]
+                    },
+                    "payment_type": "downPayment",
+                })
+                .then((response) => {
+                    console.log("response from the sales",response.data)
+                    if (response.data["status_code"] === 200){
+                        setError_details('')
+                        setShowModal2(true)
+                    }
+                    else{
+                        setError_details("Something went wrong.")
+                    }
+                })
+            }
+            
         }
         catch (error){
             console.log("Error here", error)
@@ -136,12 +169,25 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
         console.log(currentProductRef.current.value)
         let each = products_list.find(product => product.pdtToken === currentProductRef.current.value);
         console.log(each)
+        console.log(each["paymentPlan"])
+        console.log(typeof(JSON.parse(each["paymentPlan"])))
         setCurrentProduct(each)
+        setPaymentPlans(JSON.parse(each["paymentPlan"]))
+        console.log(typeof(paymentPlans))
     }
 
     var updatePaymentPlan = () => {
-        if (paymentOptionRef.current.value !== "Outright Payment"){
+        if (paymentOptionRef.current.value !== "outright_payment"){
             setOutright_payment(false)
+            
+            //setCurrentPaymentPlan()
+            console.log(paymentOptionRef.current.value)
+            for (let i = 0; i < paymentPlans.length; i++){
+                if (paymentPlans[i]["month"] == paymentOptionRef.current.value){
+                    console.log(paymentPlans[i])
+                    setCurrentPaymentPlan(paymentPlans[i])
+                }
+            }
         }
         else{
             setOutright_payment(true)
@@ -150,13 +196,19 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
 
     useEffect(() => {
         getProductsByHub()
+        console.log(paymentPlans)
     }, [hubChanged])
     
     useEffect(() => {
         console.log(hubChanged, "lola")
         console.log("ALL", cookieDetails)
         getHubsList()
+        console.log(paymentPlans)
     }, [])
+
+    useEffect(() => {
+        console.log(paymentPlans)
+    }, [paymentPlans])
 
     
     return (
@@ -166,10 +218,10 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             closeModal={closeModal}
             title="Add Sales"
          >
-            <p className='text-center text-red-500'>{error_details}</p>
+            <p className='text-center text-red-500 font-semibold'>{error_details}</p>
             <img src={addSalesImage} alt="Add Sales" />
 
-            <div className='w-full my-3 px-4'>
+            <div className='w-full my-3 px-4 relative'>
                 <div className='my-3'>
                     <Label value='Select Hub' htmlFor='hub' />
                     <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen font-bold' id='hub' type='text' value={currentHub["hubName"]} disabled readOnly />
@@ -183,15 +235,15 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                     </Select> */}
                 </div>
                 
-                <div className=' my-3'>
+                <div className='my-3'>
                     <Label value='Select Product' htmlFor='product' />
-                    <Select id='product' className='flex-grow' ref={currentProductRef} onChange={changeCurrentProduct}>
+                    <Select id='product' className='flex-grow max-h-16 overflow-y-auto' ref={currentProductRef} onChange={changeCurrentProduct}>
                     {!products_available &&
                             <option  className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'></option>
                     }
                     {
                             products_list?.map((product, key) => (
-                                <option value={product["pdtToken"]} key={product["pdtToken"]} className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1'>{product["pdtName"]}</option>
+                                <option value={product["pdtToken"]} key={product["pdtToken"]} className='active:bg-c-lightgreen hover:bg-c-lightgreen my-1 absolute top-0'>{product["pdtName"]}</option>
                             ))
                         }
                     </Select>
@@ -207,31 +259,37 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 <div className='my-3'>
                     <Label value='Select Payment Option' htmlFor='paymentOption' />
                     <Select id='paymentOption' className='flex-grow' ref={paymentOptionRef} onClick={updatePaymentPlan}>
-                        <option>Outright Payment</option>
-                        <option>3 months</option>
+                        <option value="outright_payment" className="w-[90%]">Outright Payment</option>
+                        {
+                            paymentPlans?.map((paymentPlan) =>( 
+                                <option value={paymentPlan["month"]}>{paymentPlan["month"]} months</option>
+                            ))
+                        }
+                        
+                        {/* <option>3 months</option>
                         <option>6 months</option>
                         <option>9 months</option>
-                        <option>12 months</option>
+                        <option>12 months</option> */}
                     </Select>
                 </div>
                 {!outright_payment &&
                     (<>
                     <div className='my-3'>
                         <Label value='Down Payment' htmlFor='downpayment' />
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='downpayment' type='text' />
+                        <TextInput value={currentPaymentPlan["downPayment"]} readOnly className='flex-grow border-c-lightgreen text-c-lightgreen' id='downpayment' type='text' />
                     </div>
                     <div className='my-3'>
                         <Label value='Monthly Payment' htmlFor='monthlypayment' />
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='monthlypayment' type='text' />
+                        <TextInput value={currentPaymentPlan["installment_amount"]} readOnly className='flex-grow border-c-lightgreen text-c-lightgreen' id='monthlypayment' type='text' />
                     </div>
                     </>)
                 }
                 
-                <div className="flex gap-2">
+                {/* <div className="flex gap-2">
                     <Checkbox id="mark_recurring_payment" className="w-6 h-6"/>
                     <Label value="Mark as recurring payment" htmlFor="mark_recurring_payment" />
 
-                </div>
+                </div> */}
                 <div className='my-3'>
                     <Button className='w-full bg-c-lightgreen' onClick={submitToAddSales}>Submit</Button>
                     {showModal2 && <AddSalesComplete showModal={showModal2} openModal={()=>setShowModal2(true)} closeModal={()=>setShowModal2(false)}/>}

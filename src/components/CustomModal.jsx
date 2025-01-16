@@ -7,7 +7,7 @@ const CustomModal = ({ showModal, openModal, closeModal, title, children, dismis
     //const [ showModal, setShowModal ] = useState(false)
 
     return (
-        <Modal dismissible show={showModal} onClose={closeModal}>
+        <Modal dismissible show={showModal} onClose={closeModal} className='overflow-y-scroll h-32'>
              {/* <Modal.Header className='border-none flex justify-center items-center h-20 py-0 ps-0'> */}
              <div onClick={closeModal} className='flex justify-end'>
                 <FaTimes className='mt-2 me-2 h-7 w-7' />
