@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Label, TextInput } from "flowbite-react";
 
-const AddInstallmentMonth = ({ month, installmentDetails, setInstallmentDetails }) => {
+const AddInstallmentMonth = ({ month, installmentDetails, setInstallmentDetails, showInstallment }) => {
   const downPaymentRef = useRef(null);
   const installmentAmountRef = useRef(null);
   const installmentCommissionRef = useRef(null);
@@ -27,6 +27,29 @@ const AddInstallmentMonth = ({ month, installmentDetails, setInstallmentDetails 
         )
       );
   };
+
+  useEffect(() => {
+    /* if (showInstallment === false){
+      console.log("show Installment value", showInstallment)
+      let downPayment = 0;
+      let installment_amount = 0;
+      let installmentCommission = 0;
+
+      setInstallmentDetails((prevDetails) =>
+        prevDetails.map((installmentDetail) =>
+          installmentDetail.month === month
+            ? {
+                ...installmentDetail,
+                downPayment,
+                installment_amount,
+                installmentCommission,
+              }
+            : installmentDetail
+        )
+      );
+    } */
+    console.log("SSSSSSSSSSSSSSS")
+  }, [showInstallment, installmentDetails])
 
   useEffect(() => {
     console.log("Installment Details Updated:", installmentDetails);

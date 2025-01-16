@@ -32,6 +32,7 @@ const AddProduct = (props) => {
     const [sixInstallment, setSixInstallment] = useState(false)
     const [nineInstallment, setNineInstallment] = useState(false)
     const [twelveInstallment, setTwelveInstallment] = useState(false)
+    const [deleteInstallment, setDeleteInstallment] = useState(true)
 
     // Refs
     const product_nameRef = useRef(null)
@@ -65,15 +66,94 @@ const AddProduct = (props) => {
         
         switch (month){
             case "three":
+                if (threeInstallment === true){
+                    var downPayment = 0;
+                    var installment_amount = 0;
+                    var installmentCommission = 0;
+                    month = 3;
+
+                    setInstallmentDetails((prevDetails) =>
+                        prevDetails.map((installmentDetail) =>
+                        installmentDetail.month === month
+                            ? {
+                                ...installmentDetail,
+                                downPayment,
+                                installment_amount,
+                                installmentCommission,
+                            }
+                            : installmentDetail
+                        )
+                    );
+                }
+                
                 setThreeInstallment(!threeInstallment);
                 break;
             case "six":
+                if (threeInstallment === true){
+                    var downPayment = 0;
+                    var installment_amount = 0;
+                    var installmentCommission = 0;
+                    month = 6;
+
+                    setInstallmentDetails((prevDetails) =>
+                        prevDetails.map((installmentDetail) =>
+                        installmentDetail.month === month
+                            ? {
+                                ...installmentDetail,
+                                downPayment,
+                                installment_amount,
+                                installmentCommission,
+                            }
+                            : installmentDetail
+                        )
+                    );
+                }
+
                 setSixInstallment(!sixInstallment);
                 break;
             case "nine":
+                if (threeInstallment === true){
+                    var downPayment = 0;
+                    var installment_amount = 0;
+                    var installmentCommission = 0;
+                    month = 9;
+
+                    setInstallmentDetails((prevDetails) =>
+                        prevDetails.map((installmentDetail) =>
+                        installmentDetail.month === month
+                            ? {
+                                ...installmentDetail,
+                                downPayment,
+                                installment_amount,
+                                installmentCommission,
+                            }
+                            : installmentDetail
+                        )
+                    );
+                }
                 setNineInstallment(!nineInstallment);
                 break;
             case "twelve":
+                if (threeInstallment === true){
+                    var downPayment = 0;
+                    var installment_amount = 0;
+                    var installmentCommission = 0;
+                    month = 12;
+
+                    setInstallmentDetails((prevDetails) =>
+                        prevDetails.map((installmentDetail) =>
+                        installmentDetail.month === month
+                            ? {
+                                ...installmentDetail,
+                                downPayment,
+                                installment_amount,
+                                installmentCommission,
+                            }
+                            : installmentDetail
+                        )
+                    );
+                }
+
                 setTwelveInstallment(!twelveInstallment);
                 break;
             
@@ -121,13 +201,18 @@ const AddProduct = (props) => {
                     })
                 }
                 else{
-                    setInstallmentDetails(prevDetails => {
+                    /* setInstallmentDetails(prevDetails => {
                         return prevDetails.filter(detail =>
                             detail.downPayment !== 0 &&
                             detail.installment_amount !== 0 &&
                             detail.installmentCommission !== 0
                         );
-                    });
+                    }); */
+                    const filteredDetails = installmentDetails.filter(detail =>
+                        detail.downPayment !== 0 &&
+                        detail.installment_amount !== 0 &&
+                        detail.installmentCommission !== 0
+                    );                    
                     
                     setErrorMessage2('')
                     
@@ -142,7 +227,7 @@ const AddProduct = (props) => {
                     formData.append("outrightCommission", Number(product_outrightCommissionRef.current.value));
                     formData.append("logisticsFees", Number(product_logisticsFeesRef.current.value)); //static for now
                     formData.append("weightedPoints", Number(weightedPointRef.current.value));
-                    formData.append("paymentPlan", installmentDetails);
+                    formData.append("paymentPlan", filteredDetails);
                     
                     upload_product_by_csv.post("addProduct_csv_fd.php", formData)
                     .then((response) => {
@@ -190,51 +275,54 @@ const AddProduct = (props) => {
                     })
                 }
                 else{
-                    setInstallmentDetails(prevDetails => {
+                    /* setInstallmentDetails(prevDetails => {
                         return prevDetails.filter(detail =>
                             detail.downPayment !== 0 &&
                             detail.installment_amount !== 0 &&
                             detail.installmentCommission !== 0
                         );
-                    });
+                    }); */
+
+                    const filteredDetails = installmentDetails.filter(detail =>
+                        detail.downPayment !== 0 &&
+                        detail.installment_amount !== 0 &&
+                        detail.installmentCommission !== 0
+                    );   
+
                     
-                            var data = {
-                            "hubToken": hub_token,
-                            "userToken": cookieDetails["userToken"],
-                            "pdtSerialNumber": product_serialNumRef.current.value,
-                            "pdtName": product_nameRef.current.value,
-                            "pdtImage": product_imageRef.current.value,
-                            "outrightPrice": Number(product_outrightpriceRef.current.value),
-                            "outrightCommission": Number(product_outrightCommissionRef.current.value),
-                            "logisticsFees": Number(product_logisticsFeesRef.current.value),
-                            "weightedPoints": Number(weightedPointRef.current.value),
-                            "paymentPlan": installmentDetails
-                            }
-                        console.log(data)
-                        products_api.post("addProduct.php", data)
-                        .then((response) => {
-                            console.log(response)
-                            if (response.data["status_code"] === 200){
-                                setShowModal2(true)
-                            }
-                            else{
-                                setErrorMessage('Error in adding product to hub. Kindly check your inputs and make sure you fill in all required fields appropriately.')
-                                setErrorModal(true)
-                            }
-                        })
-                    
-                    
-                }
+                    var data = {
+                    "hubToken": hub_token,
+                    "userToken": cookieDetails["userToken"],
+                    "pdtSerialNumber": product_serialNumRef.current.value,
+                    "pdtName": product_nameRef.current.value,
+                    "pdtImage": product_imageRef.current.value,
+                    "outrightPrice": Number(product_outrightpriceRef.current.value),
+                    "outrightCommission": Number(product_outrightCommissionRef.current.value),
+                    "logisticsFees": Number(product_logisticsFeesRef.current.value),
+                    "weightedPoints": Number(weightedPointRef.current.value),
+                    "paymentPlan": filteredDetails
+                    }
+                    console.log(data)
+                    products_api.post("addProduct.php", data)
+                    .then((response) => {
+                        console.log(response)
+                        if (response.data["status_code"] === 200){
+                            setShowModal2(true)
+                        }
+                        else{
+                            setErrorMessage('Error in adding product to hub. Kindly check your inputs and make sure you fill in all required fields appropriately.')
+                            setErrorModal(true)
+                        }
+                    }
+                )
             }
-           
+            }
         }
- 
-        
     }
     
     useEffect(() => {
       
-    console.log(installmentDetails)
+        console.log("Installment here",installmentDetails)
       
     }, [installmentDetails])
     
@@ -330,10 +418,10 @@ const AddProduct = (props) => {
                         <div className='flex flex-col gap-2'>
                             <p className='text-center font-bold text-red-500'>{errorMessage2}</p>
                             <p className='font-bold'>Installment details</p>
-                            {threeInstallment && <AddInstallmentMonth key={3} month={3} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
-                            {sixInstallment && <AddInstallmentMonth key={6} month={6} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
-                            {nineInstallment && <AddInstallmentMonth key={9} month={9} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
-                            {twelveInstallment && <AddInstallmentMonth key={12} month={12} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
+                            {threeInstallment && <AddInstallmentMonth key={3} month={3} showInstallment={threeInstallment} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
+                            {sixInstallment && <AddInstallmentMonth key={6} month={6} showInstallment={sixInstallment} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
+                            {nineInstallment && <AddInstallmentMonth key={9} month={9} showInstallment={nineInstallment} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
+                            {twelveInstallment && <AddInstallmentMonth key={12} month={12} showInstallment={twelveInstallment} installmentDetails={installmentDetails} setInstallmentDetails={setInstallmentDetails} />}
                         </div>}
                     </div>
                     <div className='w-full flex justify-center'>
