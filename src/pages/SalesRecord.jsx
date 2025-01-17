@@ -186,7 +186,7 @@ const SalesRecord = (props) => {
                 </div>
                 
                 <div>
-                    {hubs_available ? JSON.parse(hubs_list).map((hub, key) => (
+                    {hubs_available ? JSON.parse(hubs_list)?.map((hub, key) => (
                         <div className=''>
                             <AdminHubSalesRecord hub={hub} />
                         </div>
