@@ -44,7 +44,7 @@ const AdminHubSalesRecord = ({ hub }) => {
         .then((response) => {
             console.log(response.data["status_code"])
             if (response.data["status_code"] == 200){
-                console.log(response.data["data"])
+                console.log("hub sales",response.data["data"])
                 var response_data = response.data["data"]
                 setEachHubSales(response_data)
                 setSalesRecordExist(true)
@@ -91,9 +91,14 @@ const AdminHubSalesRecord = ({ hub }) => {
                 <Table.Body className={`font-semibold ${showSalesRecord ? '' : 'hidden'} `}>
                     {
                         eachHubSales?.map((eachHubSale, index) => (
-                            <Table.Row className='border-b-2 border-c-lightgreen'>
-                                <Table.Cell className=''>{eachHubSale["pdtName"]}</Table.Cell>
-                                <Table.Cell>{eachHubSale["payment_option"]}</Table.Cell>
+                            <Table.Row className='border-b-2 border-c-lightgreen' key={index}>
+                                <Table.Cell className=''>{eachHubSale["pdtName"]}</Table.Cell> 
+                                {
+                                    eachHubSale["payment_type"] == "outright" ? 
+                                    <Table.Cell className=''>Outright</Table.Cell>
+                                    :
+                                    <Table.Cell className=''>Installment</Table.Cell>
+                                }           
                                 <Table.Cell className=''>
                                     <div className={`border flex items-center justify-center rounded ${eachHubSale["approval_status"]}=='pending'? 'bg-blue-100' : 'bg-red-600' `}>{eachHubSale["approval_status"]}
                                     </div>
