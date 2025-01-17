@@ -47,7 +47,7 @@ const Dashboard = (props) => {
     const [showUsers, setShowUsers] = useState(true)
     const [showIncome, setShowIncome] = useState(false)
     const [showBalance, setShowBalance] = useState(false)
-    const [userHubTokenModal, setUserHubTokenModal] = useState(true)
+    const [showUserHubTokenModal, setShowUserHubTokenModal] = useState(false)
 
     
     const navigate = useNavigate()
@@ -180,7 +180,10 @@ const Dashboard = (props) => {
 
     const getHubToken = () => {
         if ((cookieDetails["ADMIN"] === 1) && (cookieDetails["userHubToken"] === null)){
-            setUserHubTokenModal(true)
+            setShowUserHubTokenModal(false)
+        }
+        else if ((cookieDetails["ADMIN"] === 0) && (cookieDetails["userHubToken"] === null || cookieDetails["userHubToken"] === "")){
+            setShowUserHubTokenModal(true)
         }
     }
 
@@ -218,7 +221,7 @@ const Dashboard = (props) => {
                 (admin_status !== 1) ?
                 <div className="flex flex-col md:flex-row md:gap-1 lg:gap-4 xl:gap-5 lg:px-4">
                     {
-                        userHubTokenModal && <UpdateHubModal showModal={userHubTokenModal} openModal={() => setUserHubTokenModal(true)} closeModal={() => setUserHubTokenModal(false)} userToken={cookieDetails["userToken"]} />
+                        showUserHubTokenModal && <UpdateHubModal showModal={showUserHubTokenModal} openModal={() => setShowUserHubTokenModal(true)} closeModal={() => setShowUserHubTokenModal(false)} userToken={cookieDetails["userToken"]} />
                     }
                     <div className="md:w-2/3 space-y-5">
                         <div className='p-0'>

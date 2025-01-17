@@ -55,7 +55,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
 
             if (outright_payment === true){
                 sales_api.post("/addSale.php", {
-                    "pdtName": currentProduct["pdtName"],
+                    //"pdtName": currentProduct["pdtName"],
                     "hubToken": cookieDetails["userHubToken"],
                     "userToken": cookieDetails["userToken"],
                     "pdtToken": currentProduct["pdtToken"],
@@ -63,7 +63,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                     "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
                     "payment_option": "outright",
                     "amountPaid": parseFloat((currentProduct["outrightPrice"])).toFixed(2),
-                    "commissionEarned": Number(currentProduct["outrightCommission"]).toFixed(2),
+                    //"commissionEarned": Number(currentProduct["outrightCommission"]).toFixed(2),
                     "payment_type": "outright"
                 })
                 .then((response) => {
@@ -79,7 +79,7 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             }
             else{
                 sales_api.post("/addSale.php", {
-                    "pdtName": currentProduct["pdtName"],
+                    //"pdtName": currentProduct["pdtName"],
                     "hubToken": cookieDetails["userHubToken"],
                     "userToken": cookieDetails["userToken"],
                     "pdtToken": currentProduct["pdtToken"],
