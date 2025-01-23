@@ -1,6 +1,7 @@
 import { Modal, Button } from 'flowbite-react'
 import React, { useState, useEffect } from 'react'
 import sales_api from '../utils/sales_api'
+import installments_api from '../utils/installments_api'
 
 
 const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
@@ -19,7 +20,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
   }
 
   const approveSale = (currentSalesToken) => {
-    sales_api.post("/approveSale.php", {
+    installments_api.post("/approvePayment.php", {
       "salesToken": currentSalesToken
     })
     .then((response) => {
@@ -28,7 +29,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
   }
 
   const declineSale = (currentSalesToken) => {
-    sales_api.post("/declineSale.php", {
+    installments_api.post("/declinePayment.php", {
       "salesToken": currentSalesToken
     })
     .then((response) => {
@@ -56,23 +57,20 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
                   </div>
                   <div className='flex gap-2'>
                     <p>Payment Plans: </p>
-                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_option"]}</p>
+                    
+                      <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? "Outright" : "Installment"}</p>
                   </div>
                   <div className='flex gap-2'>
-                    <p>Down Payment:  </p>
-                    <p className='font-semibold text-c-lightgreen'>{currentSale["amountPaid"]}</p>
+                    <p>{currentSale["payment_type"] === "outright" ? "Amount paid:  " : "Down Payment:  "}</p>
+                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? "" : currentSale["downPayment"]}</p>
                   </div>
                   <div className='flex gap-2'>
                     <p>Monthly Payment: </p>
                     <p className='font-semibold text-c-lightgreen'></p>
                   </div>
                   <div className='flex gap-2'>
-                    <p>Commission (Down Payment): </p>
-                    <p className='font-semibold text-c-lightgreen'></p>
-                  </div>
-                  <div className='flex gap-2'>
-                    <p>Commission (Monthly Payment): </p>
-                    <p className='font-semibold text-c-lightgreen'></p>
+                    <p>{currentSale["payment_type"] === "outright" ? "Commission (Outright Payment)" : "Commission (Down Payment)"}</p>
+                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? currentSale["commissionEarned"] : currentSale["commission_on_down_payment"]}</p>
                   </div>
                   <div className='flex gap-2'>
                     <p>Logistic Fee: </p>
