@@ -19,6 +19,15 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
     })
   }
 
+  const getUserinstallmentSale = (currentSalesToken) => {
+    installments_api.post("/getPaymentsBySales.php", {
+      "salesToken": currentSalesToken
+    })
+    .then((response) => {
+      console.log("SUUUUUUUUUDDDDDDDDD",response)
+    })
+  }
+
   const approveSale = (currentSalesToken) => {
     installments_api.post("/approvePayment.php", {
       "salesToken": currentSalesToken
@@ -39,6 +48,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
 
   useEffect(() => {
     getUserSale(currentSalesToken);
+    getUserinstallmentSale(currentSalesToken);
   }, [])
 
   return (
@@ -62,7 +72,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
                   </div>
                   <div className='flex gap-2'>
                     <p>{currentSale["payment_type"] === "outright" ? "Amount paid:  " : "Down Payment:  "}</p>
-                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? "" : currentSale["downPayment"]}</p>
+                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? "" : `${currentSale["downPayment"]}`}</p>
                   </div>
                   <div className='flex gap-2'>
                     <p>Monthly Payment: </p>
@@ -70,7 +80,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
                   </div>
                   <div className='flex gap-2'>
                     <p>{currentSale["payment_type"] === "outright" ? "Commission (Outright Payment)" : "Commission (Down Payment)"}</p>
-                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? currentSale["commissionEarned"] : currentSale["commission_on_down_payment"]}</p>
+                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? currentSale["commissionEarned"] : `${currentSale["commission_on_down_payment"]}`}</p>
                   </div>
                   <div className='flex gap-2'>
                     <p>Logistic Fee: </p>

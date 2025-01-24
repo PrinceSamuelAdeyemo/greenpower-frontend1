@@ -6,6 +6,7 @@ import AddSalesModal from '../components/AddSalesModal';
 import sales_api from '../utils/sales_api';
 import hubs_api from '../utils/hubs_api';
 
+
 import AdminHubSalesRecord from '../components/AdminHubSalesRecord';
 import ReloadPage from '../components/ReloadPage';
 
@@ -45,10 +46,10 @@ const SalesRecord = (props) => {
         })
         .then((response) => {
             console.log(response)
-            if (response.data["status_code"] == 200){
+            if ((response.data["status_code"] == 200) && (response.data["data"] !== null)){
                 console.log("ASSBB", response)
                 var sales = response.data["data"]
-                console.log(sales)
+                console.log("USER SALES",sales)
                 setSales_list(sales)
                 setSalesRecordExist(true)
             }
@@ -73,8 +74,8 @@ const SalesRecord = (props) => {
         try{
             hubs_api.get("/getHubs.php")
             .then((response) => {
-                if (response.data["status_code"] == 200){
-                    
+                if ((response.data["status_code"] == 200) && (response.data["data"] !== null)){
+                    console.log(response.data["data"])
                     var receivedData = response.data["data"]
                     setHubs_list(JSON.stringify(receivedData))
                     setHubs_available(true)
@@ -92,6 +93,7 @@ const SalesRecord = (props) => {
             console.log(error)
         }
     }
+
 
     useEffect(() => {
         console.log("HEEEEEEEE")
@@ -133,7 +135,7 @@ const SalesRecord = (props) => {
                                 <Table.HeadCell className='bg-white text-sm'>Product</Table.HeadCell>
                                 <Table.HeadCell className='bg-white text-sm'>Payment Types</Table.HeadCell>
                                 <Table.HeadCell className='bg-white text-sm text-center'>Status</Table.HeadCell>
-                                <Table.HeadCell className='bg-white text-sm text-center'>Serial Number</Table.HeadCell>
+                                <Table.HeadCell className='bg-white text-sm text-center overflow-x-hidden'>Serial Number</Table.HeadCell>
                                 <Table.HeadCell className='bg-white text-sm text-center'>Prices</Table.HeadCell>
                                 <Table.HeadCell className='bg-white text-sm text-center'>Date</Table.HeadCell>
                                 <Table.HeadCell className='bg-white text-sm text-center'>Action</Table.HeadCell>
