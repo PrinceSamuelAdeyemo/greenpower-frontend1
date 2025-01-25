@@ -7,6 +7,7 @@ import installments_api from '../utils/installments_api'
 const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
   //const [ showModal, setShowModal ] = useState(false)
   const [currentSale, setCurrentSale] = useState({})
+  const [currentInstallment, setCurrentInstallment] = useState({})
   const [approvalStatus, setApprovalStatus] = useState("")
   
   const getUserSale = (currentSalesToken) => {
@@ -15,7 +16,17 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
     })
     .then((response) => {
       console.log(response)
-      setCurrentSale(response.data["data"])
+      if (response.data["status_code"] === 200){
+        setCurrentSale(response.data["data"])
+        if (response.data["data"]["payment_status"] === "ongoing") {
+          //setApprovalStatus(response.data["data"]["approval_status"])
+          getUserinstallmentSale(currentSalesToken);
+        }
+        }
+        else{
+          getUserinstallmentSale(currentSalesToken);
+          console.log("Error")
+        }
     })
   }
 
@@ -24,13 +35,21 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
       "salesToken": currentSalesToken
     })
     .then((response) => {
-      console.log("SUUUUUUUUUDDDDDDDDD",response)
+      console.log("SUUUUUUUUUDDDDDDDDD",response.data["data"]);
+      if (response.data["status_code"] === 200){
+        setCurrentInstallment(response.data["data"])
+        
+      }
+        else{
+          console.log("Error")
+        }
     })
   }
 
   const approveSale = (currentSalesToken) => {
     installments_api.post("/approvePayment.php", {
-      "salesToken": currentSalesToken
+      "salesToken": currentSalesToken,
+      "installmentToken": currentInstallment[0]["installmentToken"]
     })
     .then((response) => {
       console.log(response)
@@ -39,7 +58,8 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
 
   const declineSale = (currentSalesToken) => {
     installments_api.post("/declinePayment.php", {
-      "salesToken": currentSalesToken
+      "salesToken": currentSalesToken,
+      "installmentToken": currentInstallment[0]["installmentToken"]
     })
     .then((response) => {
       console.log(response)
@@ -48,7 +68,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
 
   useEffect(() => {
     getUserSale(currentSalesToken);
-    getUserinstallmentSale(currentSalesToken);
+    //getUserinstallmentSale(currentSalesToken);
   }, [])
 
   return (
@@ -72,12 +92,13 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
                   </div>
                   <div className='flex gap-2'>
                     <p>{currentSale["payment_type"] === "outright" ? "Amount paid:  " : "Down Payment:  "}</p>
-                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? "" : `${currentSale["downPayment"]}`}</p>
+                    <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? `${currentSale["amountPaid"]}` : `${currentSale["downPayment"]}`}</p>
                   </div>
-                  <div className='flex gap-2'>
+                  {currentSale["payment_type"] === "outright" ? "" :  <div className='flex gap-2'>
                     <p>Monthly Payment: </p>
                     <p className='font-semibold text-c-lightgreen'></p>
-                  </div>
+                  </div>}
+                  
                   <div className='flex gap-2'>
                     <p>{currentSale["payment_type"] === "outright" ? "Commission (Outright Payment)" : "Commission (Down Payment)"}</p>
                     <p className='font-semibold text-c-lightgreen'>{currentSale["payment_type"] === "outright" ? currentSale["commissionEarned"] : `${currentSale["commission_on_down_payment"]}`}</p>
