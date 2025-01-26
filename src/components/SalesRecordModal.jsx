@@ -17,17 +17,21 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
     .then((response) => {
       console.log(response)
       if (response.data["status_code"] === 200){
+        console.log(response.data["data"]["approval_status"])
         setCurrentSale(response.data["data"])
+        getUserinstallmentSale(currentSalesToken);
         if (response.data["data"]["payment_status"] === "ongoing") {
           //setApprovalStatus(response.data["data"]["approval_status"])
           getUserinstallmentSale(currentSalesToken);
-        }
         }
         else{
           getUserinstallmentSale(currentSalesToken);
           console.log("Error")
         }
+      }
     })
+
+    
   }
 
   const getUserinstallmentSale = (currentSalesToken) => {
@@ -35,9 +39,9 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
       "salesToken": currentSalesToken
     })
     .then((response) => {
-      console.log("SUUUUUUUUUDDDDDDDDD",response.data["data"]);
+      console.log("SUUUUUUUUUDDDDDDDDD",response.data["data"][0]["approval_status"]);
       if (response.data["status_code"] === 200){
-        setCurrentInstallment(response.data["data"])
+        setCurrentInstallment(response.data["data"][0])
         
       }
         else{
@@ -109,7 +113,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
                   </div>
                 </div>
 
-                { (currentSale["approval_status"] == "pending") && 
+                { (currentInstallment["approval_status"] == "pending") && 
                   <div className='flex justify-center w-full gap-20'>
                     <button className='bg-c-lightgreen text-white px-5 h-10 rounded' onClick={() => approveSale(currentSalesToken)}>Approve</button>
                     <button className='text-red-600 h-10 rounded font-bold' onClick={() => declineSale(currentSalesToken)}>Decline</button>
