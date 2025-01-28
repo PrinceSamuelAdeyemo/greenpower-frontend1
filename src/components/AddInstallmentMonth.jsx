@@ -48,11 +48,9 @@ const AddInstallmentMonth = ({ month, installmentDetails, setInstallmentDetails,
         )
       );
     } */
-    console.log("SSSSSSSSSSSSSSS")
   }, [showInstallment, installmentDetails])
 
   useEffect(() => {
-    console.log("Installment Details Updated:", installmentDetails);
   }, [installmentDetails]);
 
   return (

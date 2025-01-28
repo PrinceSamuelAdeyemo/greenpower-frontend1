@@ -37,14 +37,11 @@ const AdminHubSalesRecord = ({ hub }) => {
 
     var getSpecificHub = () => {
         try{
-            console.log("About to send ", hub["hubToken"])
             sales_api.post("/getSalesByHub.php", {
             "hubToken": hub["hubToken"]
         })
         .then((response) => {
-            console.log(response.data["status_code"])
             if (response.data["status_code"] == 200){
-                console.log("hub sales",response.data["data"])
                 var response_data = response.data["data"]
                 setEachHubSales(response_data)
                 setSalesRecordExist(true)
@@ -54,7 +51,6 @@ const AdminHubSalesRecord = ({ hub }) => {
             }
         })
         }catch (error) {
-            console.log(error)
         }
     }
 

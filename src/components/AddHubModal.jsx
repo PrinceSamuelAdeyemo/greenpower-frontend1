@@ -15,7 +15,6 @@ const AddHubModal = ({showModal, openModal, closeModal, createHub, hubName, setH
     }
 
     useEffect(() => {
-        console.log("Show modal again here", showModal)
         Number(hubName) !==0 ? setButton_state(false) : setButton_state(true)
     }, [hubName, closeModal])
 

@@ -26,7 +26,6 @@ const ChangePassword = ({ showModal, openModal, closeModal, userToken}) => {
             "verifyNewPassword": verifyNewPasswordRef.current.value
         })
         .then((response) => {
-            console.log(response)
             if (response.data["status_code"] === 200){
                 oldPasswordRef.current.value = ""
                 newPasswordRef.current.value = ""

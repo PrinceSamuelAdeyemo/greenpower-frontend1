@@ -37,21 +37,6 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
 
     const submitToAddSales = () =>{
         try{
-            //console.log(parseFloat((currentProduct["outrightPrice"]).toFixed(2)))
-            console.log("CURRENT HUB", currentHub)
-            console.log("CURRENT PRODUCT", currentProduct)
-            console.log(typeof(parseInt(currentProduct["logisticsFees"])))
-            console.log({
-                "pdtName": currentProduct["pdtName"],
-                "hubToken": cookieDetails["userHubToken"],
-                "userToken": cookieDetails["userToken"],
-                "pdtToken": currentProduct["pdtToken"],
-                "pdtSerialNumber": currentProduct["pdtSerialNumber"],
-                "logisticsFees": parseFloat(currentProduct["logisticsFees"]),
-                "payment_option": "outright",
-                "amountPaid": parseFloat((currentProduct["outrightPrice"])).toFixed(2),
-                "commissionEarned": parseFloat(currentProduct["outrightCommission"]),
-            })
 
             if (outright_payment === true){
                 sales_api.post("/addSale.php", {
@@ -67,7 +52,6 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                     "payment_type": "outright"
                 })
                 .then((response) => {
-                    console.log("response from the sales",response.data)
                     if (response.data["status_code"] === 200){
                         setError_details('')
                         setShowModal2(true)
@@ -94,7 +78,6 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                     "payment_type": "downPayment",
                 })
                 .then((response) => {
-                    console.log("response from the sales",response.data)
                     if (response.data["status_code"] === 200){
                         setError_details('')
                         setShowModal2(true)
@@ -107,7 +90,6 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             
         }
         catch (error){
-            console.log("Error here", error)
         }
         
     }
@@ -117,22 +99,18 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
 
     const getHubsList = () => {
         
-        console.log(hubChanged, "from hublist")
         hubs_api.get("/getHubs.php")
         .then((response) => {
-            console.log(111111111111111111)
             var hubs = response.data["data"]
             for (let i = 0; i<hubs.length; i++){
                 if (hubs[i]["hubToken"] === cookieDetails["userHubToken"]){
                     setCurrentHub(hubs[i])
                 }
             }
-            console.log("HUBS",hubs)
             //setHubs_list(hubs)
             setHub_available(true)
 
             getProductsByHub(cookieDetails["userHubToken"])
-            console.log("AA")
         })
     }
 
@@ -151,29 +129,22 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
                 setProducts_available(false)
             }
             var products = response.data["data"]
-            console.log("Hub products here",products)
             setProducts_list(products)
             setCurrentProduct(products[0])
             setProducts_available(true)
         })
         }
         catch{
-            console.log("Stopped, may reload or not.")
             setProducts_available(false)
             getProductsByHub()
         }
     }
 
     var changeCurrentProduct = () => {
-        console.log("Clicked")
-        console.log(currentProductRef.current.value)
         let each = products_list.find(product => product.pdtToken === currentProductRef.current.value);
-        console.log(each)
-        console.log(each["paymentPlan"])
-        console.log(typeof(JSON.parse(each["paymentPlan"])))
+        
         setCurrentProduct(each)
         setPaymentPlans(JSON.parse(each["paymentPlan"]))
-        console.log(typeof(paymentPlans))
     }
 
     var updatePaymentPlan = () => {
@@ -181,10 +152,8 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
             setOutright_payment(false)
             
             //setCurrentPaymentPlan()
-            console.log(paymentOptionRef.current.value)
             for (let i = 0; i < paymentPlans.length; i++){
                 if (paymentPlans[i]["month"] == paymentOptionRef.current.value){
-                    console.log(paymentPlans[i])
                     setCurrentPaymentPlan(paymentPlans[i])
                 }
             }
@@ -196,18 +165,14 @@ const AddSalesModal = ({ showModal, openModal, closeModal, cookieDetails }) => {
 
     useEffect(() => {
         getProductsByHub()
-        console.log(paymentPlans)
     }, [hubChanged])
     
     useEffect(() => {
-        console.log(hubChanged, "lola")
-        console.log("ALL", cookieDetails)
+        
         getHubsList()
-        console.log(paymentPlans)
     }, [])
 
     useEffect(() => {
-        console.log(paymentPlans)
     }, [paymentPlans])
 
     
