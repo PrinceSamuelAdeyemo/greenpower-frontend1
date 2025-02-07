@@ -81,10 +81,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
         <Modal.Body>
             <div className='flex flex-col items-center gap-8'>
                 <div className='flex flex-col gap-4 lg:w-[85%] '>
-                  <div className='flex gap-2'>
-                    <p>Full Name: </p>
-                    <p className='font-semibold text-c-lightgreen'>{currentSale[""]}</p>
-                  </div>
+                  
                   <div className='flex gap-2'>
                     <p>Product Name: </p>
                     <p className='font-semibold text-c-lightgreen'>{currentSale["pdtName"]}</p>
