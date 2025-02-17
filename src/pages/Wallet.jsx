@@ -1,4 +1,4 @@
-import { Button, Card, Table } from 'flowbite-react';
+import { Button, Card, Spinner, Table } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import image from '../assets/dashImage2.png';
 import { BiRefresh } from 'react-icons/bi';
@@ -23,6 +23,9 @@ const Wallet = (props) => {
     const [showModal4, setShowModal4] = useState(false)
     const [walletBalance, setWalletBalance] = useState()
     const [walletBalanceDisplay, setWalletBalanceDisplay] = useState()
+    const [bankName, setBankName] = useState()
+    const [accountName, setAccountName] = useState()
+    const [accountNumber, setAccountNumber] = useState()
 
     const getWalletBalance = () => {
         try{
@@ -50,12 +53,37 @@ const Wallet = (props) => {
         }
     }
 
+    const getBankData = () => {
+        try{
+            wallets_api.post("/getBankData", {
+                "userToken": cookieDetails["userToken"]
+            })
+            .then((response) => {
+                console.log(response)
+                if (response.data["status_code"] === 200){
+                    setBankName(response.data["data"][0]["bank_name"])
+                    setAccountName(response.data["data"][0]["acc_name"])
+                    setAccountNumber(response.data["data"][0]["nuban"])
+                }
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
+        }
+        catch (error) {
+        }
+    }
+
     const openSendMoneyModal = () => {
 
     }
 
     useEffect(() => {
         getWalletBalance()
+        getBankData()
     })
 
     return (
@@ -69,16 +97,24 @@ const Wallet = (props) => {
                         </div>
                         <div className="mt-16 mb-4">
                             <p className="text-sm">Bank Name</p>
-                            <p className="text-lg font-bold">Reni Trust</p>
+                            {
+                                bankName? <p className="text-lg font-bold">{bankName}</p> : <Spinner />
+                            }
                         </div>
-                        <div className="mb-4">
+                        <div className=" mb-4">
                             <p className="text-sm">Account Name</p>
-                            <p className="text-lg font-bold">{cookieDetails["firstName"]} {cookieDetails["lastName"]}</p>
+                            {
+                                accountName? <p className="text-lg font-bold">{accountName}</p> : <Spinner />
+                            }
                         </div>
                         <div className="mb-4">
                             <p className="text-sm">Account Number</p>
-                            <p className="text-lg font-bold">0234567899</p>
+                            {
+                                accountNumber? <p className="text-lg font-bold">{accountNumber}</p> : <Spinner />
+                            }
+                            
                         </div>
+                        
                     </div>
                     <img src={image} alt="Dashboard" className="rounded-b md:rounded-none md:rounded-r md:max-lg:w-[12rem] md:max-md:h-[10rem] flex" />
                 </div>
@@ -117,7 +153,7 @@ const Wallet = (props) => {
                 </Card>
             </div>
             <Card>
-                <p className="font-bold mb-2">Transactions</p>
+                <p className="font-bold mb-2">Transactions <span className='text-red-500'>DUMMY DATA</span></p>
                 <div className="overflow-x-auto">
                     <Table className="min-w-full">
                         <Table.Head className='normal-case border-y-2 border-c-lightgreen'>

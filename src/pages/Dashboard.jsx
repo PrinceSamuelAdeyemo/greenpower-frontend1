@@ -193,7 +193,7 @@ const Dashboard = (props) => {
     }
 
 
-    const getbankData = () => {
+    const getBankData = () => {
         try{
             wallets_api.post("/getBankData", {
                 "userToken": cookieDetails["userToken"]
@@ -209,7 +209,7 @@ const Dashboard = (props) => {
             .catch((error) => {
                 if (error.message.includes("Network Error")){
                     console.log("error is here", error)
-                setOfflineStatus(true);
+                    setOfflineStatus(true);
                 }
             })
         }
@@ -222,7 +222,7 @@ const Dashboard = (props) => {
         getHubToken()
         getFewProducts()
         getWalletBalance()
-        getbankData();
+        getBankData();
     }, [products_api])
 
     useEffect(() => {
