@@ -557,13 +557,13 @@ const Dashboard = (props) => {
 
                 <div className=' shadow-xl border-2'>
                     <div className='w-full p-3'>
-                        <p className="font-bold">Sales Record History <span className='text-red-500'>DUMMY DATA</span></p>
+                        <p className="font-bold">Sales Record History</p>
                     </div>
                     
                     <div className="overflow-x-auto">
                         <Table className='table-fixed'>
                             <Table.Head className='border-red-500'>
-                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Sender</Table.HeadCell>
+                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Buyer</Table.HeadCell>
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product</Table.HeadCell>
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Prices</Table.HeadCell>
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Commission Markup</Table.HeadCell>
@@ -573,11 +573,11 @@ const Dashboard = (props) => {
                             salesrecord_available && sales_record?.map((sale, index) => (
                             <Table.Body>
                                 <Table.Row>
-                                    <Table.Cell className='font-semibold'>Ayoola Tolu</Table.Cell>
-                                    <Table.Cell className='font-semibold'>Excellent 3D chair</Table.Cell>
-                                    <Table.Cell className='font-semibold'>#32,000</Table.Cell>
-                                    <Table.Cell className='font-semibold'>#3,200</Table.Cell>
-                                    <Table.Cell className='font-semibold'>Jan 2, 2024</Table.Cell>
+                                    <Table.Cell className='font-semibold'>{sale["userToken"]}</Table.Cell>
+                                    <Table.Cell className='font-semibold'>{sale["pdtName"]}</Table.Cell>
+                                    <Table.Cell className='font-semibold'>{sale["pdtPrice"]}</Table.Cell>
+                                    <Table.Cell className='font-semibold'>{sale["payment_type"] === 'outright' ? sale["commissionEarned"]: sale["commission_on_down_payment"] }</Table.Cell>
+                                    <Table.Cell className='font-semibold'>{sale["created_at"].split(' ')[0]}</Table.Cell>
                                 </Table.Row>
                             </Table.Body>
                             ))
