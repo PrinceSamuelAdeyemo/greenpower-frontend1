@@ -299,7 +299,7 @@ const Dashboard = (props) => {
                             </div>
                         </div>
                         <Card className='max-h-[34vh] overflow-y-auto'>
-                            <p className="font-bold text-2xl text-c-gray opacity-90">Sales Record</p>
+                            <p className="font-bold text-2xl text-c-gray opacity-90">Sales Record <span className='text-red-500'>DUMMY DATA</span></p>
                             <div className="space-y-4">
                                 <div className="flex flex-col lg:flex-row items-center gap-4 text-c-gray opacity-90 font-semibold w-full">
                                     <img src={cart} alt="cart" className="w-10 h-10" />
@@ -314,7 +314,7 @@ const Dashboard = (props) => {
                             </div>
                         </Card>
                         <Card>
-                            <p className="font-bold">Sales History</p>
+                            <p className="font-bold">Sales History <span className='text-red-500'>DUMMY DATA</span></p>
                             <div className="overflow-x-auto">
                                 <Table className='table-fixed'>
                                     <Table.Head className='border-red-500'>
@@ -513,7 +513,7 @@ const Dashboard = (props) => {
 
                 <div className=' shadow-xl border-2'>
                     <div className='w-full p-3'>
-                        <p className="font-bold">Sales Record History</p>
+                        <p className="font-bold">Sales Record History <span className='text-red-500'>DUMMY DATA</span></p>
                     </div>
                     
                     <div className="overflow-x-auto">
