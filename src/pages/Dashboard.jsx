@@ -233,6 +233,29 @@ const Dashboard = (props) => {
         }
     }
 
+    var getUserSalesHistory = () => {
+        try{
+            sales_api.post("getSalesByUser.php", {
+                "userToken": cookieDetails["userToken"]
+            })
+            .then((response) => {
+                var truncated_sales_history = response.data["data"].slice(0,5)
+                console.log(truncated_sales_history)
+                setSales_record(truncated_sales_history)
+                setSalesrecord_available(true)
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
+        }
+        catch (error){
+            console.log(error)
+        }
+    }
+
 
     const getBankData = () => {
         try{
@@ -271,6 +294,7 @@ const Dashboard = (props) => {
         
         if (admin_status === 0){
             getUserWeightedPoints()
+            getUserSalesHistory()
         }
         else if (admin_status == 1){
             getUsersWeightedPoints()
