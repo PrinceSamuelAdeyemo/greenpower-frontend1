@@ -43,6 +43,10 @@ const Dashboard = (props) => {
     var [walletBalanceDisplay, setWalletBalanceDisplay] = useState()
     // Hubs
     const [hubsList, setHubsList] = useState([])
+    // Bank data
+    var [bankName, setBankName] = useState('')
+    const [accountName, setAccountName] = useState()
+    const [accountNumber, setAccountNumber] = useState()
 
     const [showUsers, setShowUsers] = useState(true)
     const [showIncome, setShowIncome] = useState(false)
@@ -132,18 +136,19 @@ const Dashboard = (props) => {
     // USER FUNCTION
     var getUserWeightedPoints = () => {
         try{
-             weighted_points_api.post("/getPointsByUser.php", {
+             weighted_points_api.post("/getCurrentPoint.php", {
                 "userToken": cookieDetails["userToken"]
              })
              .then((response) => {
                 console.log(response)
-                if (response.data["status_code"] == 400){
-                    setWeighted_available(false)
+                if (response.data["status_code"] == 200){
+                    console.log()
+                    setWeighted_point(response.data["data"])
+                    setWeighted_available(true)
+                    
                 }
                 else{
-                    console.log()
-                    setWeighted_point(response.data["data"]["total_weighted_points"])
-                    setWeighted_available(true)
+                    setWeighted_available(false)
                 }
              })
         }
@@ -187,13 +192,37 @@ const Dashboard = (props) => {
         }
     }
 
-    
+
+    const getbankData = () => {
+        try{
+            wallets_api.post("/getBankData", {
+                "userToken": cookieDetails["userToken"]
+            })
+            .then((response) => {
+                console.log(response)
+                if (response.data["status_code"] === 200){
+                    setBankName(response.data["data"][0]["bank_name"])
+                    setAccountName(response.data["data"][0]["acc_name"])
+                    setAccountNumber(response.data["data"][0]["nuban"])
+                }
+            })
+            .catch((error) => {
+                if (error.message.includes("Network Error")){
+                    console.log("error is here", error)
+                setOfflineStatus(true);
+                }
+            })
+        }
+        catch (error) {
+        }
+    }
 
     useEffect(() => {
         console.log("From dashboard",cookieDetails)
         getHubToken()
         getFewProducts()
         getWalletBalance()
+        getbankData();
     }, [products_api])
 
     useEffect(() => {
@@ -232,15 +261,22 @@ const Dashboard = (props) => {
                                     </div>
                                     <div className="mt-12 mb-1">
                                         <p className="text-sm">Bank Name</p>
-                                        <p className="text-lg font-bold">Reni Trust</p>
+                                        {
+                                            bankName? <p className="text-lg font-bold">{bankName}</p> : <Spinner />
+                                        }
                                     </div>
                                     <div className=" mb-1">
                                         <p className="text-sm">Account Name</p>
-                                        <p className="text-lg font-bold">John Doe</p>
+                                        {
+                                            accountName? <p className="text-lg font-bold">{accountName}</p> : <Spinner />
+                                        }
                                     </div>
                                     <div className="mb-1">
                                         <p className="text-sm">Account Number</p>
-                                        <p className="text-lg font-bold">0234567899</p>
+                                        {
+                                            accountNumber? <p className="text-lg font-bold">{accountNumber}</p> : <Spinner />
+                                        }
+                                        
                                     </div>
                                     <div className="mb-1" >
                                         <p className="text-sm">Account Balance</p>
