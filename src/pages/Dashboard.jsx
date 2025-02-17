@@ -15,6 +15,7 @@ import weighted_points_api from '../utils/weighted_points_api';
 import sales_api from '../utils/sales_api';
 import products_api from '../utils/products_api';
 import wallets_api from '../utils/wallets_api';
+import admin_api from '../utils/admin_api';
 
 import UpdateHubModal from '../components/UpdateHubModal';
 import ReloadPage from '../components/ReloadPage';
@@ -27,6 +28,11 @@ const Dashboard = (props) => {
 
 
     const [offlineStatus, setOfflineStatus] = useState(false)
+    // User data
+    const [totalUsers, setTotalUsers] = useState(0)
+    // Income data
+    const [totalIncome, setTotalIncome] = useState(0)
+    const [transactionHistory, SetTransactionHistory] = useState()
     // Weighted points
     var [weighted_available, setWeighted_available] = useState(false)
     var [no_weighted_point, setNo_weighted_point] = useState(true)
@@ -133,6 +139,41 @@ const Dashboard = (props) => {
         }
     }
 
+    const getTotalUsers = () => {
+        try {
+            admin_api.post("/users.php", {})
+            .then((response) => {
+                if (response.data["status_code"] === 200){
+                    console.log(response.data["data"])
+                    setTotalUsers(response.data["data"])
+                }
+                else{
+                    setTotalUsers("Error fetching total users")
+                }
+
+            }
+        )
+        } catch (error) {
+            
+        }
+    }
+
+    const getTotalIncome = () => {
+        try {
+            admin_api.post("/income.php", {})
+            .then((response) => {
+                if (response.data["status_code"] === 200){
+                    console.log(response.data["data"])
+                    setTotalIncome(response.data["data"])
+                }
+                else{
+                    setTotalIncome("Error fetching total income")
+                }
+        })
+            } catch (error) {
+            }
+    }
+
     // USER FUNCTION
     var getUserWeightedPoints = () => {
         try{
@@ -223,6 +264,7 @@ const Dashboard = (props) => {
         getFewProducts()
         getWalletBalance()
         getBankData();
+        
     }, [products_api])
 
     useEffect(() => {
@@ -233,6 +275,8 @@ const Dashboard = (props) => {
         else if (admin_status == 1){
             getUsersWeightedPoints()
             getUsersSalesHistory()
+            getTotalUsers();
+            getTotalIncome();
         }
         else{
             navigate("/login")
@@ -404,7 +448,7 @@ const Dashboard = (props) => {
                                                 <p className='text-red-500'>35.8</p>
                                             </div>
                                             <div>
-                                                <p className='font-bold text-4xl text-c-gray text-center'>{showUsers ? 1024: '****'}</p>
+                                                <p className='font-bold text-4xl text-c-gray text-center'>{showUsers ? totalUsers: '****'}</p>
                                             </div>
                                         </div>
                                         <div className='w-full bg-white rounded gap-1 px-2 py-2'>
@@ -414,7 +458,7 @@ const Dashboard = (props) => {
                                                 <p className='text-red-500'>35.8</p>
                                             </div>
                                             <div>
-                                                <p className='font-bold text-4xl text-c-gray text-center'>{showIncome ? 350075000: '****'}</p>
+                                                <p className='font-bold text-4xl text-c-gray text-center'>{showIncome ? totalIncome: '****'}</p>
                                             </div>
                                         </div>
 
