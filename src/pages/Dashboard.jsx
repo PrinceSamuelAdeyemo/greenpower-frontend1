@@ -404,7 +404,7 @@ const Dashboard = (props) => {
                         </Card>
                     </div>
                     <div className="md:w-1/3 space-y-5">
-                        <Card className='max-h-[50vh] lg:max-h-[65vh] overflow-y-auto'>
+                        <Card className='max-h-[50vh] lg:max-h-[65vh] overflow-y-auto'>3
                             <div className="flex gap-3 items-center">
                                 <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
                                 <p className='font-bold text-c-gray opacity-95 text-xl'>Products</p>

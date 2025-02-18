@@ -30,7 +30,7 @@ const HubDisplay = ({userToken, hub, hubsData}) => {
      
     try{
       console.log("About to send ", userToken,  hub["hubToken"])
-      hubs_api.delete("/deleteHub.php", {
+      hubs_api.post("/deleteHub.php", {
       "userToken": userToken,
       "hubToken": String(hub["hubToken"])
     })
