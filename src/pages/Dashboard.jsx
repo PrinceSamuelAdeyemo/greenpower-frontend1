@@ -120,7 +120,7 @@ const Dashboard = (props) => {
 
     var getUsersSalesHistory = () => {
         try{
-            sales_api.get("getLatestSales.php")
+            sales_api.get("getSales.php")
             .then((response) => {
                 var truncated_sales_history = response.data["data"].slice(0,5)
                 console.log(truncated_sales_history)
@@ -408,7 +408,7 @@ const Dashboard = (props) => {
                         </Card>
                     </div>
                     <div className="md:w-1/3 space-y-5">
-                        <Card className='max-h-[50vh] lg:max-h-[65vh] overflow-y-auto'>3
+                        <Card className='max-h-[50vh] lg:max-h-[65vh] overflow-y-auto'>
                             <div className="flex gap-3 items-center">
                                 <div className="h-14 w-6 rounded bg-c-lightgreen"></div>
                                 <p className='font-bold text-c-gray opacity-95 text-xl'>Products</p>
@@ -600,7 +600,7 @@ const Dashboard = (props) => {
                             salesrecord_available && sales_record?.map((sale, index) => (
                             <Table.Body>
                                 <Table.Row>
-                                    <Table.Cell className='font-semibold'>{sale["userToken"]}</Table.Cell>
+                                    <Table.Cell className='font-semibold'>{sale["userData"]["firstName"]} {sale["userData"]["lastName"]}</Table.Cell>
                                     <Table.Cell className='font-semibold'>{sale["pdtName"]}</Table.Cell>
                                     <Table.Cell className='font-semibold'>{sale["pdtPrice"]}</Table.Cell>
                                     <Table.Cell className='font-semibold'>{sale["created_at"].split(' ')[0]}</Table.Cell>
