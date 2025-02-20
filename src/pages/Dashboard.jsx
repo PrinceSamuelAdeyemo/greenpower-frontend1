@@ -382,23 +382,27 @@ const Dashboard = (props) => {
                             </div>
                         </Card>
                         <Card>
-                            <p className="font-bold">Sales History <span className='text-red-500'>DUMMY DATA</span></p>
+                            <p className="font-bold">Sales History</p>
                             <div className="overflow-x-auto">
                                 <Table className='table-fixed'>
                                     <Table.Head className='border-red-500'>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Sender</Table.HeadCell>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product</Table.HeadCell>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Quantity</Table.HeadCell>
-                                        <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Price</Table.HeadCell>
+                                    <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product</Table.HeadCell>
+                                        <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Serial Number</Table.HeadCell>
+                                        <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>amountPaid</Table.HeadCell>
                                     </Table.Head>
-                                    <Table.Body>
-                                        <Table.Row>
-                                            <Table.Cell className='font-semibold'>Ayoola Tolu</Table.Cell>
-                                            <Table.Cell className='font-semibold'>Excellent 3D chair</Table.Cell>
-                                            <Table.Cell className='font-semibold'>18</Table.Cell>
-                                            <Table.Cell className='font-semibold'>#32,000</Table.Cell>
-                                        </Table.Row>
-                                    </Table.Body>
+                                    {
+                                        salesrecord_available && sales_record?.map((sale, index) => (
+                                        <Table.Body>
+                                            <Table.Row>
+                                                <Table.Cell className='font-semibold'>{sale["pdtName"]}</Table.Cell>
+                                                <Table.Cell className='font-semibold'>{sale["pdtSerialNumber"]}</Table.Cell>
+                                                <Table.Cell className='font-semibold'>{sale["pdtPrice"]}</Table.Cell>
+
+                                            </Table.Row>
+                                        </Table.Body>
+                                        ))
+                                        
+                            }
                                 </Table>
                             </div>
                         </Card>
@@ -587,10 +591,9 @@ const Dashboard = (props) => {
                     <div className="overflow-x-auto">
                         <Table className='table-fixed'>
                             <Table.Head className='border-red-500'>
-                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Buyer</Table.HeadCell>
-                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product</Table.HeadCell>
+                            <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Agent</Table.HeadCell>
+                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Product Name</Table.HeadCell>
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Prices</Table.HeadCell>
-                                <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Commission Markup</Table.HeadCell>
                                 <Table.HeadCell className='bg-white border-c-lightgreen border-y-2'>Date</Table.HeadCell>
                             </Table.Head>
                             {
@@ -600,7 +603,6 @@ const Dashboard = (props) => {
                                     <Table.Cell className='font-semibold'>{sale["userToken"]}</Table.Cell>
                                     <Table.Cell className='font-semibold'>{sale["pdtName"]}</Table.Cell>
                                     <Table.Cell className='font-semibold'>{sale["pdtPrice"]}</Table.Cell>
-                                    <Table.Cell className='font-semibold'>{sale["payment_type"] === 'outright' ? sale["commissionEarned"]: sale["commission_on_down_payment"] }</Table.Cell>
                                     <Table.Cell className='font-semibold'>{sale["created_at"].split(' ')[0]}</Table.Cell>
                                 </Table.Row>
                             </Table.Body>
