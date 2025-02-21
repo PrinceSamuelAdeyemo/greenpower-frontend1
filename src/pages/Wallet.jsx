@@ -152,6 +152,7 @@ const Wallet = (props) => {
                     </div>
                 </Card>
             </div>
+            {/* 
             <Card>
                 <p className="font-bold mb-2">Transactions <span className='text-red-500'>DUMMY DATA</span></p>
                 <div className="overflow-x-auto">
@@ -165,7 +166,7 @@ const Wallet = (props) => {
                             <Table.HeadCell></Table.HeadCell>
                         </Table.Head>
                         <Table.Body>
-                            {/* Example rows */}
+                            {/* Example rows *}
                             <Table.Row className='border-b-2 border-c-lightgreen'>
                                 <Table.Cell>John Smith</Table.Cell>
                                 <Table.Cell>Transfer</Table.Cell>
@@ -182,11 +183,12 @@ const Wallet = (props) => {
                                 <Table.Cell>$150</Table.Cell>
                                 <Table.Cell><button className='text-c-lightgreen border-2 border-c-lightgreen lg:w-full xl:w-1/2 py-1 rounded-xl font-semibold'>Details</button></Table.Cell>
                             </Table.Row>
-                            {/* Add more rows as needed */}
+                            {/* Add more rows as needed *}
                         </Table.Body>
                     </Table>
                 </div>
             </Card>
+             */}
             {showModal && <SendMoneyModal cookieDetails={cookieDetails} showModal={showModal} openModal={() => setShowModal(true)} closeModal={() => setShowModal(false)} openModal2={() => setShowModal2(true)} openModal3={() => setShowModal3(true)} />}
             {showModal2 && <SendToGreenPowerAccountModal showModal2={showModal2} openModal2={() => setShowModal2(true)} closeModal2={() => setShowModal2(false)} cookieDetails={cookieDetails} openModal={() => setShowModal(true)} walletBalance={walletBalance} />}
             {showModal3 && <SendToExternalAccountModal showModal3={showModal3} openModal3={() => setShowModal3(true)} closeModal3={() => setShowModal3(false)} cookieDetails={cookieDetails} openModal={() => setShowModal(true)} walletBalance={walletBalance} />}

@@ -366,6 +366,7 @@ const Dashboard = (props) => {
                                 <img src={dashImage} alt="Dashboard" className="mt-4 md:mt-0 md:w-1/2 object-containk" />
                             </div>
                         </div>
+                    {/* 
                         <Card className='max-h-[34vh] overflow-y-auto'>
                             <p className="font-bold text-2xl text-c-gray opacity-90">Sales Record <span className='text-red-500'>DUMMY DATA</span></p>
                             <div className="space-y-4">
@@ -381,6 +382,7 @@ const Dashboard = (props) => {
                                 
                             </div>
                         </Card>
+                         */}
                         <Card>
                             <p className="font-bold">Sales History</p>
                             <div className="overflow-x-auto">
