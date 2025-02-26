@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { TextInput, Button, Label, } from 'flowbite-react'
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import SignupRightImage from "../assets/Rectangle 8.png"
 
 import Signup2 from './Signup2'
@@ -16,6 +17,8 @@ const Signup1 = () => {
     const [show_helpertext, setShow_helpertext] = useState(false)
     const [helpertext, setHelpertext] = useState("")
     const [data, setData] = useState({"bvn": "", "password": ""})
+    const [password1Visible, setPassword1Visible] = useState(false);
+    const [password2Visible, setPassword2Visible] = useState(false);
 
     var bvnRef = useRef(null)
     var password1Ref = useRef(null)
@@ -26,7 +29,7 @@ const Signup1 = () => {
         let special_symbol_pattern = /[!@#$%^&*(),.?":{}|<>]/g
         let capital_letter_pattern = /[A-Z]/g
 
-        return special_symbol_pattern.test(password_value) && capital_letter_pattern.test(password_value)
+        return special_symbol_pattern.test(password_value) && capital_letter_pattern.test(password_value) && password_value.length >= 8
     }
 
 
@@ -115,18 +118,20 @@ const Signup1 = () => {
                         <TextInput onChange={() => inputData(event, "bvn")} className='flex-grow border-c-lightgreen text-c-lightgreen' id='bvn' type='number' placeholder='Enter your bvn' name='bvn' ref={bvnRef} required />
                     </div>
 
-                    <div className='w-full'>
+                    <div className='w-full relative'>
                         <div className='mb-2 block'>
                             <Label htmlFor='password1' value='Password' className='font-bold' />
                         </div>
-                        <TextInput onChange={() => inputData(event, "password")} className='flex-grow border-c-lightgreen text-c-lightgreen' id='password1' type='password' placeholder='Enter your password' name='password' ref={password1Ref} required />
+                        <TextInput onChange={() => inputData(event, "password")} className='flex-grow border-c-lightgreen text-c-lightgreen' id='password1' type={`${password1Visible ? 'text' : 'password'}`} placeholder='Enter your password' name='password' ref={password1Ref} required />
+                        {password1Visible ? <FaEye className='absolute right-2 top-11' onClick={() => setPassword1Visible(!password1Visible)} /> : <FaEyeSlash className='absolute right-2 top-11' onClick={() => setPassword1Visible(!password1Visible)} />}
                     </div>
 
-                    <div className='w-full'>
+                    <div className='w-full relative'>
                         <div className='mb-2 block'>
                             <Label htmlFor='password2' value='Confirm Password' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='password2' type='password' placeholder='Confirm your password' ref={password2Ref} required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' id='password2' type={`${password2Visible ? 'text' : 'password'}`} placeholder='Confirm your password' ref={password2Ref} required />
+                        {password2Visible ? <FaEye className='absolute right-2 top-11' onClick={() => setPassword2Visible(!password2Visible)} /> : <FaEyeSlash className='absolute right-2 top-11' onClick={() => setPassword2Visible(!password2Visible)} />}
                     </div>
 
                     <div>

@@ -57,7 +57,7 @@ const HubDisplay = ({userToken, hub, hubsData}) => {
           aria-labelledby = "default-popover"
           content = {
             <div>
-              <Button onClick={deleteHub}>Delete</Button>
+              <Button onClick={deleteHub} className='bg-red-500'>Delete</Button>
             </div>
           }
           

@@ -15,6 +15,7 @@ const Signup2 = () => {
     const [showModal, setShowModal] = useState(false);
     const [show_helpertext, setShow_helpertext] = useState(false)
     const [helpertext, setHelpertext] = useState("")
+    const [offlineStatus, setOfflineStatus] = useState(false)
 
     const location = useLocation();
     const {"data": receivedData} = location.state || {}
@@ -76,6 +77,10 @@ const Signup2 = () => {
                 }
                 else if (response.data["message"]){
                     setHelpertext(response.data["message"])
+                    console.log(response)
+                }
+                else{
+                    setHelpertext("An error occured during the registration. Please try again.")
                     console.log(response)
                 }
             })

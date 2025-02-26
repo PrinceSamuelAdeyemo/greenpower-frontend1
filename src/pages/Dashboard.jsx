@@ -475,7 +475,7 @@ const Dashboard = (props) => {
                                             <div className='flex justify-between' onClick={() => {setShowUsers(!showUsers)}}>
                                                 {showUsers ? <FaEye color='green' /> : <FaEyeSlash color='green' />}
                                                 <p className='text-black'>Users</p>
-                                                <p className='text-red-500'>35.8</p>
+                                                {/* <p className='text-red-500'>35.8</p> */}
                                             </div>
                                             <div>
                                                 <p className='font-bold text-4xl text-c-gray text-center'>{showUsers ? totalUsers: '****'}</p>
@@ -485,7 +485,7 @@ const Dashboard = (props) => {
                                             <div className='flex justify-between' onClick={() => {setShowIncome(!showIncome)}}>
                                                 {showIncome ? <FaEye color='green' /> : <FaEyeSlash color='green' />}
                                                 <p className='text-black'>Income</p>
-                                                <p className='text-red-500'>35.8</p>
+                                                {/* <p className='text-red-500'>35.8</p> */}
                                             </div>
                                             <div>
                                                 <p className='font-bold text-4xl text-c-gray text-center'>{showIncome ? totalIncome: '****'}</p>

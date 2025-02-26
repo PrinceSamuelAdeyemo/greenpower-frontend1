@@ -181,7 +181,7 @@ const SalesRecord = (props) => {
                     <p className='text-xl font-bold'>Sales</p>
                     <div className='flex ml-auto gap-3'>
                         
-                        <Button className='text-c-lightgreen' outline color="green" onClick={()=>setShowModal(true)}>All Sales</Button>
+                        <Button className='text-c-lightgreen' outline color="green">All Sales</Button>
                         {showModal && <AddSalesModal showModal={showModal} openModal={()=>setShowModal(true)} closeModal={()=>setShowModal(false)} cookieDetails={cookieDetails} />}
                         <Button className='bg-c-lightgreen text-white' onClick={()=>navigate('/sales/user/wp')}>View overall WP</Button>
                     </div>

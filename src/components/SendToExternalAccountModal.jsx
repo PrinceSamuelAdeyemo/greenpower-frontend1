@@ -2,6 +2,7 @@ import React, { useEffect, useReducer, useRef, useState } from 'react'
 import { Button, Select, Spinner, TextInput } from 'flowbite-react';
 import CustomModal from './CustomModal'
 
+
 import wallets_api from '../utils/wallets_api';
 
 const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cookieDetails, openModal, walletBalance }) => {
@@ -13,6 +14,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
     const [accountName, setAccountName] = useState('')
     const [buttonDisabled, setButtonDisabled] = useState(true)
     const [errorMessage, setErrorMessage] = useState('')
+    const [messageColor, setMessageColor] = useState('')
 
     // Functions
     const validateAllFields = () => {
@@ -38,6 +40,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                     console.log(bankList.length)
                 }
                 else{
+                    setMessageColor('text-red-600')
                     setErrorMessage("Something went wrong.")
                 }
             })
@@ -63,6 +66,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                         setAccountName(response.data["data"]["accountName"])
                     }
                     else{
+                        setMessageColor('text-red-600')
                         setErrorMessage("Something went wrong.")
                     }
                 })
@@ -84,10 +88,12 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
                 "accNo": accountNumberRef.current.value
             })
             .then((response) => {
-                if (response.data["status_code"] === 200) {
-                    setErrorMessage("")
+                if (response.data["status_code"] === 200 && response.data["data"]["success"] === true) {
+                    setMessageColor('text-c-lightgreen')
+                    setErrorMessage("Transaction in progress, check your email for the validation token")
                 }
                 else{
+                    setMessageColor('text-red-600')
                     setErrorMessage("Something went wrong.")
                 }
                 console.log(response)
@@ -107,6 +113,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
         console.log("hhhhhhhhhh",cookieDetails)
         getBankList()
         if (walletBalance < 1){
+            setMessageColor('text-red-600')
             setErrorMessage('Your account is currently low, and transfers cannot be made. Kindly deposit some funds in order to proceed')
         }
     }, [])
@@ -115,7 +122,7 @@ const SendToExternalAccountModal = ({ showModal3, openModal3, closeModal3, cooki
     <CustomModal showModal={showModal3} openModal={openModal3} closeModal={closeModal3}>
         <div className='flex flex-col items-center gap-5 w-full' onClick={() => console.log(2)}>
             <form onSubmit={(event) => transferMoney(event)} className='flex flex-col gap-8 w-full'>
-                <p className='text-center text-red-600 w-[90%]'>{errorMessage}</p>
+            <p className={`text-center w-90% ${messageColor}`}>{errorMessage}</p>
                 <div className='flex flex-col gap-2'>
                     <p>Bank</p>
                     {bankList.length !== 0 ?
