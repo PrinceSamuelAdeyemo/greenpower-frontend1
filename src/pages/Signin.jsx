@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { TextInput, Button, Label, } from 'flowbite-react'
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import SignupRightImage from "../assets/Rectangle 8.png"
 
 import ReloadPage from '../components/ReloadPage'
@@ -20,6 +21,7 @@ const Signin = () => {
     var emailRef = useRef(null)
     var passwordRef = useRef(null)
     var [error_details, setError_details] = useState("")
+    const [passwordVisible, setPasswordVisible] = useState(false)
     var response_data;
 
     const navigate = useNavigate()
@@ -47,7 +49,7 @@ const Signin = () => {
                             "phoneNumber": response_data['phoneNumber'],
                             "profilePicture": response_data['profilePicture'],
                             "kycDetails": response_data['kycDetails'],
-                            "ADMIN": 1,//response_data["ADMIN"],
+                            "ADMIN": response_data["ADMIN"],
                             "can_switch": 0,
                             "gender": response_data['gender'],
                             "userHubToken": response_data['hubToken'],
@@ -113,11 +115,14 @@ const Signin = () => {
                         <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' ref={emailRef} id='email' type='text' placeholder='Enter your email' required />
                     </div>
 
-                    <div className='w-full'>
+                    <div className='w-full relative'>
                         <div className='mb-2 block'>
                             <Label htmlFor='password1' value='Password' className='font-bold' />
                         </div>
-                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' ref={passwordRef} id='password1' type='password' placeholder='Enter your password' required />
+                        <TextInput className='flex-grow border-c-lightgreen text-c-lightgreen' ref={passwordRef} id='password1' type={`${passwordVisible ? 'text' : 'password'}`} placeholder='Enter your password' required />
+                        <div className='absolute right-2 top-11'>
+                            {passwordVisible ? <FaEye className='text-c-lightgreen' onClick={() => setPasswordVisible(!passwordVisible)} /> : <FaEyeSlash className='text-c-lightgreen' onClick={() => setPasswordVisible(!passwordVisible)} />}
+                        </div>
                         <div className='w-full flex justify-end'>
                             <Link to="/resetpassword" className='text-c-lightgreen font-semibold'>Forgot My Password</Link>
                         </div>
