@@ -41,6 +41,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
     .then((response) => {
       console.log("SUUUUUUUUUDDDDDDDDD",response.data["data"][0]["approval_status"]);
       if (response.data["status_code"] === 200){
+        console.log("HEEEEH", response.data["data"][0])
         setCurrentInstallment(response.data["data"][0])
         
       }
@@ -53,7 +54,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
   const approveSale = (currentSalesToken) => {
     installments_api.post("/approvePayment.php", {
       "salesToken": currentSalesToken,
-      "installmentToken": currentInstallment[0]["installmentToken"]
+      "installmentToken": currentInstallment["installmentToken"]
     })
     .then((response) => {
       console.log(response)
@@ -63,7 +64,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
   const declineSale = (currentSalesToken) => {
     installments_api.post("/declinePayment.php", {
       "salesToken": currentSalesToken,
-      "installmentToken": currentInstallment[0]["installmentToken"]
+      "installmentToken": currentInstallment["installmentToken"]
     })
     .then((response) => {
       console.log(response)
