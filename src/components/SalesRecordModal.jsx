@@ -9,6 +9,8 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
   const [currentSale, setCurrentSale] = useState({})
   const [currentInstallment, setCurrentInstallment] = useState({})
   const [approvalStatus, setApprovalStatus] = useState("")
+  const [message, setMessage] = useState("")
+  const [messageColor, setMessageColor] = useState("")
   
   const getUserSale = (currentSalesToken) => {
     sales_api.post("/getSalesById.php", {
@@ -42,6 +44,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
       console.log("SUUUUUUUUUDDDDDDDDD",response.data["data"][0]["approval_status"]);
       if (response.data["status_code"] === 200){
         console.log("HEEEEH", response.data["data"][0])
+        console.log("HEEEEH", response.data)
         setCurrentInstallment(response.data["data"][0])
         
       }
@@ -58,6 +61,14 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
     })
     .then((response) => {
       console.log(response)
+      if (response.data['status_code'] === 200){
+        setMessageColor("text-c-lightgreen")
+        setMessage("Sale Approved")
+      }
+      else{
+        setMessageColor("text-red-600")
+        setMessage("An error occurred while approving the sale")
+      }
     })
   }
 
@@ -68,6 +79,14 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
     })
     .then((response) => {
       console.log(response)
+      if (response.data['status_code'] === 200){
+        setMessageColor("text-red-600")
+        setMessage("Sale Declined")
+      }
+      else{
+        setMessageColor("text-red-600")
+        setMessage("An error occurred while declining the sale")
+      }
     })
   }
 
@@ -79,6 +98,7 @@ const SalesRecordModal = ({currentSalesToken, showModal, setShowModal}) => {
   return (
     <Modal show={showModal} dismissible onClose={()=>{setShowModal(false)}} className='h-[80vh]'>
         <p className='text-center text-3xl justify-center items-center h-10 mt-4'>User Sales Record</p>
+        <p className={`text-center ${messageColor}`}>{message}</p>
         <Modal.Body>
             <div className='flex flex-col items-center gap-8'>
                 <div className='flex flex-col gap-4 lg:w-[85%] '>

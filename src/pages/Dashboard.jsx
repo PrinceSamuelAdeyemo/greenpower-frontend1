@@ -35,6 +35,8 @@ const Dashboard = (props) => {
     const [transactionHistory, SetTransactionHistory] = useState()
     // Weighted points
     var [weighted_available, setWeighted_available] = useState(false)
+    const [bankDetailsAvailable, setBankDetailsAvailable] = useState(false)
+    
     var [no_weighted_point, setNo_weighted_point] = useState(true)
     var [weighted_point, setWeighted_point] = useState()
     var [weightedList, setWeightedlist] = useState([])
@@ -239,10 +241,16 @@ const Dashboard = (props) => {
                 "userToken": cookieDetails["userToken"]
             })
             .then((response) => {
-                var truncated_sales_history = response.data["data"].slice(0,5)
-                console.log(truncated_sales_history)
-                setSales_record(truncated_sales_history)
-                setSalesrecord_available(true)
+                if (response.data["status_code"] === 200){
+                    console.log(response.data["data"])
+                    var truncated_sales_history = response.data["data"].slice(0,5)
+                    console.log(truncated_sales_history)
+                    setSales_record(truncated_sales_history)
+                    setSalesrecord_available(true)
+                }
+                else{
+                    setSalesrecord_available(false)
+                }
             })
             .catch((error) => {
                 if (error.message.includes("Network Error")){
@@ -268,6 +276,9 @@ const Dashboard = (props) => {
                     setBankName(response.data["data"][0]["bank_name"])
                     setAccountName(response.data["data"][0]["acc_name"])
                     setAccountNumber(response.data["data"][0]["nuban"])
+                }
+                else{
+                    setShowBalance(false)
                 }
             })
             .catch((error) => {

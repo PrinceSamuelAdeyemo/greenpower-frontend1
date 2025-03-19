@@ -35,7 +35,7 @@ const UpdateProduct = ({ showModal, closeModal, data_update }) => {
                 "outrightCommission":commissionRef.current.value,
                 "logisticsFees": logistics_feeRef.current.value,
                 "weightedPoints": weighted_pointsRef.current.value,
-                "hubToken": currentHub
+                //"hubToken": currentHub
         })
         .then((response) => {
             if (response.data["status_code"] === 200){

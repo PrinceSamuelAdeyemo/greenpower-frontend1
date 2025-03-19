@@ -7,7 +7,7 @@ import hubs_api from '../utils/hubs_api';
 
 
 
-const UpdateHubModal = ({ showModal, openModal, closeModal, userToken }) => {
+const UpdateHubModal = ({ showModal, openModal, closeModal, userToken, cookieDetails }) => {
     var cookieDetails = cookieDetails;
 
     const [hub_available, setHub_available] = useState(false)
@@ -40,6 +40,13 @@ const UpdateHubModal = ({ showModal, openModal, closeModal, userToken }) => {
         .then((response) => {
             console.log("Update Response",response)
             if (response.data["status_code"] === 200){
+                let cookie_data = JSON.parse(localStorage.getItem('dataValue'))
+                cookie_data["userHubToken"] = currentHubRef.current.value
+                localStorage.setItem('dataValue', JSON.stringify(cookie_data))
+                console.log("eee", currentHubRef.current.value)
+                console.log("aaa",cookieDetails)
+                cookieDetails["userHubToken"] = currentHubRef.current.value
+                
                 closeModal()
             }
             else if (response.data["status_code"] === 400){
