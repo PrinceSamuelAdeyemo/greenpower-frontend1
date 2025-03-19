@@ -35,8 +35,7 @@ const Dashboard = (props) => {
     const [transactionHistory, SetTransactionHistory] = useState()
     // Weighted points
     var [weighted_available, setWeighted_available] = useState(false)
-    const [bankDetailsAvailable, setBankDetailsAvailable] = useState(false)
-    
+    const [weightedPointLoading, setWeightedPointLoading] = useState(true)
     var [no_weighted_point, setNo_weighted_point] = useState(true)
     var [weighted_point, setWeighted_point] = useState()
     var [weightedList, setWeightedlist] = useState([])
@@ -45,6 +44,7 @@ const Dashboard = (props) => {
     var [sales_record, setSales_record] = useState(true)
     // Products
     var [products_available, setProducts_available] = useState(false)
+    const [productsLoading, setProductsLoading] = useState(true)
     const [productList, setProductList] = useState([])
     //Wallets
     var [walletBalance, setWalletBalance] = useState()
@@ -55,6 +55,8 @@ const Dashboard = (props) => {
     var [bankName, setBankName] = useState('')
     const [accountName, setAccountName] = useState()
     const [accountNumber, setAccountNumber] = useState()
+    const [bankDetailsAvailable, setBankDetailsAvailable] = useState(false)
+    const [bankLoading, setBankLoading] = useState(true)
 
     const [showUsers, setShowUsers] = useState(true)
     const [showIncome, setShowIncome] = useState(false)
@@ -87,6 +89,9 @@ const Dashboard = (props) => {
                     setOfflineStatus(true);
                 }
             })
+            .finally(() => {
+                setProductsLoading(false);
+            })
        }
       catch (error) {
        console.log(error)
@@ -113,6 +118,9 @@ const Dashboard = (props) => {
                     console.log("error is here", error)
                     setOfflineStatus(true);
                 }
+            })
+            .finally(() => {
+                setWeightedPointLoading(false)
             })
         }
        catch (error) {
@@ -184,15 +192,18 @@ const Dashboard = (props) => {
              })
              .then((response) => {
                 console.log(response)
-                if (response.data["status_code"] == 200){
+                if (response.data["status_code"] == 200 && response.data["data"] !== null){
                     console.log()
                     setWeighted_point(response.data["data"])
                     setWeighted_available(true)
-                    
+                
                 }
                 else{
                     setWeighted_available(false)
                 }
+             })
+             .finally(() => {
+                setWeightedPointLoading(false)
              })
         }
        catch (error) {
@@ -276,9 +287,10 @@ const Dashboard = (props) => {
                     setBankName(response.data["data"][0]["bank_name"])
                     setAccountName(response.data["data"][0]["acc_name"])
                     setAccountNumber(response.data["data"][0]["nuban"])
+                    setBankDetailsAvailable(true)
                 }
                 else{
-                    setShowBalance(false)
+                    setBankDetailsAvailable(false);
                 }
             })
             .catch((error) => {
@@ -286,6 +298,9 @@ const Dashboard = (props) => {
                     console.log("error is here", error)
                     setOfflineStatus(true);
                 }
+            })
+            .finally(() => {   
+                setBankLoading(false)
             })
         }
         catch (error) {
@@ -329,7 +344,7 @@ const Dashboard = (props) => {
                 (admin_status !== 1) ?
                 <div className="flex flex-col md:flex-row md:gap-1 lg:gap-4 xl:gap-5 lg:px-4">
                     {
-                        showUserHubTokenModal && <UpdateHubModal showModal={showUserHubTokenModal} openModal={() => setShowUserHubTokenModal(true)} closeModal={() => setShowUserHubTokenModal(false)} userToken={cookieDetails["userToken"]} />
+                        showUserHubTokenModal && <UpdateHubModal showModal={showUserHubTokenModal} openModal={() => setShowUserHubTokenModal(true)} closeModal={() => setShowUserHubTokenModal(false)} userToken={cookieDetails["userToken"]} cookieDetails={cookieDetails} />
                     }
                     <div className="md:w-2/3 space-y-5">
                         <div className='p-0'>
@@ -341,19 +356,19 @@ const Dashboard = (props) => {
                                     <div className="mt-12 mb-1">
                                         <p className="text-sm">Bank Name</p>
                                         {
-                                            bankName? <p className="text-lg font-bold">{bankName}</p> : <Spinner />
+                                            bankLoading ? <Spinner /> : <p className="text-lg font-bold">{bankDetailsAvailable ? {bankName} : '--' }</p>
                                         }
                                     </div>
                                     <div className=" mb-1">
                                         <p className="text-sm">Account Name</p>
                                         {
-                                            accountName? <p className="text-lg font-bold">{accountName}</p> : <Spinner />
+                                            bankLoading ? <Spinner /> : <p className="text-lg font-bold">{bankDetailsAvailable ? {accountName} : '--' }</p>
                                         }
                                     </div>
                                     <div className="mb-1">
                                         <p className="text-sm">Account Number</p>
                                         {
-                                            accountNumber? <p className="text-lg font-bold">{accountNumber}</p> : <Spinner />
+                                            bankLoading ? <Spinner /> : <p className="text-lg font-bold">{bankDetailsAvailable ? {accountNumber} : '--' }</p>
                                         }
                                         
                                     </div>
@@ -369,7 +384,7 @@ const Dashboard = (props) => {
                                     <div>
                                         <p className="text-sm">Weighted points</p>
                                         {
-                                            weighted_available? <p className="text-xl font-bold">{weighted_point}</p> : <Spinner />
+                                            weightedPointLoading ? <Spinner /> : <p className="text-xl font-bold">{weighted_available ? {weighted_point} : '--'}</p>
                                         }
                                         
                                     </div>
@@ -456,9 +471,13 @@ const Dashboard = (props) => {
                             </Table>
                             </div>
                             {
-                                !products_available &&
+                                productsLoading ?
                             <div className='h-[30vh] flex flex-col md:flex-row gap-4 justify-center items-center'>
                                 <Spinner color='success' size='xl' />
+                            </div>
+                            : (products_available === false) &&
+                            <div className='h-[30vh] flex flex-col md:flex-row gap-4 justify-center items-center'>
+                                <p className='text-center text-red-600 font-semibold'>Products are not available</p>
                             </div>
                             }
                             
@@ -535,12 +554,16 @@ const Dashboard = (props) => {
                                         </Table.Body>
                                     </Table>
                                     {
-                                        !weighted_available && (
+                                        weightedPointLoading ? (
                                             <div className='h-[20vh] flex flex-col md:flex-row gap-4 justify-center items-center'>
                                                 <Spinner color='success' size='xl' />
                                                 {/* <p className='text-center mt-3 text-red-600 font-semibold'>Users cummulated weighted points are not available</p> */}
                                             </div>
-                                            
+                                        )
+                                        : (weighted_available === false) && (
+                                            <div className='h-[20vh] flex flex-col md:flex-row gap-4 justify-center items-center'>
+                                                <p className='text-center mt-3 text-red-600 font-semibold'>Users cummulated weighted points are not available</p>
+                                            </div>
                                         )
                                     }
                                 </div>

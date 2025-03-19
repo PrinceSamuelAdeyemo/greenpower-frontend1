@@ -26,6 +26,8 @@ const Wallet = (props) => {
     const [bankName, setBankName] = useState()
     const [accountName, setAccountName] = useState()
     const [accountNumber, setAccountNumber] = useState()
+    const [bankLoading, setBankLoading] = useState(true)
+    const [dateTime, setDateTime] = useState()
 
     const getWalletBalance = () => {
         try{
@@ -72,6 +74,9 @@ const Wallet = (props) => {
                 setOfflineStatus(true);
                 }
             })
+            .finally(() => {
+                setBankLoading(false)
+            })
         }
         catch (error) {
         }
@@ -81,9 +86,23 @@ const Wallet = (props) => {
 
     }
 
+    const getCurrentDateTime = () => {
+        let months = {1:"January", 2:"February", 3:"March", 4:"April",5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October", 11:"November", 12:"December"};
+        let days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+        var today = new Date();
+        var day = today.getDate();
+        var month = months[today.getMonth()+1];
+        var year = today.getFullYear();
+        var time = today.getHours() + ":" + today.getMinutes();
+        var dateTime = (month + " " + day + " " + year + ", " + time)
+        setDateTime(dateTime)
+    }
+
     useEffect(() => {
         getWalletBalance()
         getBankData()
+        getCurrentDateTime()
     })
 
     return (
@@ -98,19 +117,19 @@ const Wallet = (props) => {
                         <div className="mt-16 mb-4">
                             <p className="text-sm">Bank Name</p>
                             {
-                                bankName? <p className="text-lg font-bold">{bankName}</p> : <Spinner />
+                                bankLoading ? <Spinner /> : <p className="text-lg font-bold">{bankName ? {bankName} : '--'}</p>
                             }
                         </div>
                         <div className=" mb-4">
                             <p className="text-sm">Account Name</p>
                             {
-                                accountName? <p className="text-lg font-bold">{accountName}</p> : <Spinner />
+                                bankLoading ? <Spinner /> : <p className="text-lg font-bold">{accountName ? {accountName} : '--'}</p>
                             }
                         </div>
                         <div className="mb-4">
                             <p className="text-sm">Account Number</p>
                             {
-                                accountNumber? <p className="text-lg font-bold">{accountNumber}</p> : <Spinner />
+                                bankLoading ? <Spinner /> : <p className="text-lg font-bold">{accountNumber ? {accountNumber} : '--'}</p>
                             }
                             
                         </div>
@@ -129,7 +148,7 @@ const Wallet = (props) => {
                             </div>
                             {/*  */}
                         </div>
-                        <p className='mb-3 text-md text-c-gray opacity-90 font-bold'>January 24, 2024   12.45pm</p>
+                        <p className='mb-3 text-md text-c-gray opacity-90 font-bold'>{dateTime}</p>
                         <div className='lg:px-60 flex justify-center'>
                             <Card className='w-full lg:w-[80%] xl:w-full flex justify-center items-center'>
                                 <div className='flex flex-col lg:flex-row items-center lg:px-2 xl:px-4 lg:py-0 gap-3 lg:gap-1 xl:gap-3'>
